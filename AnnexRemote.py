@@ -85,6 +85,46 @@ class SpecialRemote(ABC):
     def setup(self):
         print("Nothing to do. Just run 'git annex initremote' with your desired parameters")
 
+class ExportRemote(SpecialRemote):
+    def exportsupported(self):
+        return ExportsupportedSuccess()
+
+    @abstractmethod
+    def export(self, name):
+        pass
+
+    @abstractmethod
+    def transferexport_store(self, key, file_):
+        pass
+
+    @abstractmethod
+    def transferexport_retrieve(self, key, file_):
+        pass
+
+    @abstractmethod
+    def checkpresentexport(self, key):
+        pass
+
+    @abstractmethod
+    def removeexport(self, key):
+        pass
+
+    @abstractmethod
+    def removeexportdirectory(self, directory):
+        pass
+
+    @abstractmethod
+    def renameexport(self, key, new_name):
+        pass
+    
+    # Wrapper for transferexport_store and transferexport_retrieve
+    def transferexport(self, method, key, file_):
+        if method == "STORE":
+            return self.transferexport_store(key, file_)
+        elif method == "RETRIEVE":
+            return self.transferexport_retrieve(key, file_)
+
+
 # Remote replies
 class Reply():
     class InitremoteSuccess():
@@ -171,6 +211,24 @@ class Reply():
     class WhereisFailure(KeyReply):
         def __str__(self):
             return f"WHEREIS-FAILURE {self.key}"
+    class ExportsupportedSuccess():
+        def __str__(self):
+            return "EXPORTSUPPORTED-SUCCESS"
+    class ExportsupportedFailure():
+        def __str__(self):
+            return "EXPORTSUPPORTED-FAILURE"
+    class RenameexportSuccess(KeyReply):
+        def __str__(self):
+            return f"RENAMEEXPORT-SUCCESS {self.key}"
+    class RenameexportFailure(KeyReply):
+        def __str__(self):
+            return f"RENAMEEXPORT-FAILURE {self.key}"
+    class RenameexportdirectorySuccess():
+        def __str__(self):
+            return f"RENAMEEXPORTDIRECTORY-SUCCESS"
+    class RenameexportdirectoryFailure():
+        def __str__(self):
+            return f"RENAMEEXPORTDIRECTORY-FAILURE"
 
 class Master:
     def __init__(self, output):
@@ -189,6 +247,20 @@ class Master:
                      "CHECKURL": remote.checkurl,
                      "WHEREIS": remote.whereis
                     }
+        # Add export requests if supported
+        try:
+            self.requests.update({
+                     "EXPORTSUPPORTED": remote.exportsupported,
+                     "EXPORT": remote.export,
+                     "TRANSFEREXPORT": remote.transferexport,
+                     "CHECKPRESENTEXPORT": remote.checkpresentexport,
+                     "REMOVEEXPORT": remote.removeexport,
+                     "REMOVEEXPORTDIRECTORY": remote.removeexportdirectory,
+                     "RENAMEEXPORT": remote.renameexport
+                    })
+        except:
+            pass
+
 
     def Listen(self, input_):
         self.input = input_

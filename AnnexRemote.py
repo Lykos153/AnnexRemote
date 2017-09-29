@@ -85,54 +85,92 @@ class SpecialRemote(ABC):
     def setup(self):
         print("Nothing to do. Just run 'git annex initremote' with your desired parameters")
 
-    # Remote replies
-    class RemoteReply():
-        pass
+# Remote replies
+class Reply():
+    class InitremoteSuccess():
+        def __str__(self):
+            return "INITREMOTE-SUCCESS"
 
-    class PrepareFailure(RemoteReply):
-        pass
+    class InitremoteFailure():
+        def __init__(self, msg):
+            self.msg = msg
+        def __str__(self):
+            return f"INITREMOTE-FAILURE {self.msg}"
+    
+    class PrepareSuccess():
+        def __str__(self):
+            return "PREPARE-SUCCESS"
 
-    class InitremoteFailure(RemoteReply):
-        pass
+    class PrepareFailure():
+        def __init__(self, msg):
+            self.msg = msg
+        def __str__(self):
+            return f"PREPARE-FAILURE {self.msg}"
 
-    class RemoteReply():
-        pass
 
-    class TransferSuccess(RemoteReply):
-        pass
+    class KeyReply():
+        def __init__(self, key):
+            self.key = key
 
-    class TransferFailure(RemoteReply):
-        pass
+    class TransferSuccess_Store(KeyReply):
+        def __str__(self):
+            return f"TRANSFER-SUCCESS STORE {self.key}"
 
-    class CheckpresentSuccess(RemoteReply):
-        pass
+    class TransferFailure_Store(KeyReply):
+        def __str__(self):
+            return f"TRANSFER-FAILURE STORE {self.key}"
+    
+    class TransferSuccess_Retrieve(KeyReply):
+        def __str__(self):
+            return f"TRANSFER-SUCCESS RETRIEVE {self.key}"
 
-    class CheckpresentFailure(RemoteReply):
-        pass
+    class TransferFailure_Retrieve(KeyReply):
+        def __str__(self):
+            return f"TRANSFER-FAILURE RETRIEVE {self.key}"
 
-    class RemoveSuccess(RemoteReply):
-        pass
+    class CheckpresentSuccess(KeyReply):
+        def __str__(self):
+            return f"CHECKPRESENT-SUCCESS {self.key}"
 
-    class RemoveFailure(RemoteReply):
-        pass
+    class CheckpresentUnknown(KeyReply):
+        def __str__(self):
+            return f"CHECKPRESENT-UNKNOWN {self.key}"
+      
+    class CheckpresentFailure(KeyReply):
+        def __str__(self):
+            return f"CHECKPRESENT-FAILURE {self.key}"
 
-    class ClaimurlSuccess(RemoteReply):
-        pass
+    class RemoveSuccess(KeyReply):
+        def __str__(self):
+            return f"REMOVE-SUCCESS {self.key}"
 
-    class ClaimurlFailure(RemoteReply):
-        pass
+    class RemoveFailure(KeyReply):
+        def __str__(self):
+            return f"REMOVE-FAILURE {self.key}"
 
-    class CheckurlSuccess(RemoteReply):
-        pass
+    class ClaimurlSuccess(KeyReply):
+        def __str__(self):
+            return f"CLAIMURL-SUCCESS {self.key}"
 
-    class CheckurlFailure(RemoteReply):
-        pass
+    class ClaimurlFailure(KeyReply):
+        def __str__(self):
+            return f"CLAIMURL-FAILURE {self.key}"
 
-    class WhereisSuccess(RemoteReply):
-        pass
+    class CheckurlSuccess(KeyReply):
+        def __str__(self):
+            return f"CHECKURL-SUCCESS {self.key}"
 
-    class WhereisFailure(RemoteReply):
-        pass
+    class CheckurlFailure(KeyReply):
+        def __str__(self):
+            return f"CHECKURL-FAILURE {self.key}"
+
+    class WhereisSuccess(KeyReply):
+        def __str__(self):
+            return f"WHEREIS-SUCCESS {self.key}"
+
+    class WhereisFailure(KeyReply):
+        def __str__(self):
+            return f"WHEREIS-FAILURE {self.key}"
 
 class Master:
     def __init__(self, output):

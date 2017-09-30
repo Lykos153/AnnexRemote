@@ -87,7 +87,7 @@ class SpecialRemote(ABC):
 
 class ExportRemote(SpecialRemote):
     def exportsupported(self):
-        return ExportsupportedSuccess()
+        return Reply.ExportsupportedSuccess()
 
     @abstractmethod
     def export(self, name):
@@ -127,28 +127,31 @@ class ExportRemote(SpecialRemote):
 
 # Remote replies
 class Reply():
-    class InitremoteSuccess():
+    class RemoteReply():
+        pass
+
+    class InitremoteSuccess(RemoteReply):
         def __str__(self):
             return "INITREMOTE-SUCCESS"
 
-    class InitremoteFailure():
+    class InitremoteFailure(RemoteReply):
         def __init__(self, msg):
             self.msg = msg
         def __str__(self):
             return f"INITREMOTE-FAILURE {self.msg}"
     
-    class PrepareSuccess():
+    class PrepareSuccess(RemoteReply):
         def __str__(self):
             return "PREPARE-SUCCESS"
 
-    class PrepareFailure():
+    class PrepareFailure(RemoteReply):
         def __init__(self, msg):
             self.msg = msg
         def __str__(self):
             return f"PREPARE-FAILURE {self.msg}"
 
 
-    class KeyReply():
+    class KeyReply(RemoteReply):
         def __init__(self, key):
             self.key = key
 
@@ -211,10 +214,10 @@ class Reply():
     class WhereisFailure(KeyReply):
         def __str__(self):
             return f"WHEREIS-FAILURE {self.key}"
-    class ExportsupportedSuccess():
+    class ExportsupportedSuccess(RemoteReply):
         def __str__(self):
             return "EXPORTSUPPORTED-SUCCESS"
-    class ExportsupportedFailure():
+    class ExportsupportedFailure(RemoteReply):
         def __str__(self):
             return "EXPORTSUPPORTED-FAILURE"
     class RenameexportSuccess(KeyReply):
@@ -223,10 +226,10 @@ class Reply():
     class RenameexportFailure(KeyReply):
         def __str__(self):
             return f"RENAMEEXPORT-FAILURE {self.key}"
-    class RenameexportdirectorySuccess():
+    class RenameexportdirectorySuccess(RemoteReply):
         def __str__(self):
             return f"RENAMEEXPORTDIRECTORY-SUCCESS"
-    class RenameexportdirectoryFailure():
+    class RenameexportdirectoryFailure(RemoteReply):
         def __str__(self):
             return f"RENAMEEXPORTDIRECTORY-FAILURE"
 
@@ -271,7 +274,9 @@ class Master:
             try:
                 if line[0] not in self.requests.keys():
                     raise UnsupportedRequest()
-                self.__send(self.requests[line[0]](*line[1:]))
+                reply = self.requests[line[0]](*line[1:])
+                if isinstance(reply, Reply.RemoteReply):
+                    self.__send(reply)
             except (UnsupportedRequest):
                 self.__send ("UNSUPPORTED-REQUEST")
             except (NotImplementedError):

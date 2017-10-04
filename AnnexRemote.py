@@ -1,4 +1,3 @@
-#!/usr/bin/env python3.6
 # git-annex-remote-gdrive2 - python rewrite of git-annex-remote-gdrive to add direct support for Google Drive to git annex
 #
 # Install in PATH as git-annex-remote-gdrive2
@@ -226,10 +225,10 @@ class Reply():
     class RenameexportFailure(KeyReply):
         def __str__(self):
             return f"RENAMEEXPORT-FAILURE {self.key}"
-    class RenameexportdirectorySuccess(RemoteReply):
+    class RemoveexportdirectorySuccess(RemoteReply):
         def __str__(self):
             return f"RENAMEEXPORTDIRECTORY-SUCCESS"
-    class RenameexportdirectoryFailure(RemoteReply):
+    class RemoveexportdirectoryFailure(RemoteReply):
         def __str__(self):
             return f"RENAMEEXPORTDIRECTORY-FAILURE"
 

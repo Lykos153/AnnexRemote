@@ -227,10 +227,10 @@ class Reply():
             return f"RENAMEEXPORT-FAILURE {self.key}"
     class RemoveexportdirectorySuccess(RemoteReply):
         def __str__(self):
-            return f"RENAMEEXPORTDIRECTORY-SUCCESS"
+            return f"REMOVEEXPORTDIRECTORY-SUCCESS"
     class RemoveexportdirectoryFailure(RemoteReply):
         def __str__(self):
-            return f"RENAMEEXPORTDIRECTORY-FAILURE"
+            return f"REMOVEEXPORTDIRECTORY-FAILURE"
 
 class Master:
     def __init__(self, output):

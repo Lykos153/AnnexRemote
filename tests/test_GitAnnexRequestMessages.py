@@ -1,13 +1,13 @@
 import io
+import unittest
 
 import utils
+from utils import GitAnnexTestCase
 
 class TestGitAnnexRequestMessages(GitAnnexTestCase):
     def TestInitremote(self):
         self.annex.Listen(io.StringIO("INITREMOTE"))
         self.remote.initremote.assert_called_once()
-        (version, called_function, nl) = self.output.getvalue().split("\n")
-        self.assertEqual(called_function, "initremote")
 
     def TestPrepare(self):
         self.annex.Listen(io.StringIO("PREPARE"))
@@ -18,7 +18,7 @@ class TestGitAnnexRequestMessages(GitAnnexTestCase):
         self.remote.transfer_store.assert_called_once_with("Key", "File")
 
     def TestTransferStoreMissingFilename(self):
-        with self.assertRaises(TypeError):
+        with self.assertRaises(SyntaxError):
             self.annex.Listen(io.StringIO("TRANSFER STORE Key"))
 
     def TestTransferStore_SpaceInFilename(self):
@@ -30,12 +30,12 @@ class TestGitAnnexRequestMessages(GitAnnexTestCase):
         self.remote.transfer_retrieve.assert_called_once_with("Key", "File")
 
     def TestTransferRetrieve_MissingFilename(self):
-        with self.assertRaises(TypeError):
+        with self.assertRaises(SyntaxError):
             self.annex.Listen(io.StringIO("TRANSFER RETRIEVE Key"))
 
     def TestTransferRetrieve_SpaceInFilename(self):
         self.annex.Listen(io.StringIO("TRANSFER RETRIEVE Key File with spaces"))
-        self.remote.transfer_store.assert_called_once_with("Key", "File with spaces")
+        self.remote.transfer_retrieve.assert_called_once_with("Key", "File with spaces")
 
     def TestCheckpresent(self):
         self.annex.Listen(io.StringIO("CHECKPRESENT Key"))
@@ -76,7 +76,7 @@ class TestGitAnnexRequestMessagesExporttree(GitAnnexTestCase):
         self.remote.export.assert_called_once_with("Name")
 
     def TestExport_MissingName(self):
-        with self.assertRaises(TypeError):
+        with self.assertRaises(SyntaxError):
             self.annex.Listen(io.StringIO("EXPORT"))
 
     def TestExport_SpaceInName(self):
@@ -88,7 +88,7 @@ class TestGitAnnexRequestMessagesExporttree(GitAnnexTestCase):
         self.remote.transferexport_store.assert_called_once_with("Key", "File")
 
     def TestTransferexportStore_MissingFilename(self):
-        with self.assertRaises(TypeError):
+        with self.assertRaises(SyntaxError):
             self.annex.Listen(io.StringIO("TRANSFEREXPORT STORE Key"))
 
     def TestTransferexportStore_SpaceInFilename(self):
@@ -100,12 +100,12 @@ class TestGitAnnexRequestMessagesExporttree(GitAnnexTestCase):
         self.remote.transferexport_retrieve.assert_called_once_with("Key", "File")
 
     def TestTransferexportRetrieve_MissingFilename(self):
-        with self.assertRaises(TypeError):
+        with self.assertRaises(SyntaxError):
             self.annex.Listen(io.StringIO("TRANSFEREXPORT RETRIEVE Key"))
 
     def TestTransferexportRetrieve_SpaceInFilename(self):
         self.annex.Listen(io.StringIO("TRANSFEREXPORT RETRIEVE Key File with spaces"))
-        self.remote.transferexport_store.assert_called_once_with("Key", "File with spaces")
+        self.remote.transferexport_retrieve.assert_called_once_with("Key", "File with spaces")
 
     def TestCheckpresentexport(self):
         self.annex.Listen(io.StringIO("CHECKPRESENTEXPORT Key"))
@@ -120,7 +120,7 @@ class TestGitAnnexRequestMessagesExporttree(GitAnnexTestCase):
         self.remote.removeexportdirectory.assert_called_once_with("Directory")
 
     def TestRemoveexportdirectory_MissingDirectory(self):
-        with self.assertRaises(TypeError):
+        with self.assertRaises(SyntaxError):
             self.annex.Listen(io.StringIO("REMOVEEXPORTDIRECTORY"))
 
     def TestRemoveexportdirectory_SpaceInFilename(self):
@@ -132,7 +132,7 @@ class TestGitAnnexRequestMessagesExporttree(GitAnnexTestCase):
         self.remote.renameexport.assert_called_once_with("Key", "NewName")
     
     def TestRenameexport_MissingNewName(self):
-        with self.assertRaises(TypeError):
+        with self.assertRaises(SyntaxError):
             self.annex.Listen(io.StringIO("RENAMEEXPORT Key"))
     
     def TestRenameexport_SpaceInNewName(self):

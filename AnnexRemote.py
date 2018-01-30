@@ -57,13 +57,6 @@ class SpecialRemote(ABC):
     def remove(self, key):
         pass
     
-    # Wrapper for transfer_store and transfer_retrieve
-    def transfer(self, method, key, file_):
-        if method == "STORE":
-            return self.transfer_store(key, file_)
-        elif method == "RETRIEVE":
-            return self.transfer_retrieve(key, file_)
-   
     # Optional requests
     def getcost(self):
         raise UnsupportedRequest()
@@ -115,14 +108,6 @@ class ExportRemote(SpecialRemote):
     @abstractmethod
     def renameexport(self, key, new_name):
         pass
-    
-    # Wrapper for transferexport_store and transferexport_retrieve
-    def transferexport(self, method, key, file_):
-        if method == "STORE":
-            return self.transferexport_store(key, file_)
-        elif method == "RETRIEVE":
-            return self.transferexport_retrieve(key, file_)
-
 
 # Remote replies
 class Reply():
@@ -232,48 +217,131 @@ class Reply():
         def __str__(self):
             return f"REMOVEEXPORTDIRECTORY-FAILURE"
 
+class Protocol:
+
+    def __init__(self, remote):
+        self.remote = remote
+        self.version = "VERSION 1"
+        
+    def command(self, line):
+        line = line.strip()
+        parts = line.split(None, 1)
+        if not parts:
+            raise SyntaxError("Bad syntax")
+        method = self.lookupMethod(parts[0]) or self.do_UNKNOWN
+        try:
+            if len(parts) == 1:
+                return method()
+            else:
+                return method(parts[1])
+        except TypeError:
+            raise SyntaxError(f"Bad syntax in '{line}'")
+
+    def lookupMethod(self, command):
+        return getattr(self, 'do_' + command.upper(), None)
+        
+    def check_key(self, key):
+        if len(key.split()) == 1:
+            return True;
+        else:
+            return ValueError("Keys can't have whitespaces")
+
+    def do_UNKNOWN(self, *arg):
+        raise UnsupportedRequest()
+        
+        
+    def do_INITREMOTE(self):
+        return self.remote.initremote()
+    
+    def do_PREPARE(self):
+        return self.remote.prepare()
+    
+    def do_TRANSFER(self, param):
+        parts = param.split(None, 2)
+        if len(parts) != 3:
+            raise SyntaxError("Expected Key File")
+        (method, key, file_) = parts
+        if method == "STORE":
+            return self.remote.transfer_store(key, file_)
+        elif method == "RETRIEVE":
+            return self.remote.transfer_retrieve(key, file_)
+        else:
+            return self.do_UNKNOWN()
+    
+    def do_CHECKPRESENT(self, param):
+        if self.check_key(param):
+            return self.remote.checkpresent(param)
+    
+    def do_REMOVE(self, param):
+        if self.check_key(param):
+            return self.remote.remove(param)
+    
+    def do_GETCOST(self):
+        return self.remote.getcost()
+    
+    def do_GETAVAILABILITY(self):
+        return self.remote.getavailability()
+        
+    def do_CLAIMURL(self, param):
+        return self.remote.claimurl(param)
+    
+    def do_CHECKURL(self, param):
+        return self.remote.checkurl(param)
+    
+    def do_WHEREIS(self, param):
+        if self.check_key(param):
+            return self.remote.whereis(param)
+    
+    def do_EXPORTSUPPORTED(self):
+        return self.remote.exportsupported()
+    
+    def do_EXPORT(self, param):
+        return self.remote.export(param)
+    
+    def do_TRANSFEREXPORT(self, param):
+        parts = param.split(None, 2)
+        if len(parts) != 3:
+            raise SyntaxError("Expected Key File")
+        (method, key, file_) = parts
+        if method == "STORE":
+            return self.remote.transferexport_store(key, file_)
+        elif method == "RETRIEVE":
+            return self.remote.transferexport_retrieve(key, file_)
+        else:
+            return self.do_UNKNOWN()
+    
+    def do_CHECKPRESENTEXPORT(self, param):
+        if self.check_key(param):
+            return self.remote.checkpresentexport(param)
+    
+    def do_REMOVEEXPORT(self, param):
+        if self.check_key(param):
+            return self.remote.removeexport(param)
+            
+    def do_REMOVEEXPORTDIRECTORY(self, param):
+        return self.remote.removeexportdirectory(param)
+    
+    def do_RENAMEEXPORT(self, param):
+        parts = param.split(None, 1)
+        if len(parts) != 2:
+            raise SyntaxError("Expected TRANSFER STORE Key File")
+        return self.remote.renameexport(parts[0], parts[1])
+
 class Master:
     def __init__(self, output):
         self.output = output
 
     def LinkRemote(self, remote):
         self.remote = remote
-        self.requests = { 
-                     "INITREMOTE": remote.initremote,
-                     "PREPARE": remote.prepare,
-                     "TRANSFER": remote.transfer,
-                     "CHECKPRESENT": remote.checkpresent,
-                     "REMOVE": remote.remove,
-                     "GETCOST": remote.getcost,
-                     "GETAVAILABILITY": remote.getavailability,
-                     "CHECKURL": remote.checkurl,
-                     "WHEREIS": remote.whereis
-                    }
-        # Add export requests if supported
-        try:
-            self.requests.update({
-                     "EXPORTSUPPORTED": remote.exportsupported,
-                     "EXPORT": remote.export,
-                     "TRANSFEREXPORT": remote.transferexport,
-                     "CHECKPRESENTEXPORT": remote.checkpresentexport,
-                     "REMOVEEXPORT": remote.removeexport,
-                     "REMOVEEXPORTDIRECTORY": remote.removeexportdirectory,
-                     "RENAMEEXPORT": remote.renameexport
-                    })
-        except:
-            pass
-
+        self.protocol = Protocol(remote)
 
     def Listen(self, input_):
         self.input = input_
-        self.__send("VERSION 1")
+        self.__send(self.protocol.version)
         for line in self.input:
             line = line.rstrip()
-            line = line.split()
             try:
-                if line[0] not in self.requests.keys():
-                    raise UnsupportedRequest()
-                reply = self.requests[line[0]](*line[1:])
+                reply = self.protocol.command(line)
                 if isinstance(reply, Reply.RemoteReply):
                     self.__send(reply)
             except (UnsupportedRequest):
@@ -292,7 +360,7 @@ class Master:
             line.extend([""] * (reply_count+1-len(line)))
             return line[1:]
         else:
-            raise UnexpectedMessage(f"Expected {reply_keyword} and {reply_count} values")
+            raise UnexpectedMessage(f"Expected {reply_keyword} and {reply_count} values. Got {line}")
 
     def __askvalues(self, request):
         self.__send(request)

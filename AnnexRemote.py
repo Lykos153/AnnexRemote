@@ -225,7 +225,7 @@ class Protocol:
         
     def command(self, line):
         line = line.strip()
-        parts = line.split(None, 1)
+        parts = line.split(" ", 1)
         if not parts:
             raise SyntaxError("Bad syntax")
         method = self.lookupMethod(parts[0]) or self.do_UNKNOWN
@@ -257,7 +257,7 @@ class Protocol:
         return self.remote.prepare()
     
     def do_TRANSFER(self, param):
-        parts = param.split(None, 2)
+        parts = param.split(" ", 2)
         if len(parts) != 3:
             raise SyntaxError("Expected Key File")
         (method, key, file_) = parts
@@ -299,7 +299,7 @@ class Protocol:
         return self.remote.export(param)
     
     def do_TRANSFEREXPORT(self, param):
-        parts = param.split(None, 2)
+        parts = param.split(" ", 2)
         if len(parts) != 3:
             raise SyntaxError("Expected Key File")
         (method, key, file_) = parts
@@ -355,7 +355,7 @@ class Master:
     
     def __ask(self, request, reply_keyword, reply_count):
         self.__send(request)
-        line = self.input.readline().rstrip().split(maxsplit=reply_count)
+        line = self.input.readline().rstrip().split(" ", reply_count)
         if line and line[0] == reply_keyword:
             line.extend([""] * (reply_count+1-len(line)))
             return line[1:]
@@ -367,7 +367,7 @@ class Master:
         reply = []
         for line in self.input:
             line = line.rstrip()
-            line = line.split(maxsplit=1)
+            line = line.split(" ", 1)
             if len(line) == 2 and line[0] == "VALUE":
                  reply.append(line[1])
             elif len(line) == 1 and line[0] == "VALUE":
@@ -383,28 +383,23 @@ class Master:
         return self.__askvalue(f"GETCONFIG {req}")
 
     def setconfig(self, key, value):
-        # make sure there is no whitespace
-        for s in (key, value):
-            if any([c in s for c in string.whitespace]):
-                raise ValueError(f"Cannot set config. {s} contains whitespace")
         self.__send(f"SETCONFIG {key} {value}")
 
     def getstate(self, key):
         return self.__askvalue(f"GETSTATE {key}")
 
     def setstate(self, key, value):
-        # make sure there is no whitespace
-        for s in (key, value):
-            if any([c in s for c in string.whitespace]):
-                raise ValueError(f"Cannot set state. {s} contains whitespace")
         self.__send(f"SETSTATE {key} {value}")
 
     def debug(self, *args):
         self.__send("DEBUG", *args)
+        
+    def error(self, *args):
+        self.__send("ERROR", *args)
 
     def progress(self, progress):
         if type(progress) == int:
-            self.send("PROGRESS", progress)
+            self.__send("PROGRESS", progress)
         else:
             raise TypeError("Expected integer")
 
@@ -446,7 +441,7 @@ class Master:
         self.__send("SETURIMISSING", key, uri)
 
     def geturls(self, key, prefix):
-        return askvalues(f"GETURLS {key} {prefix}")
+        return self.__askvalues(f"GETURLS {key} {prefix}")
 
     def __send(self, *args, **kwargs):
         print(*args, file=self.output, **kwargs)

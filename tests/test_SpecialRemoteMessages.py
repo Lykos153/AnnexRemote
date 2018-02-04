@@ -15,7 +15,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         self.annex.input = io.StringIO(annex_reply)
         result = function_to_call(*function_parameters)
         self.assertEqual(result, function_result)
-        self.assertEqual(self.output.getvalue(), f"{expected_output}\n")
+        self.assertEqual(self.output.getvalue().rstrip(), f"{expected_output}")
 
     def TestVersion(self):
         self.annex.Listen(self.input)

@@ -17,12 +17,6 @@ class GitAnnexTestCase(unittest.TestCase):
 
         self.annex.LinkRemote(self.remote)
 
-class DummyReply(AnnexRemote.Reply.RemoteReply):
-    def __init__(self, msg):
-        self.msg = msg
-    def __str__(self):
-        return f"{self.msg}"
-
 class DummyRemote(AnnexRemote.ExportRemote):
     def __init__(self, annex):
         pass

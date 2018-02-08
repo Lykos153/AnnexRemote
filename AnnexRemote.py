@@ -109,223 +109,213 @@ class ExportRemote(SpecialRemote):
     def renameexport(self, key, new_name):
         pass
 
-# Remote replies
-class Reply():
-    class RemoteReply():
-        pass
-
-    class InitremoteSuccess(RemoteReply):
-        def __str__(self):
-            return "INITREMOTE-SUCCESS"
-
-    class InitremoteFailure(RemoteReply):
-        def __init__(self, msg):
-            self.msg = msg
-        def __str__(self):
-            return f"INITREMOTE-FAILURE {self.msg}"
-    
-    class PrepareSuccess(RemoteReply):
-        def __str__(self):
-            return "PREPARE-SUCCESS"
-
-    class PrepareFailure(RemoteReply):
-        def __init__(self, msg):
-            self.msg = msg
-        def __str__(self):
-            return f"PREPARE-FAILURE {self.msg}"
-
-
-    class KeyReply(RemoteReply):
-        def __init__(self, key):
-            self.key = key
-
-    class TransferSuccess_Store(KeyReply):
-        def __str__(self):
-            return f"TRANSFER-SUCCESS STORE {self.key}"
-
-    class TransferFailure_Store(KeyReply):
-        def __str__(self):
-            return f"TRANSFER-FAILURE STORE {self.key}"
-    
-    class TransferSuccess_Retrieve(KeyReply):
-        def __str__(self):
-            return f"TRANSFER-SUCCESS RETRIEVE {self.key}"
-
-    class TransferFailure_Retrieve(KeyReply):
-        def __str__(self):
-            return f"TRANSFER-FAILURE RETRIEVE {self.key}"
-
-    class CheckpresentSuccess(KeyReply):
-        def __str__(self):
-            return f"CHECKPRESENT-SUCCESS {self.key}"
-
-    class CheckpresentUnknown(KeyReply):
-        def __str__(self):
-            return f"CHECKPRESENT-UNKNOWN {self.key}"
-      
-    class CheckpresentFailure(KeyReply):
-        def __str__(self):
-            return f"CHECKPRESENT-FAILURE {self.key}"
-
-    class RemoveSuccess(KeyReply):
-        def __str__(self):
-            return f"REMOVE-SUCCESS {self.key}"
-
-    class RemoveFailure(KeyReply):
-        def __str__(self):
-            return f"REMOVE-FAILURE {self.key}"
-
-    class ClaimurlSuccess(KeyReply):
-        def __str__(self):
-            return f"CLAIMURL-SUCCESS {self.key}"
-
-    class ClaimurlFailure(KeyReply):
-        def __str__(self):
-            return f"CLAIMURL-FAILURE {self.key}"
-
-    class CheckurlSuccess(KeyReply):
-        def __str__(self):
-            return f"CHECKURL-SUCCESS {self.key}"
-
-    class CheckurlFailure(KeyReply):
-        def __str__(self):
-            return f"CHECKURL-FAILURE {self.key}"
-
-    class WhereisSuccess(KeyReply):
-        def __str__(self):
-            return f"WHEREIS-SUCCESS {self.key}"
-
-    class WhereisFailure(KeyReply):
-        def __str__(self):
-            return f"WHEREIS-FAILURE {self.key}"
-    class ExportsupportedSuccess(RemoteReply):
-        def __str__(self):
-            return "EXPORTSUPPORTED-SUCCESS"
-    class ExportsupportedFailure(RemoteReply):
-        def __str__(self):
-            return "EXPORTSUPPORTED-FAILURE"
-    class RenameexportSuccess(KeyReply):
-        def __str__(self):
-            return f"RENAMEEXPORT-SUCCESS {self.key}"
-    class RenameexportFailure(KeyReply):
-        def __str__(self):
-            return f"RENAMEEXPORT-FAILURE {self.key}"
-    class RemoveexportdirectorySuccess(RemoteReply):
-        def __str__(self):
-            return f"REMOVEEXPORTDIRECTORY-SUCCESS"
-    class RemoveexportdirectoryFailure(RemoteReply):
-        def __str__(self):
-            return f"REMOVEEXPORTDIRECTORY-FAILURE"
-
+class Error(Exception):
+    pass
+class RemoteError(Error):
+    pass
+class ProtocolError(Error):
+    pass
+        
 class Protocol:
 
     def __init__(self, remote):
         self.remote = remote
         self.version = "VERSION 1"
+        self.exporting = False
         
     def command(self, line):
         line = line.strip()
         parts = line.split(" ", 1)
         if not parts:
-            raise SyntaxError("Bad syntax")
+            raise ProtocolError("Got empty line")
+
         method = self.lookupMethod(parts[0]) or self.do_UNKNOWN
+        
+        #print(f"Command was {parts[0]}. Executing {method}")
         try:
             if len(parts) == 1:
                 return method()
             else:
                 return method(parts[1])
-        except TypeError:
-            raise SyntaxError(f"Bad syntax in '{line}'")
+        except TypeError as e:
+            raise SyntaxError(e)
 
     def lookupMethod(self, command):
         return getattr(self, 'do_' + command.upper(), None)
         
     def check_key(self, key):
-        if len(key.split()) == 1:
-            return True;
-        else:
-            return ValueError("Keys can't have whitespaces")
+        if len(key.split()) != 1:
+            raise ValueError("Invalid key. Key contains whitespace character")
 
     def do_UNKNOWN(self, *arg):
         raise UnsupportedRequest()
         
         
     def do_INITREMOTE(self):
-        return self.remote.initremote()
+        try:
+            reply = self.remote.initremote()
+        except RemoteError as e:
+            return f"INITREMOTE-FAILURE {e}"
+        else:
+            return "INITREMOTE-SUCCESS"
     
     def do_PREPARE(self):
-        return self.remote.prepare()
-    
-    def do_TRANSFER(self, param):
-        parts = param.split(" ", 2)
-        if len(parts) != 3:
-            raise SyntaxError("Expected Key File")
-        (method, key, file_) = parts
-        if method == "STORE":
-            return self.remote.transfer_store(key, file_)
-        elif method == "RETRIEVE":
-            return self.remote.transfer_retrieve(key, file_)
+        try:
+            reply = self.remote.prepare()
+        except RemoteError as e:
+            return f"PREPARE-FAILURE {e}"
         else:
+            return "PREPARE-SUCCESS"
+    
+    def do_TRANSFER(self, param, export=False):
+        export = "export" if export else ""
+        try:
+            (method, key, file_) = param.split(" ", 2)
+        except ValueError:
+            raise SyntaxError("Expected Key File")
+        
+        if not (method == "STORE" or method == "RETRIEVE"):
             return self.do_UNKNOWN()
+        
+        func = getattr(self.remote, f'transfer{export}_{method.lower()}', None)
+        try:
+            func(key, file_)
+        except RemoteError as e:
+            return f"TRANSFER-FAILURE {method} {key} {e}"
+        else:
+            return f"TRANSFER-SUCCESS {method} {key}"
     
-    def do_CHECKPRESENT(self, param):
-        if self.check_key(param):
-            return self.remote.checkpresent(param)
+    def do_CHECKPRESENT(self, key, export=False):
+        export = "export" if export else ""
+        self.check_key(key)
+        func = getattr(self.remote, f'checkpresent{export}', None)
+        try:
+            if func(key):
+                return f"CHECKPRESENT-SUCCESS {key}"
+            else:
+                return f"CHECKPRESENT-FAILURE {key}"
+        except RemoteError as e:
+            return f"CHECKPRESENT-UNKNOWN {key} {e}"
     
-    def do_REMOVE(self, param):
-        if self.check_key(param):
-            return self.remote.remove(param)
+    def do_REMOVE(self, key, export=False):
+        export = "export" if export else ""
+        self.check_key(key)
+        
+        func = getattr(self.remote, f'remove{export}', None)
+        try:
+            func(key)
+        except RemoteError as e:
+            return f"REMOVE-FAILURE {key} {e}"
+        else:
+            return f"REMOVE-SUCCESS {key}"
     
     def do_GETCOST(self):
-        return self.remote.getcost()
+        cost = self.remote.getcost()
+        try:
+            cost = int(cost)
+        except ValueError:
+            raise ValueError("Cost must be an integer")
+        return f"COST {cost}"
     
     def do_GETAVAILABILITY(self):
-        return self.remote.getavailability()
+        reply = self.remote.getavailability()
+        if reply == "global":
+            return "AVAILABILITY GLOBAL"
+        elif reply == "local":
+            return "AVAILABILITY LOCAL"
+        else:
+            raise ValueError("Availability must be either 'global' or 'local'")
         
-    def do_CLAIMURL(self, param):
-        return self.remote.claimurl(param)
+    def do_CLAIMURL(self, url):
+        if self.remote.claimurl(url):
+            return "CLAIMURL-SUCCESS"
+        else:
+            return "CLAIMURL-FAILURE"
     
-    def do_CHECKURL(self, param):
-        return self.remote.checkurl(param)
+    def do_CHECKURL(self, url):
+        try:
+            reply = self.remote.checkurl(url)
+        except RemoteError:
+            return "CHECKURL-FAILURE"
+        if not reply:
+            return "CHECKURL-FAILURE"
+        elif reply is True:
+            return "CHECKURL-CONTENTS UNKNOWN"
+        
+        if len(reply)==1:
+            entry = reply[0]
+            if 'size' not in entry or entry['size'] is None:
+                entry['size'] = "UNKNOWN"
+                
+            returnvalue = " ".join(("CHECKURL-CONTENTS", str(entry['size'])))
+        
+            if 'filename' in entry and entry['filename']:
+                returnvalue = " ".join((returnvalue, entry['filename']))
+            return returnvalue
+                
+        returnvalue = "CHECKURL-MULTI"
+        for entry in reply:
+            if 'url' not in entry:
+                raise ValueError("Url must be present when specifying multiple values.")
+            if len(entry['url'].split()) != 1:
+                raise ValueError("Url must not contain spaces.")
+                
+            size = entry.get("size", "UNKNOWN")
+            filename = entry.get("filename", "")    
+            if " " in filename:
+                raise ValueError("Filename must not contain spaces.")
+                
+            returnvalue = " ".join((returnvalue, entry['url'], str(size), filename))
+        return returnvalue
+        
     
-    def do_WHEREIS(self, param):
-        if self.check_key(param):
-            return self.remote.whereis(param)
+    def do_WHEREIS(self, key):
+        self.check_key(key)
+        reply = self.remote.whereis(key)
+        if reply:
+            return f"WHEREIS-SUCCESS {reply}"
+        else:
+            return f"WHEREIS-FAILURE"
     
     def do_EXPORTSUPPORTED(self):
-        return self.remote.exportsupported()
+        if self.remote.exportsupported():
+            return "EXPORTSUPPORTED-SUCCESS"
+        else:
+            return "EXPORTSUPPORTED-FAILURE"
     
-    def do_EXPORT(self, param):
-        return self.remote.export(param)
+    def do_EXPORT(self, name):
+        self.exporting = True
+        self.remote.export(name)
     
     def do_TRANSFEREXPORT(self, param):
-        parts = param.split(" ", 2)
-        if len(parts) != 3:
-            raise SyntaxError("Expected Key File")
-        (method, key, file_) = parts
-        if method == "STORE":
-            return self.remote.transferexport_store(key, file_)
-        elif method == "RETRIEVE":
-            return self.remote.transferexport_retrieve(key, file_)
-        else:
-            return self.do_UNKNOWN()
+        return self.do_TRANSFER(param, export=True)        
     
-    def do_CHECKPRESENTEXPORT(self, param):
-        if self.check_key(param):
-            return self.remote.checkpresentexport(param)
-    
-    def do_REMOVEEXPORT(self, param):
-        if self.check_key(param):
-            return self.remote.removeexport(param)
+    def do_CHECKPRESENTEXPORT(self, key):
+        return self.do_CHECKPRESENT(key, export=True)
             
-    def do_REMOVEEXPORTDIRECTORY(self, param):
-        return self.remote.removeexportdirectory(param)
+    def do_REMOVEEXPORT(self, key):
+        return self.do_REMOVE(key, export=True)
+                    
+    def do_REMOVEEXPORTDIRECTORY(self, name):
+        try:
+            self.remote.removeexportdirectory(name)
+        except RemoteError:
+            return "REMOVEEXPORTDIRECTORY-FAILURE"
+        else:
+            return "REMOVEEXPORTDIRECTORY-SUCCESS"
     
     def do_RENAMEEXPORT(self, param):
-        parts = param.split(None, 1)
-        if len(parts) != 2:
+        try:
+            (key, file_) = param.split(None, 1)
+        except ValueError:
             raise SyntaxError("Expected TRANSFER STORE Key File")
-        return self.remote.renameexport(parts[0], parts[1])
+            
+        try:
+            self.remote.renameexport(key, file_)
+        except RemoteError:
+            return f"RENAMEEXPORT-FAILURE {key}"
+        else:
+            return f"RENAMEEXPORT-SUCCESS {key}"
 
 class Master:
     def __init__(self, output):
@@ -342,8 +332,7 @@ class Master:
             line = line.rstrip()
             try:
                 reply = self.protocol.command(line)
-                if isinstance(reply, Reply.RemoteReply):
-                    self.__send(reply)
+                self.__send(reply)
             except (UnsupportedRequest):
                 self.__send ("UNSUPPORTED-REQUEST")
             except (NotImplementedError):

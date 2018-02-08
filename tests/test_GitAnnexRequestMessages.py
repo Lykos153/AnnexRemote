@@ -237,30 +237,26 @@ class TestGitAnnexRequestMessagesExporttree(TestGitAnnexRequestMessages):
         self.remote.exportsupported.assert_called_once()
         self.assertEqual(self.last_line(self.output), "EXPORTSUPPORTED-FAILURE")
 
-    def TestExport(self):
-        self.annex.Listen(io.StringIO("EXPORT Name"))
-        self.remote.export.assert_called_once_with("Name")
-
     def TestExport_MissingName(self):
         with self.assertRaises(SyntaxError):
             self.annex.Listen(io.StringIO("EXPORT"))
 
     def TestExport_SpaceInName(self):
-        self.annex.Listen(io.StringIO("EXPORT Name with spaces"))
-        self.remote.export.assert_called_once_with("Name with spaces")
+        # testing this only with TRANSFEREXPORT
+        self.annex.Listen(io.StringIO("EXPORT Name with spaces\nTRANSFEREXPORT STORE Key File"))
+        self.remote.transferexport_store.assert_called_once_with("Key", "File", "Name with spaces")
     
     def TestTransferexportStoreSuccess(self):
         self.annex.Listen(io.StringIO("EXPORT Name\nTRANSFEREXPORT STORE Key File"))
-        self.remote.transferexport_store.assert_called_once_with("Key", "File")
+        self.remote.transferexport_store.assert_called_once_with("Key", "File", "Name")
         self.assertEqual(self.last_line(self.output), "TRANSFER-SUCCESS STORE Key")
         
     def TestTransferexportStoreFailure(self):
         self.remote.transferexport_store.side_effect = RemoteError("ErrorMsg")
         self.annex.Listen(io.StringIO("EXPORT Name\nTRANSFEREXPORT STORE Key File"))
-        self.remote.transferexport_store.assert_called_once_with("Key", "File")
+        self.remote.transferexport_store.assert_called_once_with("Key", "File", "Name")
         self.assertEqual(self.last_line(self.output), "TRANSFER-FAILURE STORE Key ErrorMsg")
 
-    @skip("fixing later")
     def TestTransferexportStore_WithoutExport(self):
         with self.assertRaises(ProtocolError):
             self.annex.Listen(io.StringIO("TRANSFEREXPORT STORE Key"))
@@ -271,20 +267,19 @@ class TestGitAnnexRequestMessagesExporttree(TestGitAnnexRequestMessages):
 
     def TestTransferexportStore_SpaceInFilename(self):
         self.annex.Listen(io.StringIO("EXPORT Name\nTRANSFEREXPORT STORE Key File with spaces"))
-        self.remote.transferexport_store.assert_called_once_with("Key", "File with spaces")
+        self.remote.transferexport_store.assert_called_once_with("Key", "File with spaces", "Name")
 
     def TestTransferexportRetrieveSuccess(self):
         self.annex.Listen(io.StringIO("EXPORT Name\nTRANSFEREXPORT RETRIEVE Key File"))
-        self.remote.transferexport_retrieve.assert_called_once_with("Key", "File")
+        self.remote.transferexport_retrieve.assert_called_once_with("Key", "File", "Name")
         self.assertEqual(self.last_line(self.output), "TRANSFER-SUCCESS RETRIEVE Key")
         
     def TestTransferexportRetrieveFailure(self):
         self.remote.transferexport_retrieve.side_effect = RemoteError("ErrorMsg")
         self.annex.Listen(io.StringIO("EXPORT Name\nTRANSFEREXPORT RETRIEVE Key File"))
-        self.remote.transferexport_retrieve.assert_called_once_with("Key", "File")
+        self.remote.transferexport_retrieve.assert_called_once_with("Key", "File", "Name")
         self.assertEqual(self.last_line(self.output), "TRANSFER-FAILURE RETRIEVE Key ErrorMsg")
         
-    @skip("fixing later")
     def TestTransferexportRetrieve_WithoutExport(self):
         with self.assertRaises(ProtocolError):
             self.annex.Listen(io.StringIO("TRANSFEREXPORT RETRIEVE Key"))
@@ -295,78 +290,75 @@ class TestGitAnnexRequestMessagesExporttree(TestGitAnnexRequestMessages):
 
     def TestTransferexportRetrieve_SpaceInFilename(self):
         self.annex.Listen(io.StringIO("EXPORT Name\nTRANSFEREXPORT RETRIEVE Key File with spaces"))
-        self.remote.transferexport_retrieve.assert_called_once_with("Key", "File with spaces")
+        self.remote.transferexport_retrieve.assert_called_once_with("Key", "File with spaces", "Name")
 
     def TestCheckpresentexportSuccess(self):
         self.remote.checkpresentexport.return_value = True
         self.annex.Listen(io.StringIO("EXPORT Name\nCHECKPRESENTEXPORT Key"))
-        self.remote.checkpresentexport.assert_called_once_with("Key")
+        self.remote.checkpresentexport.assert_called_once_with("Key", "Name")
         self.assertEqual(self.last_line(self.output), "CHECKPRESENT-SUCCESS Key")
         
     def TestCheckpresentexportFailure(self):
         self.remote.checkpresentexport.return_value = False
         self.annex.Listen(io.StringIO("EXPORT Name\nCHECKPRESENTEXPORT Key"))
-        self.remote.checkpresentexport.assert_called_once_with("Key")
+        self.remote.checkpresentexport.assert_called_once_with("Key", "Name")
         self.assertEqual(self.last_line(self.output), "CHECKPRESENT-FAILURE Key")
 
     def TestCheckpresentexportUnknown(self):
         self.remote.checkpresentexport.side_effect=RemoteError("ErrorMsg")
         self.annex.Listen(io.StringIO("EXPORT Name\nCHECKPRESENTEXPORT Key"))
-        self.remote.checkpresentexport.assert_called_once_with("Key")
+        self.remote.checkpresentexport.assert_called_once_with("Key", "Name")
         self.assertEqual(self.last_line(self.output), "CHECKPRESENT-UNKNOWN Key ErrorMsg")
     
-    @skip("fixing later")
     def TestCheckpresentexport_WithoutExport(self):
         with self.assertRaises(ProtocolError):
             self.annex.Listen(io.StringIO("CHECKPRESENTEXPORT Key"))
 
     def TestRemoveexportSuccess(self):
         self.annex.Listen(io.StringIO("EXPORT Name\nREMOVEEXPORT Key"))
-        self.remote.removeexport.assert_called_once_with("Key")
+        self.remote.removeexport.assert_called_once_with("Key", "Name")
         self.assertEqual(self.last_line(self.output), "REMOVE-SUCCESS Key")
         
     def TestRemoveexportFailure(self):
         self.remote.removeexport.side_effect = RemoteError("ErrorMsg")
         self.annex.Listen(io.StringIO("EXPORT Name\nREMOVEEXPORT Key"))
-        self.remote.removeexport.assert_called_once_with("Key")
+        self.remote.removeexport.assert_called_once_with("Key", "Name")
         self.assertEqual(self.last_line(self.output), "REMOVE-FAILURE Key ErrorMsg")
         
-    @skip("fixing later")
     def TestRemoveexport_WithoutExport(self):
         with self.assertRaises(ProtocolError):
             self.annex.Listen(io.StringIO("REMOVEEXPORT Key"))
 
     def TestRemoveexportdirectorySuccess(self):
-        self.annex.Listen(io.StringIO("EXPORT Name\nREMOVEEXPORTDIRECTORY Directory"))
+        self.annex.Listen(io.StringIO("REMOVEEXPORTDIRECTORY Directory"))
         self.remote.removeexportdirectory.assert_called_once_with("Directory")
         self.assertEqual(self.last_line(self.output), "REMOVEEXPORTDIRECTORY-SUCCESS")
 
     def TestRemoveexportdirectoryFailure(self):
         self.remote.removeexportdirectory.side_effect = RemoteError()
-        self.annex.Listen(io.StringIO("EXPORT Name\nREMOVEEXPORTDIRECTORY Directory"))
+        self.annex.Listen(io.StringIO("REMOVEEXPORTDIRECTORY Directory"))
         self.remote.removeexportdirectory.assert_called_once_with("Directory")
         self.assertEqual(self.last_line(self.output), "REMOVEEXPORTDIRECTORY-FAILURE")
 
     def TestRemoveexportdirectory_MissingDirectory(self):
         with self.assertRaises(SyntaxError):
-            self.annex.Listen(io.StringIO("EXPORT Name\nREMOVEEXPORTDIRECTORY"))
+            self.annex.Listen(io.StringIO("REMOVEEXPORTDIRECTORY"))
 
     def TestRemoveexportdirectory_SpaceInFilename(self):
-        self.annex.Listen(io.StringIO("EXPORT Name\nREMOVEEXPORTDIRECTORY Directory with spaces"))
+        self.annex.Listen(io.StringIO("REMOVEEXPORTDIRECTORY Directory with spaces"))
         self.remote.removeexportdirectory.assert_called_once_with("Directory with spaces")
     
     def TestRenameexportSuccess(self):
         self.annex.Listen(io.StringIO("EXPORT Name\nRENAMEEXPORT Key NewName"))
-        self.remote.renameexport.assert_called_once_with("Key", "NewName")
+        self.remote.renameexport.assert_called_once_with("Key", "Name", "NewName")
         self.assertEqual(self.last_line(self.output), "RENAMEEXPORT-SUCCESS Key")
     
     def TestRenameexportFailure(self):
         self.remote.renameexport.side_effect = RemoteError()
         self.annex.Listen(io.StringIO("EXPORT Name\nRENAMEEXPORT Key NewName"))
-        self.remote.renameexport.assert_called_once_with("Key", "NewName")
+        self.remote.renameexport.assert_called_once_with("Key", "Name", "NewName")
         self.assertEqual(self.last_line(self.output), "RENAMEEXPORT-FAILURE Key")
     
-    @skip("fixing later")
     def TestRenameexport_WithoutExport(self):
         with self.assertRaises(ProtocolError):
             self.annex.Listen(io.StringIO("RENAMEEXPORT Key NewName"))
@@ -377,7 +369,7 @@ class TestGitAnnexRequestMessagesExporttree(TestGitAnnexRequestMessages):
     
     def TestRenameexport_SpaceInNewName(self):
         self.annex.Listen(io.StringIO("EXPORT Name\nRENAMEEXPORT Key NewName with spaces"))
-        self.remote.renameexport.assert_called_once_with("Key", "NewName with spaces")
+        self.remote.renameexport.assert_called_once_with("Key", "Name", "NewName with spaces")
         
     def TestUnsupportedRequest(self):
         self.annex.Listen(io.StringIO("Not a request"))

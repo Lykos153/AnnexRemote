@@ -82,23 +82,19 @@ class ExportRemote(SpecialRemote):
         return Reply.ExportsupportedSuccess()
 
     @abstractmethod
-    def export(self, name):
+    def transferexport_store(self, key, file_, name):
         pass
 
     @abstractmethod
-    def transferexport_store(self, key, file_):
+    def transferexport_retrieve(self, key, file_, name):
         pass
 
     @abstractmethod
-    def transferexport_retrieve(self, key, file_):
+    def checkpresentexport(self, key, name):
         pass
 
     @abstractmethod
-    def checkpresentexport(self, key):
-        pass
-
-    @abstractmethod
-    def removeexport(self, key):
+    def removeexport(self, key, name):
         pass
 
     @abstractmethod
@@ -106,7 +102,7 @@ class ExportRemote(SpecialRemote):
         pass
 
     @abstractmethod
-    def renameexport(self, key, new_name):
+    def renameexport(self, key, name, new_name):
         pass
 
 class Error(Exception):
@@ -131,14 +127,17 @@ class Protocol:
 
         method = self.lookupMethod(parts[0]) or self.do_UNKNOWN
         
-        #print(f"Command was {parts[0]}. Executing {method}")
         try:
             if len(parts) == 1:
-                return method()
+                reply = method()
             else:
-                return method(parts[1])
+                reply = method(parts[1])
         except TypeError as e:
             raise SyntaxError(e)
+        else:
+            if method != self.do_EXPORT:
+                self.exporting = False
+            return reply
 
     def lookupMethod(self, command):
         return getattr(self, 'do_' + command.upper(), None)
@@ -167,8 +166,7 @@ class Protocol:
         else:
             return "PREPARE-SUCCESS"
     
-    def do_TRANSFER(self, param, export=False):
-        export = "export" if export else ""
+    def do_TRANSFER(self, param):
         try:
             (method, key, file_) = param.split(" ", 2)
         except ValueError:
@@ -177,7 +175,7 @@ class Protocol:
         if not (method == "STORE" or method == "RETRIEVE"):
             return self.do_UNKNOWN()
         
-        func = getattr(self.remote, f'transfer{export}_{method.lower()}', None)
+        func = getattr(self.remote, f'transfer_{method.lower()}', None)
         try:
             func(key, file_)
         except RemoteError as e:
@@ -185,25 +183,21 @@ class Protocol:
         else:
             return f"TRANSFER-SUCCESS {method} {key}"
     
-    def do_CHECKPRESENT(self, key, export=False):
-        export = "export" if export else ""
+    def do_CHECKPRESENT(self, key):
         self.check_key(key)
-        func = getattr(self.remote, f'checkpresent{export}', None)
         try:
-            if func(key):
+            if self.remote.checkpresent(key):
                 return f"CHECKPRESENT-SUCCESS {key}"
             else:
                 return f"CHECKPRESENT-FAILURE {key}"
         except RemoteError as e:
             return f"CHECKPRESENT-UNKNOWN {key} {e}"
     
-    def do_REMOVE(self, key, export=False):
-        export = "export" if export else ""
+    def do_REMOVE(self, key):
         self.check_key(key)
         
-        func = getattr(self.remote, f'remove{export}', None)
         try:
-            func(key)
+            self.remote.remove(key)
         except RemoteError as e:
             return f"REMOVE-FAILURE {key} {e}"
         else:
@@ -284,17 +278,50 @@ class Protocol:
             return "EXPORTSUPPORTED-FAILURE"
     
     def do_EXPORT(self, name):
-        self.exporting = True
-        self.remote.export(name)
+        self.exporting = name
     
     def do_TRANSFEREXPORT(self, param):
-        return self.do_TRANSFER(param, export=True)        
+        if not self.exporting:
+            raise ProtocolError("Export request without prior EXPORT")
+        try:
+            (method, key, file_) = param.split(" ", 2)
+        except ValueError:
+            raise SyntaxError("Expected Key File")
+        
+        if not (method == "STORE" or method == "RETRIEVE"):
+            return self.do_UNKNOWN()
+        
+        func = getattr(self.remote, f'transferexport_{method.lower()}', None)
+        try:
+            func(key, file_, self.exporting)
+        except RemoteError as e:
+            return f"TRANSFER-FAILURE {method} {key} {e}"
+        else:
+            return f"TRANSFER-SUCCESS {method} {key}"
     
     def do_CHECKPRESENTEXPORT(self, key):
-        return self.do_CHECKPRESENT(key, export=True)
+        if not self.exporting:
+            raise ProtocolError("Export request without prior EXPORT")  
+        self.check_key(key)
+        try:
+            if self.remote.checkpresentexport(key, self.exporting):
+                return f"CHECKPRESENT-SUCCESS {key}"
+            else:
+                return f"CHECKPRESENT-FAILURE {key}"
+        except RemoteError as e:
+            return f"CHECKPRESENT-UNKNOWN {key} {e}"
             
     def do_REMOVEEXPORT(self, key):
-        return self.do_REMOVE(key, export=True)
+        if not self.exporting:
+            raise ProtocolError("Export request without prior EXPORT")  
+        self.check_key(key)
+        
+        try:
+            self.remote.removeexport(key, self.exporting)
+        except RemoteError as e:
+            return f"REMOVE-FAILURE {key} {e}"
+        else:
+            return f"REMOVE-SUCCESS {key}"
                     
     def do_REMOVEEXPORTDIRECTORY(self, name):
         try:
@@ -305,13 +332,15 @@ class Protocol:
             return "REMOVEEXPORTDIRECTORY-SUCCESS"
     
     def do_RENAMEEXPORT(self, param):
+        if not self.exporting:
+            raise ProtocolError("Export request without prior EXPORT")  
         try:
-            (key, file_) = param.split(None, 1)
+            (key, new_name) = param.split(None, 1)
         except ValueError:
             raise SyntaxError("Expected TRANSFER STORE Key File")
             
         try:
-            self.remote.renameexport(key, file_)
+            self.remote.renameexport(key, self.exporting, new_name)
         except RemoteError:
             return f"RENAMEEXPORT-FAILURE {key}"
         else:

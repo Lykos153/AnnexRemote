@@ -45,18 +45,16 @@ class DummyRemote(AnnexRemote.ExportRemote):
     def whereis(self, whereis):
         pass
     # Export methods
-    def export(self, name):
+    def transferexport_store(self, key, file_, name):
         pass
-    def transferexport_store(self, key, file_):
+    def transferexport_retrieve(self, key, file_, name):
         pass
-    def transferexport_retrieve(self, key, file_):
+    def checkpresentexport(self, key, name):
         pass
-    def checkpresentexport(self, key):
-        pass
-    def removeexport(self, key):
+    def removeexport(self, key, name):
         pass
     def removeexportdirectory(self, directory):
         pass
-    def renameexport(self, key, new_name):
+    def renameexport(self, key, name, new_name):
         pass
 

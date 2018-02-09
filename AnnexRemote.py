@@ -13,6 +13,7 @@
 
 from abc import ABC, abstractmethod
 
+import sys
 import string
 
 
@@ -350,14 +351,14 @@ class Protocol:
             return f"RENAMEEXPORT-SUCCESS {key}"
 
 class Master:
-    def __init__(self, output):
+    def __init__(self, output=sys.stdout):
         self.output = output
 
     def LinkRemote(self, remote):
         self.remote = remote
         self.protocol = Protocol(remote)
 
-    def Listen(self, input_):
+    def Listen(self, input_=sys.stdin):
         self.input = input_
         self.__send(self.protocol.version)
         for line in self.input:

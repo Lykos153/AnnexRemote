@@ -17,11 +17,18 @@ class GitAnnexTestCase(unittest.TestCase):
 
         self.annex.LinkRemote(self.remote)
 
+
+def last_buffer_line(buffer):
+    current_position = buffer.tell()
+    buffer.seek(0)
+    lines = buffer.readlines()
+    buffer.seek(current_position)
+    return lines[-1].rstrip("\n")
+    
+    
 class DummyRemote(AnnexRemote.ExportRemote):
     def __init__(self, annex):
         pass
-        #self.transfer_store = mock.MagicMock(wraps=self.transfer_store)
-        #self.transfer_retrieve = mock.MagicMock(wraps=self.transfer_retrieve)
     def initremote(self):
         pass
     def prepare(self):

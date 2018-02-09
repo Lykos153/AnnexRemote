@@ -20,6 +20,9 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
         self.remote.initremote.assert_called_once()
         self.assertEqual(utils.last_buffer_line(self.output), "INITREMOTE-FAILURE ErrorMsg")  
         
+    def TestExtensions(self):
+        self.annex.Listen(io.StringIO("EXTENSIONS Annex1 Annex2"))
+        self.assertTrue(utils.last_buffer_line(self.output) != "UNSUPPORTED-REQUEST")  
         
     def TestPrepareSuccess(self):
         self.annex.Listen(io.StringIO("PREPARE"))

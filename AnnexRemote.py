@@ -118,6 +118,7 @@ class Protocol:
         self.remote = remote
         self.version = "VERSION 1"
         self.exporting = False
+        self.extensions = list()
         
     def command(self, line):
         line = line.strip()
@@ -149,7 +150,6 @@ class Protocol:
     def do_UNKNOWN(self, *arg):
         raise UnsupportedRequest()
         
-        
     def do_INITREMOTE(self):
         try:
             reply = self.remote.initremote()
@@ -157,6 +157,9 @@ class Protocol:
             return f"INITREMOTE-FAILURE {e}"
         else:
             return "INITREMOTE-SUCCESS"
+            
+    def do_EXTENSIONS(self, param):
+        self.extensions = param.split(" ")
     
     def do_PREPARE(self):
         try:
@@ -460,6 +463,12 @@ class Master:
 
     def geturls(self, key, prefix):
         return self.__askvalues(f"GETURLS {key} {prefix}")
+        
+    def info(self, message):
+        if "INFO" in self.protocol.extensions:
+            self.__send("INFO", message)
+        else:
+            raise ProtocolError("INFO not available") 
 
     def __send(self, *args, **kwargs):
         print(*args, file=self.output, **kwargs)

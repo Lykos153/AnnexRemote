@@ -1,5 +1,6 @@
 import io
 import utils
+from AnnexRemote import ProtocolError
 
 class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
     """
@@ -10,12 +11,12 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
     (from https://git-annex.branchable.com/design/external_special_remote_protocol)
     """
 
-    def __perform_test(self, function_to_call, function_parameters, expected_output,
+    def _perform_test(self, function_to_call, function_parameters, expected_output,
                     annex_reply=None, function_result=None):
         self.annex.input = io.StringIO(annex_reply)
         result = function_to_call(*function_parameters)
         self.assertEqual(result, function_result)
-        self.assertEqual(self.output.getvalue().rstrip(), f"{expected_output}")
+        self.assertEqual(utils.last_buffer_line(self.output).rstrip(), f"{expected_output}")
 
     def TestVersion(self):
         self.annex.Listen(self.input)
@@ -26,7 +27,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         function_parameters = (2048,)
         expected_output = "PROGRESS 2048"
         
-        self.__perform_test(function_to_call, function_parameters, expected_output)
+        self._perform_test(function_to_call, function_parameters, expected_output)
 
     def TestDirhash(self):
         function_to_call = self.annex.dirhash
@@ -35,7 +36,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         annex_reply = "VALUE aB/Cd"
         function_result = "aB/Cd"
         
-        self.__perform_test(function_to_call, function_parameters, expected_output,
+        self._perform_test(function_to_call, function_parameters, expected_output,
                         annex_reply, function_result)
         
     def TestDirhashLower(self):
@@ -45,7 +46,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         annex_reply = "VALUE abc/def"
         function_result = "abc/def"
         
-        self.__perform_test(function_to_call, function_parameters, expected_output,
+        self._perform_test(function_to_call, function_parameters, expected_output,
                         annex_reply, function_result)
         
     def TestSetconfig(self):
@@ -53,7 +54,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         function_parameters = ("Setting", "Value")
         expected_output = "SETCONFIG Setting Value"
 
-        self.__perform_test(function_to_call, function_parameters, expected_output)
+        self._perform_test(function_to_call, function_parameters, expected_output)
         
     def TestSetconfig_SpaceInValue(self):
         """
@@ -63,7 +64,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         function_parameters = ("Setting", "Value with spaces")
         expected_output = "SETCONFIG Setting Value with spaces"
 
-        self.__perform_test(function_to_call, function_parameters, expected_output)
+        self._perform_test(function_to_call, function_parameters, expected_output)
 
     def TestGetconfig(self):
         function_to_call = self.annex.getconfig
@@ -72,7 +73,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         annex_reply = "VALUE Value"
         function_result = "Value"
         
-        self.__perform_test(function_to_call, function_parameters, expected_output,
+        self._perform_test(function_to_call, function_parameters, expected_output,
                         annex_reply, function_result)
 
     def TestGetconfig_SpaceInValue(self):
@@ -82,7 +83,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         annex_reply = "VALUE Value with spaces"
         function_result = "Value with spaces"
         
-        self.__perform_test(function_to_call, function_parameters, expected_output,
+        self._perform_test(function_to_call, function_parameters, expected_output,
                         annex_reply, function_result)
 
     def TestSetcreds(self):
@@ -90,20 +91,20 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         function_parameters = ("Setting", "User", "Password")
         expected_output = "SETCREDS Setting User Password"
 
-        self.__perform_test(function_to_call, function_parameters, expected_output)
+        self._perform_test(function_to_call, function_parameters, expected_output)
 
     def TestSetcreds_SpaceInPassword(self):
         function_to_call = self.annex.setcreds
         function_parameters = ("Setting", "User", "Password with spaces")
         expected_output = "SETCREDS Setting User Password with spaces"
 
-        self.__perform_test(function_to_call, function_parameters, expected_output)
+        self._perform_test(function_to_call, function_parameters, expected_output)
     def TestSetcreds_NoPassword(self):
         function_to_call = self.annex.setcreds
         function_parameters = ("Setting", "User", "")
         expected_output = "SETCREDS Setting User"
 
-        self.__perform_test(function_to_call, function_parameters, expected_output)
+        self._perform_test(function_to_call, function_parameters, expected_output)
 
     def TestSetcreds_NoUser(self):
         """
@@ -113,7 +114,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         function_parameters = ("Setting", "", "Password")
         expected_output = "SETCREDS Setting  Password"
 
-        self.__perform_test(function_to_call, function_parameters, expected_output)
+        self._perform_test(function_to_call, function_parameters, expected_output)
 
     def TestGetcreds(self):
         function_to_call = self.annex.getcreds
@@ -122,7 +123,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         annex_reply = "CREDS User Password"
         function_result = {'user': "User", 'password': "Password"}
         
-        self.__perform_test(function_to_call, function_parameters, expected_output,
+        self._perform_test(function_to_call, function_parameters, expected_output,
                         annex_reply, function_result)
 
     def TestGetcreds_SpaceInPassword(self):
@@ -132,7 +133,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         annex_reply = "CREDS User Password with spaces"
         function_result = {'user': "User", 'password': "Password with spaces"}
         
-        self.__perform_test(function_to_call, function_parameters, expected_output,
+        self._perform_test(function_to_call, function_parameters, expected_output,
                         annex_reply, function_result)
 
     def TestGetcreds_NoPassword(self):
@@ -142,7 +143,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         annex_reply = "CREDS User"
         function_result = {'user': "User", 'password': ""}
         
-        self.__perform_test(function_to_call, function_parameters, expected_output,
+        self._perform_test(function_to_call, function_parameters, expected_output,
                         annex_reply, function_result)
 
     def TestGetcreds_NoUser(self):
@@ -152,7 +153,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         annex_reply = "CREDS  Password"
         function_result = {'user': "", 'password': "Password"}
         
-        self.__perform_test(function_to_call, function_parameters, expected_output,
+        self._perform_test(function_to_call, function_parameters, expected_output,
                         annex_reply, function_result)
     
     def TestGetuuid(self):
@@ -162,7 +163,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         annex_reply = "VALUE uuid"
         function_result = "uuid"
         
-        self.__perform_test(function_to_call, function_parameters, expected_output,
+        self._perform_test(function_to_call, function_parameters, expected_output,
                         annex_reply, function_result)
 
     def TestGetgitdir(self):
@@ -172,7 +173,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         annex_reply = "VALUE /path/to/gitdir"
         function_result = "/path/to/gitdir"
         
-        self.__perform_test(function_to_call, function_parameters, expected_output,
+        self._perform_test(function_to_call, function_parameters, expected_output,
                         annex_reply, function_result)
 
     def TestGetgitdir_SpaceInPath(self):
@@ -182,14 +183,14 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         annex_reply = "VALUE /path/to/gitdir with spaces/"
         function_result = "/path/to/gitdir with spaces/"
         
-        self.__perform_test(function_to_call, function_parameters, expected_output,
+        self._perform_test(function_to_call, function_parameters, expected_output,
                         annex_reply, function_result)
     def TestSetwanted(self):
         function_to_call = self.annex.setwanted
         function_parameters = ("Preferred Content Expression",)
         expected_output = "SETWANTED Preferred Content Expression"
         
-        self.__perform_test(function_to_call, function_parameters, expected_output)
+        self._perform_test(function_to_call, function_parameters, expected_output)
 
     def TestGetwanted(self):
         function_to_call = self.annex.getwanted
@@ -198,7 +199,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         annex_reply = "VALUE Preferred Content Expression"
         function_result = "Preferred Content Expression"
         
-        self.__perform_test(function_to_call, function_parameters, expected_output,
+        self._perform_test(function_to_call, function_parameters, expected_output,
                         annex_reply, function_result)
 
     def TestSetstate(self):
@@ -206,21 +207,21 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         function_parameters = ("Key", "Value")
         expected_output = "SETSTATE Key Value"
 
-        self.__perform_test(function_to_call, function_parameters, expected_output)
+        self._perform_test(function_to_call, function_parameters, expected_output)
         
     def TestSetstate_SpaceInValue(self):
         function_to_call = self.annex.setstate
         function_parameters = ("Key", "Value with spaces")
         expected_output = "SETSTATE Key Value with spaces"
 
-        self.__perform_test(function_to_call, function_parameters, expected_output)
+        self._perform_test(function_to_call, function_parameters, expected_output)
         
     def TestSetstate_NoValue(self):
         function_to_call = self.annex.setstate
         function_parameters = ("Key", "")
         expected_output = "SETSTATE Key"
 
-        self.__perform_test(function_to_call, function_parameters, expected_output)
+        self._perform_test(function_to_call, function_parameters, expected_output)
 
     def TestGetstate(self):
         function_to_call = self.annex.getstate
@@ -229,7 +230,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         annex_reply = "VALUE State"
         function_result = "State"
         
-        self.__perform_test(function_to_call, function_parameters, expected_output,
+        self._perform_test(function_to_call, function_parameters, expected_output,
                         annex_reply, function_result)
 
     def TestGetstate_SpaceInValue(self):
@@ -239,7 +240,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         annex_reply = "VALUE State with spaces"
         function_result = "State with spaces"
         
-        self.__perform_test(function_to_call, function_parameters, expected_output,
+        self._perform_test(function_to_call, function_parameters, expected_output,
                         annex_reply, function_result)
 
     def TestGetstate_NoValue(self):
@@ -249,7 +250,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         annex_reply = "VALUE"
         function_result = ""
         
-        self.__perform_test(function_to_call, function_parameters, expected_output,
+        self._perform_test(function_to_call, function_parameters, expected_output,
                         annex_reply, function_result)
 
     def TestSeturlpresent(self):
@@ -257,28 +258,28 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         function_parameters = ("Key", "Url")
         expected_output = "SETURLPRESENT Key Url"
 
-        self.__perform_test(function_to_call, function_parameters, expected_output)
+        self._perform_test(function_to_call, function_parameters, expected_output)
         
     def TestSeturlmissing(self):
         function_to_call = self.annex.seturlmissing
         function_parameters = ("Key", "Url")
         expected_output = "SETURLMISSING Key Url"
 
-        self.__perform_test(function_to_call, function_parameters, expected_output)
+        self._perform_test(function_to_call, function_parameters, expected_output)
         
     def TestSeturipresent(self):
         function_to_call = self.annex.seturipresent
         function_parameters = ("Key", "Uri")
         expected_output = "SETURIPRESENT Key Uri"
 
-        self.__perform_test(function_to_call, function_parameters, expected_output)
+        self._perform_test(function_to_call, function_parameters, expected_output)
         
     def TestSeturimissing(self):
         function_to_call = self.annex.seturimissing
         function_parameters = ("Key", "Uri")
         expected_output = "SETURIMISSING Key Uri"
 
-        self.__perform_test(function_to_call, function_parameters, expected_output)
+        self._perform_test(function_to_call, function_parameters, expected_output)
         
     def TestGeturls(self):
         function_to_call = self.annex.geturls
@@ -287,7 +288,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         annex_reply = "VALUE State1\nVALUE State2\nVALUE"
         function_result = ["State1", "State2"]
         
-        self.__perform_test(function_to_call, function_parameters, expected_output,
+        self._perform_test(function_to_call, function_parameters, expected_output,
                         annex_reply, function_result)
         
     def TestDebug(self):
@@ -295,13 +296,37 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         function_parameters = ("message",)
         expected_output = "DEBUG message"
         
-        self.__perform_test(function_to_call, function_parameters, expected_output)
+        self._perform_test(function_to_call, function_parameters, expected_output)
 
     def TestError(self):
         function_to_call = self.annex.error
         function_parameters = ("ErrorMsg",)
         expected_output = "ERROR ErrorMsg"
         
-        self.__perform_test(function_to_call, function_parameters, expected_output)
+        self._perform_test(function_to_call, function_parameters, expected_output)
 
+class TestSpecialRemoteMessages_Extensions(TestSpecialRemoteMessages):
+
+    def TestInfo(self):
+        self.annex.Listen(io.StringIO("EXTENSIONS INFO"))
+        function_to_call = self.annex.info
+        function_parameters = ("message",)
+        expected_output = "INFO message"
+        
+        self._perform_test(function_to_call, function_parameters, expected_output)
+        
+
+    def TestInfo_Unannounced(self):
+        function_to_call = self.annex.info
+        function_parameters = ("message",)
+        expected_output = "INFO message"
+        with self.assertRaises(ProtocolError):
+            self._perform_test(function_to_call, function_parameters, expected_output)
+        
+                
+        
+        
+        
+        
+        
 

@@ -1,13 +1,11 @@
-# git-annex-remote-gdrive2 - python rewrite of git-annex-remote-gdrive to add direct support for Google Drive to git annex
-#
-# Install in PATH as git-annex-remote-gdrive2
+# AnnexRemote - Helper module to easily develop git-annex remotes
 #
 # Copyright (C) 2017  Silvio Ankermann
 #
 # This program is free software: you can redistribute it and/or modify it under the terms of version 3 of the GNU
 # General Public License as published by the Free Software Foundation.
 #
-# This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied
+# This program is distributed in the hope that it will be uselful, but WITHOUT ANY WARRANTY; without even the implied
 # warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 #
 
@@ -18,21 +16,24 @@ import string
 
 
 # Exceptions
-class RequestError(Exception):
+class Error(Exception):
+    pass
+class ProtocolError(Error):
     pass
 
-class UnsupportedRequest(RequestError):
+class UnsupportedRequest(ProtocolError):
     pass
 
-class UnexpectedMessage(RequestError):
+class UnexpectedMessage(ProtocolError):
     pass
 
+class RemoteError(Error):
+    pass
 
 class SpecialRemote(ABC):
 
-    @abstractmethod
     def __init__(self, annex):
-        pass
+        self.annex = annex
 
     @abstractmethod
     def initremote(self):
@@ -106,12 +107,6 @@ class ExportRemote(SpecialRemote):
     def renameexport(self, key, name, new_name):
         pass
 
-class Error(Exception):
-    pass
-class RemoteError(Error):
-    pass
-class ProtocolError(Error):
-    pass
         
 class Protocol:
 
@@ -360,23 +355,23 @@ class Master:
 
     def Listen(self, input_=sys.stdin):
         self.input = input_
-        self.__send(self.protocol.version)
+        self._send(self.protocol.version)
         for line in self.input:
             line = line.rstrip()
             try:
                 reply = self.protocol.command(line)
-                self.__send(reply)
+                self._send(reply)
             except (UnsupportedRequest):
-                self.__send ("UNSUPPORTED-REQUEST")
+                self._send ("UNSUPPORTED-REQUEST")
             except (NotImplementedError):
-                self.__send ("ERROR not yet implemented")
+                self._send ("ERROR not yet implemented")
                 raise SystemExit
             #except Exception as e:
-            #    self.__send ("ERROR", e)
+            #    self._send ("ERROR", e)
             #    raise SystemExit
     
-    def __ask(self, request, reply_keyword, reply_count):
-        self.__send(request)
+    def _ask(self, request, reply_keyword, reply_count):
+        self._send(request)
         line = self.input.readline().rstrip().split(" ", reply_count)
         if line and line[0] == reply_keyword:
             line.extend([""] * (reply_count+1-len(line)))
@@ -384,8 +379,8 @@ class Master:
         else:
             raise UnexpectedMessage(f"Expected {reply_keyword} and {reply_count} values. Got {line}")
 
-    def __askvalues(self, request):
-        self.__send(request)
+    def _askvalues(self, request):
+        self._send(request)
         reply = []
         for line in self.input:
             line = line.rstrip()
@@ -397,80 +392,80 @@ class Master:
             else:
                 raise UnexpectedMessage("Expected VALUE {value}")
 
-    def __askvalue(self, request):
-        (reply,) = self.__ask(request, "VALUE", 1)
+    def _askvalue(self, request):
+        (reply,) = self._ask(request, "VALUE", 1)
         return reply
     
     def getconfig(self, req):
-        return self.__askvalue(f"GETCONFIG {req}")
+        return self._askvalue(f"GETCONFIG {req}")
 
     def setconfig(self, key, value):
-        self.__send(f"SETCONFIG {key} {value}")
+        self._send(f"SETCONFIG {key} {value}")
 
     def getstate(self, key):
-        return self.__askvalue(f"GETSTATE {key}")
+        return self._askvalue(f"GETSTATE {key}")
 
     def setstate(self, key, value):
-        self.__send(f"SETSTATE {key} {value}")
+        self._send(f"SETSTATE {key} {value}")
 
     def debug(self, *args):
-        self.__send("DEBUG", *args)
+        self._send("DEBUG", *args)
         
     def error(self, *args):
-        self.__send("ERROR", *args)
+        self._send("ERROR", *args)
 
     def progress(self, progress):
         if type(progress) == int:
-            self.__send("PROGRESS", progress)
+            self._send("PROGRESS", progress)
         else:
             raise TypeError("Expected integer")
 
     def dirhash(self, key):
-        return self.__askvalue(f"DIRHASH {key}")
+        return self._askvalue(f"DIRHASH {key}")
 
     def dirhash_lower(self, key):
-        return self.__askvalue(f"DIRHASH-LOWER {key}")
+        return self._askvalue(f"DIRHASH-LOWER {key}")
 
     def setcreds(self, setting, user, password):
-        self.__send("SETCREDS", setting, user, password)
+        self._send("SETCREDS", setting, user, password)
 
     def getcreds(self, setting):
-        (user, password) = self.__ask(f"GETCREDS {setting}", "CREDS", 2)
+        (user, password) = self._ask(f"GETCREDS {setting}", "CREDS", 2)
         return {'user': user, 'password': password}
 
     def getuuid(self):
-        return self.__askvalue("GETUUID")
+        return self._askvalue("GETUUID")
 
     def getgitdir(self):
-        return self.__askvalue("GETGITDIR")
+        return self._askvalue("GETGITDIR")
 
     def setwanted(self, prefcontent):
-        self.__send("SETWANTED", prefcontent)
+        self._send("SETWANTED", prefcontent)
 
     def getwanted(self):
-        return self.__askvalue("GETWANTED")
+        return self._askvalue("GETWANTED")
 
     def seturlpresent(self, key, url):
-        self.__send("SETURLPRESENT", key, url)
+        self._send("SETURLPRESENT", key, url)
 
     def seturlmissing(self, key, url):
-        self.__send("SETURLMISSING", key, url)
+        self._send("SETURLMISSING", key, url)
 
     def seturipresent(self, key, uri):
-        self.__send("SETURIPRESENT", key, uri)
+        self._send("SETURIPRESENT", key, uri)
     
     def seturimissing(self, key, uri):
-        self.__send("SETURIMISSING", key, uri)
+        self._send("SETURIMISSING", key, uri)
 
     def geturls(self, key, prefix):
-        return self.__askvalues(f"GETURLS {key} {prefix}")
+        return self._askvalues(f"GETURLS {key} {prefix}")
         
     def info(self, message):
         if "INFO" in self.protocol.extensions:
-            self.__send("INFO", message)
+            self._send("INFO", message)
         else:
             raise ProtocolError("INFO not available") 
 
-    def __send(self, *args, **kwargs):
+    def _send(self, *args, **kwargs):
         print(*args, file=self.output, **kwargs)
         self.output.flush()

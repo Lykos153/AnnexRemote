@@ -27,8 +27,6 @@ def last_buffer_line(buffer):
     
     
 class DummyRemote(AnnexRemote.ExportRemote):
-    def __init__(self, annex):
-        pass
     def initremote(self):
         pass
     def prepare(self):

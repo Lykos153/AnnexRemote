@@ -224,7 +224,6 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
 
 class TestGitAnnexRequestMessagesExporttree(TestGitAnnexRequestMessages):
     def TestExportsupportedSuccess(self):
-        self.remote.exportsupported.return_value = True
         self.annex.Listen(io.StringIO("EXPORTSUPPORTED"))
         self.remote.exportsupported.assert_called_once()
         self.assertEqual(utils.last_buffer_line(self.output), "EXPORTSUPPORTED-SUCCESS")

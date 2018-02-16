@@ -81,7 +81,7 @@ class SpecialRemote(ABC):
 
 class ExportRemote(SpecialRemote):
     def exportsupported(self):
-        return Reply.ExportsupportedSuccess()
+        return True
 
     @abstractmethod
     def transferexport_store(self, key, file_, name):

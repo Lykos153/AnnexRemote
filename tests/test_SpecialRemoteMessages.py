@@ -12,11 +12,15 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
     """
 
     def _perform_test(self, function_to_call, function_parameters, expected_output,
-                    annex_reply=None, function_result=None):
+                    annex_reply=None, function_result=None, skip_first_line=False):
         self.annex.input = io.StringIO(annex_reply)
         result = function_to_call(*function_parameters)
         self.assertEqual(result, function_result)
-        self.assertEqual(utils.last_buffer_line(self.output).rstrip(), f"{expected_output}")
+        if not skip_first_line:
+            self.assertEqual(utils.first_buffer_line(self.output).rstrip(), f"{expected_output}")
+        else:
+            self.assertEqual(utils.second_buffer_line(self.output).rstrip(), f"{expected_output}")
+        
 
     def TestVersion(self):
         self.annex.Listen(self.input)
@@ -313,7 +317,7 @@ class TestSpecialRemoteMessages_Extensions(TestSpecialRemoteMessages):
         function_parameters = ("message",)
         expected_output = "INFO message"
         
-        self._perform_test(function_to_call, function_parameters, expected_output)
+        self._perform_test(function_to_call, function_parameters, expected_output, skip_first_line=True)
         
 
     def TestInfo_Unannounced(self):

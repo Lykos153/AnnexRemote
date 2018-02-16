@@ -121,9 +121,11 @@ class Protocol:
         parts = line.split(" ", 1)
         if not parts:
             raise ProtocolError("Got empty line")
+            
 
         method = self.lookupMethod(parts[0]) or self.do_UNKNOWN
-        
+
+
         try:
             if len(parts) == 1:
                 reply = method()
@@ -360,7 +362,8 @@ class Master:
             line = line.rstrip()
             try:
                 reply = self.protocol.command(line)
-                self._send(reply)
+                if reply:
+                    self._send(reply)
             except (UnsupportedRequest):
                 self._send ("UNSUPPORTED-REQUEST")
             except (NotImplementedError):

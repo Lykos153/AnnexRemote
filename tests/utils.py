@@ -18,12 +18,20 @@ class GitAnnexTestCase(unittest.TestCase):
         self.annex.LinkRemote(self.remote)
 
 
-def last_buffer_line(buffer):
-    current_position = buffer.tell()
-    buffer.seek(0)
-    lines = buffer.readlines()
-    buffer.seek(current_position)
-    return lines[-1].rstrip("\n")
+def first_buffer_line(buf):
+    return buffer_lines(buf)[0]
+    
+def second_buffer_line(buf):
+    return buffer_lines(buf)[1]
+    
+def buffer_lines(buf):
+    current_position = buf.tell()
+    buf.seek(0)
+    lines = list()
+    for line in buf:
+        lines.append(line.rstrip("\n"))
+    buf.seek(current_position)
+    return lines
     
     
 class DummyRemote(AnnexRemote.ExportRemote):

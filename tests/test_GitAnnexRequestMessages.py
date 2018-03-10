@@ -222,7 +222,7 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
         self.remote.whereis.assert_called_once_with("Key")
         self.assertEqual(utils.second_buffer_line(self.output), "WHEREIS-FAILURE")
 
-class TestGitAnnexRequestMessagesExporttree(TestGitAnnexRequestMessages):
+class TestGitAnnexRequestMessagesExporttree(utils.GitAnnexTestCase):
     def TestExportsupportedSuccess(self):
         self.annex.Listen(io.StringIO("EXPORTSUPPORTED"))
         self.remote.exportsupported.assert_called_once()

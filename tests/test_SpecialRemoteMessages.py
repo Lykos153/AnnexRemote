@@ -12,14 +12,12 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
     """
 
     def _perform_test(self, function_to_call, function_parameters, expected_output,
-                    annex_reply=None, function_result=None, skip_first_line=False):
+                    annex_reply=None, function_result=None, skip_assertion=False):
         self.annex.input = io.StringIO(annex_reply)
         result = function_to_call(*function_parameters)
         self.assertEqual(result, function_result)
-        if not skip_first_line:
+        if not skip_assertion:
             self.assertEqual(utils.first_buffer_line(self.output).rstrip(), f"{expected_output}")
-        else:
-            self.assertEqual(utils.second_buffer_line(self.output).rstrip(), f"{expected_output}")
         
 
     def TestVersion(self):
@@ -309,7 +307,15 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         
         self._perform_test(function_to_call, function_parameters, expected_output)
 
-class TestSpecialRemoteMessages_Extensions(TestSpecialRemoteMessages):
+class TestSpecialRemoteMessages_Extensions(utils.GitAnnexTestCase):
+
+    def _perform_test(self, function_to_call, function_parameters, expected_output,
+                    annex_reply=None, function_result=None):
+        
+        self.annex.input = io.StringIO(annex_reply)
+        result = function_to_call(*function_parameters)
+        self.assertEqual(result, function_result)
+
 
     def TestInfo(self):
         self.annex.Listen(io.StringIO("EXTENSIONS INFO"))
@@ -317,15 +323,14 @@ class TestSpecialRemoteMessages_Extensions(TestSpecialRemoteMessages):
         function_parameters = ("message",)
         expected_output = "INFO message"
         
-        self._perform_test(function_to_call, function_parameters, expected_output, skip_first_line=True)
+        self._perform_test(function_to_call, function_parameters, expected_output)
         
 
     def TestInfo_Unannounced(self):
         function_to_call = self.annex.info
         function_parameters = ("message",)
-        expected_output = "INFO message"
         with self.assertRaises(ProtocolError):
-            self._perform_test(function_to_call, function_parameters, expected_output)
+            self._perform_test(function_to_call, function_parameters, "")
         
                 
         

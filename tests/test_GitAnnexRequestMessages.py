@@ -2,9 +2,9 @@ import io
 from unittest import skip
 
 import utils
-from AnnexRemote import RemoteError
-from AnnexRemote import ProtocolError
-from AnnexRemote import UnsupportedRequest
+from annexremote import RemoteError
+from annexremote import ProtocolError
+from annexremote import UnsupportedRequest
 
 class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
 

@@ -11,10 +11,10 @@ In this module, I made heavy use of Python's f-strings, so compatibility is limi
 Fixing this is trivial, but I will probably only do this if requested. Feel free to open an issue or pull request.
 
 ### Installing
-Just copy AnnexRemote.py into your application folder.
+`pip3.6 install annexremote`
 
 ### Running the tests
-If you want to run the tests, copy the content of the `tests` folder to the same location as `AnnexRemote.py`.
+If you want to run the tests, copy the content of the `tests` folder to the same location as `annexremote.py`.
 Then use a test discovery like [nose](http://nose.readthedocs.io) to run them.
 
 ### Usage
@@ -22,9 +22,9 @@ Then use a test discovery like [nose](http://nose.readthedocs.io) to run them.
 Import the necessary classes
 
 ```
-from AnnexRemote import Master
-from AnnexRemote import SpecialRemote
-from AnnexRemote import RemoteError
+from annexremote import Master
+from annexremote import SpecialRemote
+from annexremote import RemoteError
 ```
 
 Now create your special remote class. It must subtype ``SpecialRemote`` and implement at least the 6 basic methods:

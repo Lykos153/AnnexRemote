@@ -1,6 +1,6 @@
 import io
 import utils
-from AnnexRemote import ProtocolError
+from annexremote import ProtocolError
 
 class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
     """

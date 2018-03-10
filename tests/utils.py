@@ -2,7 +2,7 @@ import unittest
 import unittest.mock as mock
 import io
 
-import AnnexRemote
+import annexremote
 
 
 class GitAnnexTestCase(unittest.TestCase):
@@ -12,7 +12,7 @@ class GitAnnexTestCase(unittest.TestCase):
         self.output = io.StringIO()
         self.input = io.StringIO()
 
-        self.annex = AnnexRemote.Master(self.output)
+        self.annex = annexremote.Master(self.output)
         self.remote = mock.MagicMock(wraps=DummyRemote(self.annex))
 
         self.annex.LinkRemote(self.remote)
@@ -34,7 +34,7 @@ def buffer_lines(buf):
     return lines
     
     
-class DummyRemote(AnnexRemote.ExportRemote):
+class DummyRemote(annexremote.ExportRemote):
     def initremote(self):
         pass
     def prepare(self):

@@ -30,7 +30,7 @@ the interface for the remote."""
 
 setup(
     name='annexremote',
-    version='1.0',
+    version='1.0.1',
     description='git annex special remotes made easy',
     long_description=long_description,
     url='https://github.com/Lykos153/AnnexRemote',

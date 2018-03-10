@@ -316,6 +316,8 @@ class TestSpecialRemoteMessages_Extensions(utils.GitAnnexTestCase):
         result = function_to_call(*function_parameters)
         self.assertEqual(result, function_result)
 
+        self.assertEqual(utils.buffer_lines(self.output)[1].rstrip(), "EXTENSIONS")
+        self.assertEqual(utils.buffer_lines(self.output)[2].rstrip(), f"{expected_output}")
 
     def TestInfo(self):
         self.annex.Listen(io.StringIO("EXTENSIONS INFO"))

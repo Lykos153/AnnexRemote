@@ -22,7 +22,7 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
         
     def TestExtensions(self):
         self.annex.Listen(io.StringIO("EXTENSIONS Annex1 Annex2"))
-        self.assertTrue(len(utils.buffer_lines(self.output)) == 1) # no reply  
+        self.assertEqual(utils.second_buffer_line(self.output), "EXTENSIONS")  
         
     def TestPrepareSuccess(self):
         self.annex.Listen(io.StringIO("PREPARE"))

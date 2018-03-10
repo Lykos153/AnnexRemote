@@ -158,6 +158,7 @@ class Protocol:
             
     def do_EXTENSIONS(self, param):
         self.extensions = param.split(" ")
+        return "EXTENSIONS"
     
     def do_PREPARE(self):
         try:

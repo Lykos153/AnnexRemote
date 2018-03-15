@@ -17,7 +17,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         result = function_to_call(*function_parameters)
         self.assertEqual(result, function_result)
         if not skip_assertion:
-            self.assertEqual(utils.first_buffer_line(self.output).rstrip(), f"{expected_output}")
+            self.assertEqual(utils.first_buffer_line(self.output).rstrip(), expected_output)
         
 
     def TestVersion(self):
@@ -317,7 +317,7 @@ class TestSpecialRemoteMessages_Extensions(utils.GitAnnexTestCase):
         self.assertEqual(result, function_result)
 
         self.assertEqual(utils.buffer_lines(self.output)[1].rstrip(), "EXTENSIONS")
-        self.assertEqual(utils.buffer_lines(self.output)[2].rstrip(), f"{expected_output}")
+        self.assertEqual(utils.buffer_lines(self.output)[2].rstrip(), expected_output)
 
     def TestInfo(self):
         self.annex.Listen(io.StringIO("EXTENSIONS INFO"))

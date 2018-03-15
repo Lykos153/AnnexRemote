@@ -11,13 +11,13 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
         
     def TestInitremoteSuccess(self):
         self.annex.Listen(io.StringIO("INITREMOTE"))
-        self.remote.initremote.assert_called_once()
+        self.remote.initremote.call_count == 1
         self.assertEqual(utils.second_buffer_line(self.output), "INITREMOTE-SUCCESS")
         
     def TestInitremoteFailure(self):
         self.remote.initremote.side_effect = RemoteError("ErrorMsg")
         self.annex.Listen(io.StringIO("INITREMOTE"))
-        self.remote.initremote.assert_called_once()
+        self.remote.initremote.call_count == 1
         self.assertEqual(utils.second_buffer_line(self.output), "INITREMOTE-FAILURE ErrorMsg")  
         
     def TestExtensions(self):
@@ -26,13 +26,13 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
         
     def TestPrepareSuccess(self):
         self.annex.Listen(io.StringIO("PREPARE"))
-        self.remote.prepare.assert_called_once()
+        self.remote.prepare.call_count == 1
         self.assertEqual(utils.second_buffer_line(self.output), "PREPARE-SUCCESS")
         
     def TestPrepareFailure(self):
         self.remote.prepare.side_effect = RemoteError("ErrorMsg")
         self.annex.Listen(io.StringIO("PREPARE"))
-        self.remote.prepare.assert_called_once()
+        self.remote.prepare.call_count == 1
         self.assertEqual(utils.second_buffer_line(self.output), "PREPARE-FAILURE ErrorMsg")
                 
     def TestTransferStoreSuccess(self):
@@ -105,7 +105,7 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
     def TestGetcost(self):
         self.remote.getcost.return_value = 5
         self.annex.Listen(io.StringIO("GETCOST"))
-        self.remote.getcost.assert_called_once()
+        self.remote.getcost.call_count == 1
         self.assertEqual(utils.second_buffer_line(self.output), "COST 5")
 
     def TestGetcostInvalid(self):
@@ -116,13 +116,13 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
     def TestGetavailabilityGlobal(self):
         self.remote.getavailability.return_value = "global"
         self.annex.Listen(io.StringIO("GETAVAILABILITY"))
-        self.remote.getavailability.assert_called_once()
+        self.remote.getavailability.call_count == 1
         self.assertEqual(utils.second_buffer_line(self.output), "AVAILABILITY GLOBAL")
 
     def TestGetavailabilityLocal(self):
         self.remote.getavailability.return_value = "local"
         self.annex.Listen(io.StringIO("GETAVAILABILITY"))
-        self.remote.getavailability.assert_called_once()
+        self.remote.getavailability.call_count == 1
         self.assertEqual(utils.second_buffer_line(self.output), "AVAILABILITY LOCAL")
 
     def TestGetavailabilityInvalid(self):
@@ -225,13 +225,13 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
 class TestGitAnnexRequestMessagesExporttree(utils.GitAnnexTestCase):
     def TestExportsupportedSuccess(self):
         self.annex.Listen(io.StringIO("EXPORTSUPPORTED"))
-        self.remote.exportsupported.assert_called_once()
+        self.remote.exportsupported.call_count == 1
         self.assertEqual(utils.second_buffer_line(self.output), "EXPORTSUPPORTED-SUCCESS")
         
     def TestExportsupportedFailure(self):
         self.remote.exportsupported.return_value = False
         self.annex.Listen(io.StringIO("EXPORTSUPPORTED"))
-        self.remote.exportsupported.assert_called_once()
+        self.remote.exportsupported.call_count == 1
         self.assertEqual(utils.second_buffer_line(self.output), "EXPORTSUPPORTED-FAILURE")
 
     def TestExport_MissingName(self):

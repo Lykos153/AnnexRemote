@@ -152,7 +152,7 @@ class Protocol:
         try:
             reply = self.remote.initremote()
         except RemoteError as e:
-            return f"INITREMOTE-FAILURE {e}"
+            return "INITREMOTE-FAILURE {e}".format(e=e)
         else:
             return "INITREMOTE-SUCCESS"
             
@@ -164,7 +164,7 @@ class Protocol:
         try:
             reply = self.remote.prepare()
         except RemoteError as e:
-            return f"PREPARE-FAILURE {e}"
+            return "PREPARE-FAILURE {e}".format(e=e)
         else:
             return "PREPARE-SUCCESS"
     
@@ -177,23 +177,23 @@ class Protocol:
         if not (method == "STORE" or method == "RETRIEVE"):
             return self.do_UNKNOWN()
         
-        func = getattr(self.remote, f'transfer_{method.lower()}', None)
+        func = getattr(self.remote, "transfer_{}".format(method.lower()), None)
         try:
             func(key, file_)
         except RemoteError as e:
-            return f"TRANSFER-FAILURE {method} {key} {e}"
+            return "TRANSFER-FAILURE {method} {key} {e}".format(method=method, key=key, e=e)
         else:
-            return f"TRANSFER-SUCCESS {method} {key}"
+            return "TRANSFER-SUCCESS {method} {key}".format(method=method, key=key)
     
     def do_CHECKPRESENT(self, key):
         self.check_key(key)
         try:
             if self.remote.checkpresent(key):
-                return f"CHECKPRESENT-SUCCESS {key}"
+                return "CHECKPRESENT-SUCCESS {key}".format(key=key)
             else:
-                return f"CHECKPRESENT-FAILURE {key}"
+                return "CHECKPRESENT-FAILURE {key}".format(key=key)
         except RemoteError as e:
-            return f"CHECKPRESENT-UNKNOWN {key} {e}"
+            return "CHECKPRESENT-UNKNOWN {key} {e}".format(key=key, e=e)
     
     def do_REMOVE(self, key):
         self.check_key(key)
@@ -201,9 +201,9 @@ class Protocol:
         try:
             self.remote.remove(key)
         except RemoteError as e:
-            return f"REMOVE-FAILURE {key} {e}"
+            return "REMOVE-FAILURE {key} {e}".format(key=key, e=e)
         else:
-            return f"REMOVE-SUCCESS {key}"
+            return "REMOVE-SUCCESS {key}".format(key=key)
     
     def do_GETCOST(self):
         cost = self.remote.getcost()
@@ -211,7 +211,7 @@ class Protocol:
             cost = int(cost)
         except ValueError:
             raise ValueError("Cost must be an integer")
-        return f"COST {cost}"
+        return "COST {cost}".format(cost=cost)
     
     def do_GETAVAILABILITY(self):
         reply = self.remote.getavailability()
@@ -269,9 +269,9 @@ class Protocol:
         self.check_key(key)
         reply = self.remote.whereis(key)
         if reply:
-            return f"WHEREIS-SUCCESS {reply}"
+            return "WHEREIS-SUCCESS {reply}".format(reply=reply)
         else:
-            return f"WHEREIS-FAILURE"
+            return "WHEREIS-FAILURE"
     
     def do_EXPORTSUPPORTED(self):
         if self.remote.exportsupported():
@@ -293,13 +293,13 @@ class Protocol:
         if not (method == "STORE" or method == "RETRIEVE"):
             return self.do_UNKNOWN()
         
-        func = getattr(self.remote, f'transferexport_{method.lower()}', None)
+        func = getattr(self.remote, "transferexport_{}".format(method.lower()), None)
         try:
             func(key, file_, self.exporting)
         except RemoteError as e:
-            return f"TRANSFER-FAILURE {method} {key} {e}"
+            return "TRANSFER-FAILURE {method} {key} {e}".format(method=method, key=key, e=e)
         else:
-            return f"TRANSFER-SUCCESS {method} {key}"
+            return "TRANSFER-SUCCESS {method} {key}".format(method=method, key=key)
     
     def do_CHECKPRESENTEXPORT(self, key):
         if not self.exporting:
@@ -307,11 +307,11 @@ class Protocol:
         self.check_key(key)
         try:
             if self.remote.checkpresentexport(key, self.exporting):
-                return f"CHECKPRESENT-SUCCESS {key}"
+                return "CHECKPRESENT-SUCCESS {key}".format(key=key)
             else:
-                return f"CHECKPRESENT-FAILURE {key}"
+                return "CHECKPRESENT-FAILURE {key}".format(key=key)
         except RemoteError as e:
-            return f"CHECKPRESENT-UNKNOWN {key} {e}"
+            return "CHECKPRESENT-UNKNOWN {key} {e}".format(key=key, e=e)
             
     def do_REMOVEEXPORT(self, key):
         if not self.exporting:
@@ -321,9 +321,9 @@ class Protocol:
         try:
             self.remote.removeexport(key, self.exporting)
         except RemoteError as e:
-            return f"REMOVE-FAILURE {key} {e}"
+            return "REMOVE-FAILURE {key} {e}".format(key=key, e=e)
         else:
-            return f"REMOVE-SUCCESS {key}"
+            return "REMOVE-SUCCESS {key}".format(key=key)
                     
     def do_REMOVEEXPORTDIRECTORY(self, name):
         try:
@@ -344,9 +344,9 @@ class Protocol:
         try:
             self.remote.renameexport(key, self.exporting, new_name)
         except RemoteError:
-            return f"RENAMEEXPORT-FAILURE {key}"
+            return "RENAMEEXPORT-FAILURE {key}".format(key=key)
         else:
-            return f"RENAMEEXPORT-SUCCESS {key}"
+            return "RENAMEEXPORT-SUCCESS {key}".format(key=key)
 
 class Master:
     def __init__(self, output=sys.stdout):
@@ -381,7 +381,7 @@ class Master:
             line.extend([""] * (reply_count+1-len(line)))
             return line[1:]
         else:
-            raise UnexpectedMessage(f"Expected {reply_keyword} and {reply_count} values. Got {line}")
+            raise UnexpectedMessage("Expected {reply_keyword} and {reply_count} values. Got {line}".format(reply_keyword=reply_keyword, reply_count=reply_count, line=line))
 
     def _askvalues(self, request):
         self._send(request)
@@ -401,16 +401,16 @@ class Master:
         return reply
     
     def getconfig(self, req):
-        return self._askvalue(f"GETCONFIG {req}")
+        return self._askvalue("GETCONFIG {req}".format(req=req))
 
     def setconfig(self, key, value):
-        self._send(f"SETCONFIG {key} {value}")
+        self._send("SETCONFIG {key} {value}".format(key=key, value=value))
 
     def getstate(self, key):
-        return self._askvalue(f"GETSTATE {key}")
+        return self._askvalue("GETSTATE {key}".format(key=key))
 
     def setstate(self, key, value):
-        self._send(f"SETSTATE {key} {value}")
+        self._send("SETSTATE {key} {value}".format(key=key, value=value))
 
     def debug(self, *args):
         self._send("DEBUG", *args)
@@ -425,16 +425,16 @@ class Master:
             raise TypeError("Expected integer")
 
     def dirhash(self, key):
-        return self._askvalue(f"DIRHASH {key}")
+        return self._askvalue("DIRHASH {key}".format(key=key))
 
     def dirhash_lower(self, key):
-        return self._askvalue(f"DIRHASH-LOWER {key}")
+        return self._askvalue("DIRHASH-LOWER {key}".format(key=key))
 
     def setcreds(self, setting, user, password):
         self._send("SETCREDS", setting, user, password)
 
     def getcreds(self, setting):
-        (user, password) = self._ask(f"GETCREDS {setting}", "CREDS", 2)
+        (user, password) = self._ask("GETCREDS {setting}".format(setting=setting), "CREDS", 2)
         return {'user': user, 'password': password}
 
     def getuuid(self):
@@ -462,7 +462,7 @@ class Master:
         self._send("SETURIMISSING", key, uri)
 
     def geturls(self, key, prefix):
-        return self._askvalues(f"GETURLS {key} {prefix}")
+        return self._askvalues("GETURLS {key} {prefix}".format(key=key, prefix=prefix))
         
     def info(self, message):
         if "INFO" in self.protocol.extensions:

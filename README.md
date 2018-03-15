@@ -7,11 +7,10 @@ Changes to the protocol are normally adopted within hours after they've been pub
 
 ## Getting started
 ### Prerequisites
-In this module, I made heavy use of Python's f-strings, so compatibility is limited to v3.6+.
-Fixing this is trivial, but I will probably only do this if requested. Feel free to open an issue or pull request.
+You need python3 installed on your system. AnnexRemote has been tested with version 3.4 to 3.6.
 
 ### Installing
-`pip3.6 install annexremote`
+`pip3 install annexremote`
 
 ### Running the tests
 If you want to run the tests, copy the content of the `tests` folder to the same location as `annexremote.py`.

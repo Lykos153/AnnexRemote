@@ -20,6 +20,8 @@ from setuptools import setup, find_packages
 from codecs import open
 from os import path
 
+import versioneer
+
 here = path.abspath(path.dirname(__file__))
 long_description= """Helper module to easily develop special remotes for git annex.
 AnnexRemote handles all the protocol stuff for you, so you can focus on the remote itself.
@@ -29,7 +31,8 @@ the interface for the remote."""
 
 setup(
     name='annexremote',
-    version='1.1.0',
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     description='git annex special remotes made easy',
     long_description=long_description,
     url='https://github.com/Lykos153/AnnexRemote',
@@ -49,7 +52,7 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     keywords='git-annex remote',
-    py_modules=["annexremote"],
+    packages=['annexremote'],
 
     extras_require={
         'test': ['coverage'],

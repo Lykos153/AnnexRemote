@@ -18,23 +18,20 @@
 
 from setuptools import setup, find_packages
 from codecs import open
-from os import path
 
 import versioneer
 
-here = path.abspath(path.dirname(__file__))
-long_description= """Helper module to easily develop special remotes for git annex.
-AnnexRemote handles all the protocol stuff for you, so you can focus on the remote itself.
-It implements the complete external special remote protocol and fulfils all specifications regarding whitespaces etc.
-Changes to the protocol are normally adopted within hours after they've been published without changing 
-the interface for the remote."""
+def readme():
+    with open('README.md') as f:
+        return f.read()
 
 setup(
     name='annexremote',
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     description='git annex special remotes made easy',
-    long_description=long_description,
+    long_description=readme(),
+    long_description_content_type='text/markdown',
     url='https://github.com/Lykos153/AnnexRemote',
     author='Silvio Ankermann',
     author_email='silvio@booq.org',

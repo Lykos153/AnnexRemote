@@ -367,7 +367,53 @@ class TestGitAnnexRequestMessagesExporttree(utils.GitAnnexTestCase):
     def TestRenameexport_SpaceInNewName(self):
         self.annex.Listen(io.StringIO("EXPORT Name\nRENAMEEXPORT Key NewName with spaces"))
         self.remote.renameexport.assert_called_once_with("Key", "Name", "NewName with spaces")
-        
+
+class TestUnsupportedRequests(utils.MinimalTestCase):
     def TestUnsupportedRequest(self):
         self.annex.Listen(io.StringIO("Not a request"))
         self.assertEqual(utils.second_buffer_line(self.output), "UNSUPPORTED-REQUEST")
+
+    def TestGetcostUnsupportedRequest(self):
+        self.annex.Listen(io.StringIO("GETCOST"))
+        self.assertEqual(utils.second_buffer_line(self.output), "UNSUPPORTED-REQUEST")
+        
+    def TestGetavailabilityUnsupportedRequest(self):
+        self.annex.Listen(io.StringIO("GETAVAILABILITY"))
+        self.assertEqual(utils.second_buffer_line(self.output), "UNSUPPORTED-REQUEST")
+        
+    def TestClaimurlUnsupportedRequest(self):
+        self.annex.Listen(io.StringIO("CLAIMURL Url"))
+        self.assertEqual(utils.second_buffer_line(self.output), "UNSUPPORTED-REQUEST")
+
+    def TestCheckurlUnsupportedRequest(self):
+        self.annex.Listen(io.StringIO("CHECKURL Url"))
+        self.assertEqual(utils.second_buffer_line(self.output), "UNSUPPORTED-REQUEST")
+        
+    def TestWhereisUnsupportedRequest(self):
+        self.annex.Listen(io.StringIO("WHEREIS Key"))
+        self.assertEqual(utils.second_buffer_line(self.output), "UNSUPPORTED-REQUEST")
+        
+    def TestTransferexportStoreUnsupportedRequest(self):
+        self.annex.Listen(io.StringIO("EXPORT Name\nTRANSFEREXPORT STORE Key File"))
+        self.assertEqual(utils.second_buffer_line(self.output), "UNSUPPORTED-REQUEST")
+        
+    def TestTransferexportRetrieveUnsupportedRequest(self):
+        self.annex.Listen(io.StringIO("EXPORT Name\nTRANSFEREXPORT RETRIEVE Key File"))
+        self.assertEqual(utils.second_buffer_line(self.output), "UNSUPPORTED-REQUEST")
+        
+    def TestCheckpresentexportUnsupportedRequest(self):
+        self.annex.Listen(io.StringIO("EXPORT Name\nCHECKPRESENTEXPORT Key"))
+        self.assertEqual(utils.second_buffer_line(self.output), "UNSUPPORTED-REQUEST")
+        
+    def TestRemoveexportUnsupportedRequest(self):
+        self.annex.Listen(io.StringIO("EXPORT Name\nREMOVEEXPORT Key"))
+        self.assertEqual(utils.second_buffer_line(self.output), "UNSUPPORTED-REQUEST")
+
+    def TestRemoveexportdirectoryUnsupportedRequest(self):
+        self.annex.Listen(io.StringIO("REMOVEEXPORTDIRECTORY Directory"))
+        self.assertEqual(utils.second_buffer_line(self.output), "UNSUPPORTED-REQUEST")
+
+    def TestRenameexportUnsupportedRequest(self):
+        self.annex.Listen(io.StringIO("EXPORT Name\nRENAMEEXPORT Key NewName"))
+        self.assertEqual(utils.second_buffer_line(self.output), "UNSUPPORTED-REQUEST")
+

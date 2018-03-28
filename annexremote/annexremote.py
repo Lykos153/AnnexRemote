@@ -69,10 +69,32 @@ class SpecialRemote(ABC):
     def claimurl(self, url):
         raise UnsupportedRequest()
 
-    def checkurl(self):
+    def checkurl(self, url):
         raise UnsupportedRequest()
 
-    def whereis(self):
+    def whereis(self, key):
+        raise UnsupportedRequest()
+    
+    # Export methods
+    def exportsupported(self):
+        return False
+
+    def transferexport_store(self, key, file_, name):
+        raise UnsupportedRequest()
+
+    def transferexport_retrieve(self, key, file_, name):
+        raise UnsupportedRequest()
+
+    def checkpresentexport(self, key, name):
+        raise UnsupportedRequest()
+
+    def removeexport(self, key, name):
+        raise UnsupportedRequest()
+
+    def removeexportdirectory(self, directory):
+        raise UnsupportedRequest()
+
+    def renameexport(self, key, name, new_name):
         raise UnsupportedRequest()
 
     # Setup function to be run before initremote to handle things like authentication interactively

@@ -20,6 +20,17 @@ class GitAnnexTestCase(unittest.TestCase):
 
         self.annex.LinkRemote(self.remote)
 
+class MinimalTestCase(unittest.TestCase):
+    def setUp(self):
+        super().setUp()
+
+        self.output = io.StringIO()
+        self.input = io.StringIO()
+
+        self.annex = annexremote.Master(self.output)
+        self.remote = MinimalRemote(self.annex)
+
+        self.annex.LinkRemote(self.remote)
 
 def first_buffer_line(buf):
     return buffer_lines(buf)[0]
@@ -35,7 +46,20 @@ def buffer_lines(buf):
         lines.append(line.rstrip("\n"))
     buf.seek(current_position)
     return lines
-    
+   
+class MinimalRemote(annexremote.SpecialRemote):
+    def initremote(self):
+        pass
+    def prepare(self):
+        pass
+    def transfer_store(self, key, file_):
+        pass
+    def transfer_retrieve(self, key, file_):
+        pass
+    def checkpresent(self, key):
+        pass
+    def remove(self, key):
+        pass
     
 class DummyRemote(annexremote.ExportRemote):
     def initremote(self):

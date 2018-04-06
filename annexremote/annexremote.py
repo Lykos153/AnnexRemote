@@ -44,11 +44,11 @@ class SpecialRemote(ABC):
         pass
 
     @abstractmethod
-    def transfer_store(self, key, file_):
+    def transfer_store(self, key, local_file):
         pass
 
     @abstractmethod
-    def transfer_retrieve(self, key, file_):
+    def transfer_retrieve(self, key, local_file):
         pass
 
     @abstractmethod
@@ -79,22 +79,22 @@ class SpecialRemote(ABC):
     def exportsupported(self):
         return False
 
-    def transferexport_store(self, key, file_, name):
+    def transferexport_store(self, key, local_file, remote_file):
         raise UnsupportedRequest()
 
-    def transferexport_retrieve(self, key, file_, name):
+    def transferexport_retrieve(self, key, local_file, remote_file):
         raise UnsupportedRequest()
 
-    def checkpresentexport(self, key, name):
+    def checkpresentexport(self, key, remote_file):
         raise UnsupportedRequest()
 
-    def removeexport(self, key, name):
+    def removeexport(self, key, remote_file):
         raise UnsupportedRequest()
 
-    def removeexportdirectory(self, directory):
+    def removeexportdirectory(self, remote_directory):
         raise UnsupportedRequest()
 
-    def renameexport(self, key, name, new_name):
+    def renameexport(self, key, filename, new_filename):
         raise UnsupportedRequest()
 
     # Setup function to be run before initremote to handle things like authentication interactively
@@ -106,27 +106,27 @@ class ExportRemote(SpecialRemote):
         return True
 
     @abstractmethod
-    def transferexport_store(self, key, file_, name):
+    def transferexport_store(self, key, local_file, remote_file):
         pass
 
     @abstractmethod
-    def transferexport_retrieve(self, key, file_, name):
+    def transferexport_retrieve(self, key, local_file, remote_file):
         pass
 
     @abstractmethod
-    def checkpresentexport(self, key, name):
+    def checkpresentexport(self, key, remote_file):
         pass
 
     @abstractmethod
-    def removeexport(self, key, name):
+    def removeexport(self, key, remote_file):
         pass
 
     @abstractmethod
-    def removeexportdirectory(self, directory):
+    def removeexportdirectory(self, remote_directory):
         pass
 
     @abstractmethod
-    def renameexport(self, key, name, new_name):
+    def renameexport(self, key, filename, new_filename):
         pass
 
         

@@ -77,7 +77,46 @@ Now save your program as ``git-annex-remote-$something`` and make it executable.
 
 That's it. Now you've created your special remote.
 
-### Using other requests
+#### Export remotes
+Import and subtype `ExportRemote` instead of `SpecialRemote`:
+
+```
+# ...
+from annexremote import ExportRemote
+
+class MyRemote(ExportRemote):
+    # implement the remote methods just like in the above example and then additionally:
+    
+    def transferexport_store(self, key, local_file, remote_file):
+        # store the file located at `local_file` to `remote_file` on the remote
+        # raise RemoteError if the file couldn't be stored
+
+    def transferexport_retrieve(self, key, local_file, remote_file):
+        # get the file located at `remote_file` from the remote and store it to `local_file`
+        # raise RemoteError if the file couldn't be retrieved
+
+    def checkpresentexport(self, key, remote_file):
+        # return True if the file `remote_file` is present in the remote
+        # return False if not
+        # raise RemoteError if the presence of the file couldn't be determined, eg. in case of connection error
+
+    def removeexport(self, key, remote_file):
+        # remove the file in `remote_file` from the remote
+        # raise RemoteError if it couldn't be removed
+        # note that removing a not existing key isn't considered an error
+
+    def removeexportdirectory(self, remote_directory):
+        # remove the directory `remote_directory` from the remote
+        # raise RemoteError if it couldn't be removed
+        # note that removing a not existing directory isn't considered an error
+
+    def renameexport(self, key, filename, new_filename):
+        # move the remote file in `name` to `new_name`
+        # raise RemoteError if it couldn't be moved
+
+```
+
+#### Using other requests
 A full documentation is being worked on. Until then, check the test cases in order to see how the other methods are used. Also have a look at [git-annex-remote-googledrive](https://github.com/Lykos153/git-annex-remote-googledrive) which is based on AnnexRemote.
 
 ## License

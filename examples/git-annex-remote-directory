@@ -1,0 +1,150 @@
+#!/usr/bin/env python3
+# git-annex external special remote program
+# 
+# This is basically the same as git-annex's built-in directory special remote.
+# 
+# Install in PATH as git-annex-remote-directory
+#
+# Copyright 2018 Silvio Ankermann; licenced under the GNU GPL version 3
+
+import sys, os, errno
+
+from shutil import copyfile
+
+from annexremote import Master
+from annexremote import ExportRemote
+from annexremote import RemoteError, ProtocolError
+
+class DirectoryRemote(ExportRemote):
+
+    def initremote(self):
+        self.directory = self.annex.getconfig('directory')
+        if not self.directory:
+            raise RemoteError("You need to set directory=")
+        self._mkdir(self.directory)
+                
+    def prepare(self):
+        self.directory = self.annex.getconfig('directory')
+        if not os.path.exists(self.directory):
+            raise RemoteError("{} not found".format(self.directory))
+        
+    def transfer_store(self, key, filename):
+        location = self._calclocation(key)
+        self._do_store(key, filename, location)
+                
+    def transfer_retrieve(self, key, filename):
+        location = self._calclocation(key)
+        self._do_retrieve(key, location, filename)
+
+    def checkpresent(self, key):
+        location = self._calclocation(key)
+        return self._do_checkpresent(key, location)
+        
+    def remove(self, key):
+        location = self._calclocation(key)
+        self._do_remove(key, location)
+
+    ## Export methods
+    def transferexport_store(self, key, local_file, remote_file):
+        location = '/'.join((self.directory, remote_file))
+        self._do_store(key, local_file, location)
+        
+    def transferexport_retrieve(self, key, local_file, remote_file):
+        location = '/'.join((self.directory, remote_file))
+        self._do_retrieve(key, location, local_file)
+
+    def checkpresentexport(self, key, remote_file):
+        location = '/'.join((self.directory, remote_file))
+        return self._do_checkpresent(key, location)
+
+    def removeexport(self, key, remote_file):
+        location = '/'.join((self.directory, remote_file))
+        self._do_remove(key, location)
+
+    def removeexportdirectory(self, remote_directory):
+        location = '/'.join((self.directory, remote_directory))
+        try:
+            os.rmdir(location)
+        except FileNotFoundError:
+            pass
+        except OSError as e:
+            raise RemoteError(e)
+
+    def renameexport(self, key, filename, new_filename):
+        oldlocation = '/'.join((self.directory, filename))
+        newlocation = '/'.join((self.directory, new_filename))
+        try:
+            os.rename(oldlocation, newlocation)
+        except OSError as e:
+            raise RemoteError(e)
+        
+        
+    def _mkdir(self, directory):
+        try:
+            os.makedirs(directory)
+        except OSError as e:
+            if e.errno != errno.EEXIST:
+                raise RemoteError("Failed to write to {}".format(directory))
+
+    def _calclocation(self, key):
+        return "{dir}/{hash}{key}".format(
+                        dir=self.directory, 
+                        hash=self.annex.dirhash(key),
+                        key=key)
+    
+    
+    def _info(self, message):
+        try:
+            self.annex.info(message)
+        except ProtocolError:
+            print(message)
+                        
+    def _do_store(self, key, filename, location):
+        self._mkdir(os.path.dirname(location))
+        templocation = '/'.join((self.directory,
+                                'tmp',
+                                key))
+        self._mkdir(os.path.dirname(templocation))
+        try:
+            copyfile(filename, templocation)
+            os.rename(templocation, location)
+        except OSError as e:
+            raise RemoteError(e)
+        try:
+            os.rmdir(os.path.dirname(templocation))
+        except OSError:
+            self._info("Could not remove tempdir (Not empty)")
+
+    def _do_retrieve(self, key, location, filename):
+        try:
+            copyfile(location, filename)
+        except OSError as e:
+            raise RemoteError(e)
+        
+    def _do_checkpresent(self, key, location):
+        if not os.path.exists(self.directory):
+            raise RemoteError("this remote is not currently available")
+        return os.path.isfile(location)
+
+    def _do_remove(self, key, location):
+        if not os.path.exists(self.directory):
+            raise RemoteError("this remote is not currently available")
+        try:
+            os.remove(location)
+        except FileNotFoundError:
+	        # It's not a failure to remove a file that is not present.
+            pass
+            
+def main():
+
+    # Redirect output to stderr to avoid messing up the protocol
+    output = sys.stdout
+    sys.stdout = sys.stderr
+    
+    master = Master(output)
+    remote = DirectoryRemote(master)
+    master.LinkRemote(remote)
+    master.Listen()
+
+if __name__ == "__main__":
+    main()        

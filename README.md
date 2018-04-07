@@ -116,8 +116,8 @@ class MyRemote(ExportRemote):
 
 ```
 
-#### Using other requests
-A full documentation is being worked on. Until then, check the test cases in order to see how the other methods are used. Also have a look at [git-annex-remote-googledrive](https://github.com/Lykos153/git-annex-remote-googledrive) which is based on AnnexRemote.
+#### Documentation
+A full documentation is being worked on. Until then, have a look at the [example](examples) and check the test cases in order to see how the other methods are used. Also have a look at [git-annex-remote-googledrive](https://github.com/Lykos153/git-annex-remote-googledrive) which is based on AnnexRemote.
 
 ## License
 

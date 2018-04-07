@@ -61,7 +61,7 @@ In your ``main`` function, link your remote to the master class and initialize t
 
 ```
 def main():
-    master = RemoteMaster()
+    master = Master()
     remote = MyRemote(master)
     master.LinkRemote(remote)
     master.Listen()

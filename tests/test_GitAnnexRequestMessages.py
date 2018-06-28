@@ -222,6 +222,22 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
         self.remote.whereis.assert_called_once_with("Key")
         self.assertEqual(utils.second_buffer_line(self.output), "WHEREIS-FAILURE")
 
+    def TestGetinfo(self):
+        self.remote.info = {'info field 1': 'infovalue', 'info field 2':'infovalue 2'}
+        self.annex.Listen(io.StringIO("GETINFO"))
+        self.assertEqual(utils.buffer_lines(self.output)[1:],
+                ['INFOFIELD info field 1',
+                 'INFOVALUE infovalue',
+                 'INFOFIELD info field 2',
+                 'INFOVALUE infovalue 2',
+                 'INFOEND']
+        )
+
+    def TestGetinfoNone(self):
+        self.remote.info = {}
+        self.annex.Listen(io.StringIO("GETINFO"))
+        self.assertEqual(utils.buffer_lines(self.output)[1:], ["INFOEND"])
+
 class TestGitAnnexRequestMessagesExporttree(utils.GitAnnexTestCase):
     def TestExportsupportedSuccess(self):
         self.annex.Listen(io.StringIO("EXPORTSUPPORTED"))

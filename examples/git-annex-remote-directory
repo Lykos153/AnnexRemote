@@ -25,6 +25,7 @@ class DirectoryRemote(ExportRemote):
                 
     def prepare(self):
         self.directory = self.annex.getconfig('directory')
+        self.info = {'directory': self.directory}
         if not os.path.exists(self.directory):
             raise RemoteError("{} not found".format(self.directory))
         

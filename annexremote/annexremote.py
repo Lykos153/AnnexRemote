@@ -34,6 +34,7 @@ class SpecialRemote(ABC):
 
     def __init__(self, annex):
         self.annex = annex
+        self.info = {}
 
     @abstractmethod
     def initremote(self):
@@ -294,6 +295,15 @@ class Protocol:
             return "WHEREIS-SUCCESS {reply}".format(reply=reply)
         else:
             return "WHEREIS-FAILURE"
+
+    def do_GETINFO(self):
+        info = self.remote.info
+        reply = []
+        for field in sorted(info):
+            reply.append("INFOFIELD {}".format(field))
+            reply.append("INFOVALUE {}".format(info[field]))
+        reply.append("INFOEND")
+        return '\n'.join(reply)
     
     def do_EXPORTSUPPORTED(self):
         if self.remote.exportsupported():

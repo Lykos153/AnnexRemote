@@ -261,7 +261,7 @@ class Protocol:
         elif reply is True:
             return "CHECKURL-CONTENTS UNKNOWN"
         
-        if len(reply)==1:
+        if len(reply)==1 and 'url' not in reply[0]:
             entry = reply[0]
             if 'size' not in entry or entry['size'] is None:
                 entry['size'] = "UNKNOWN"

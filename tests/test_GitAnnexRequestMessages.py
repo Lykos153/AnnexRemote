@@ -164,6 +164,12 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
         self.annex.Listen(io.StringIO("CHECKURL Url"))
         self.remote.checkurl.assert_called_once_with("Url")
         self.assertEqual(utils.second_buffer_line(self.output), "CHECKURL-CONTENTS UNKNOWN")
+
+    def TestCheckurlMultiOneItemWithUrl(self):
+        self.remote.checkurl.return_value = [{'url':"Url_exact", 'size':512,'filename':"Filename"}]
+        self.annex.Listen(io.StringIO("CHECKURL Url"))
+        self.remote.checkurl.assert_called_once_with("Url")
+        self.assertEqual(utils.second_buffer_line(self.output), "CHECKURL-MULTI Url_exact 512 Filename")
         
     def TestCheckurlMultiTwoUrls(self):
         urllist = [{'url':"Url1", 'size':512, 'filename':"Filename1"},

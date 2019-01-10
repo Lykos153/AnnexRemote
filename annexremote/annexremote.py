@@ -9,10 +9,12 @@
 # warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 #
 
-from abc import ABC, abstractmethod
+from abc import ABCMeta, abstractmethod
 
 import sys
 import string
+
+import six
 
 
 # Exceptions
@@ -30,7 +32,8 @@ class UnexpectedMessage(ProtocolError):
 class RemoteError(Error):
     pass
 
-class SpecialRemote(ABC):
+@six.add_metaclass(ABCMeta)
+class SpecialRemote(object):
 
     def __init__(self, annex):
         self.annex = annex
@@ -436,23 +439,23 @@ class Master:
         return self._askvalue("GETCONFIG {req}".format(req=req))
 
     def setconfig(self, key, value):
-        self._send("SETCONFIG {key} {value}".format(key=key, value=value))
+        self._send(u"SETCONFIG {key} {value}".format(key=key, value=value))
 
     def getstate(self, key):
         return self._askvalue("GETSTATE {key}".format(key=key))
 
     def setstate(self, key, value):
-        self._send("SETSTATE {key} {value}".format(key=key, value=value))
+        self._send(u"SETSTATE {key} {value}".format(key=key, value=value))
 
     def debug(self, *args):
-        self._send("DEBUG", *args)
+        self._send(u"DEBUG", *args)
         
     def error(self, *args):
-        self._send("ERROR", *args)
+        self._send(u"ERROR", *args)
 
     def progress(self, progress):
         if type(progress) == int:
-            self._send("PROGRESS", progress)
+            self._send(u"PROGRESS", progress)
         else:
             raise TypeError("Expected integer")
 
@@ -463,7 +466,7 @@ class Master:
         return self._askvalue("DIRHASH-LOWER {key}".format(key=key))
 
     def setcreds(self, setting, user, password):
-        self._send("SETCREDS", setting, user, password)
+        self._send(u"SETCREDS", setting, user, password)
 
     def getcreds(self, setting):
         (user, password) = self._ask("GETCREDS {setting}".format(setting=setting), "CREDS", 2)
@@ -476,32 +479,32 @@ class Master:
         return self._askvalue("GETGITDIR")
 
     def setwanted(self, prefcontent):
-        self._send("SETWANTED", prefcontent)
+        self._send(u"SETWANTED", prefcontent)
 
     def getwanted(self):
         return self._askvalue("GETWANTED")
 
     def seturlpresent(self, key, url):
-        self._send("SETURLPRESENT", key, url)
+        self._send(u"SETURLPRESENT", key, url)
 
     def seturlmissing(self, key, url):
-        self._send("SETURLMISSING", key, url)
+        self._send(u"SETURLMISSING", key, url)
 
     def seturipresent(self, key, uri):
-        self._send("SETURIPRESENT", key, uri)
+        self._send(u"SETURIPRESENT", key, uri)
     
     def seturimissing(self, key, uri):
-        self._send("SETURIMISSING", key, uri)
+        self._send(u"SETURIMISSING", key, uri)
 
     def geturls(self, key, prefix):
         return self._askvalues("GETURLS {key} {prefix}".format(key=key, prefix=prefix))
         
     def info(self, message):
         if "INFO" in self.protocol.extensions:
-            self._send("INFO", message)
+            self._send(u"INFO", message)
         else:
             raise ProtocolError("INFO not available") 
 
     def _send(self, *args, **kwargs):
-        print(*args, file=self.output, **kwargs)
+        six.print_(*args, file=self.output, **kwargs)
         self.output.flush()

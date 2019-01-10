@@ -43,7 +43,7 @@ setup(
         'Topic :: Software Development :: Libraries :: Python Modules',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
 
-        'Programming Language :: Python :: 3 :: Only',
+        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
@@ -51,6 +51,7 @@ setup(
     keywords='git-annex remote',
     packages=['annexremote'],
 
+    install_requires=['six'],
     extras_require={
         'test': ['coverage'],
     },

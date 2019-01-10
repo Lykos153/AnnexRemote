@@ -7,10 +7,10 @@ Extensions to the protocol are normally added within hours after they've been pu
 
 ## Getting started
 ### Prerequisites
-You need python3 installed on your system. AnnexRemote has been tested with version 3.4 to 3.7.
+You need python installed on your system. AnnexRemote has been tested with version 2.7 and 3.4 to 3.7.
 
 ### Installing
-`pip3 install annexremote`
+`pip install annexremote`
 
 ### Running the tests
 If you want to run the tests, copy the content of the `tests` folder to the same location as `annexremote.py`.
@@ -73,7 +73,7 @@ if __name__ == "__main__":
 Now save your program as ``git-annex-remote-$something`` and make it executable.
 
 ``chmod +x git-annex-remote-$something``
-(You'll need the sheebang line ``#!/usr/bin/env python3``)
+(You'll need the sheebang line ``#!/usr/bin/env python``)
 
 That's it. Now you've created your special remote.
 

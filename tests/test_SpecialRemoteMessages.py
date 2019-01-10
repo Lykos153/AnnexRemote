@@ -1,5 +1,6 @@
 import io
 import utils
+import six
 ProtocolError = utils.annexremote.ProtocolError
 
 class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
@@ -13,7 +14,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
 
     def _perform_test(self, function_to_call, function_parameters, expected_output,
                     annex_reply=None, function_result=None, skip_assertion=False):
-        self.annex.input = io.StringIO(annex_reply)
+        self.annex.input = six.StringIO(annex_reply)
         result = function_to_call(*function_parameters)
         self.assertEqual(result, function_result)
         if not skip_assertion:
@@ -312,7 +313,7 @@ class TestSpecialRemoteMessages_Extensions(utils.GitAnnexTestCase):
     def _perform_test(self, function_to_call, function_parameters, expected_output,
                     annex_reply=None, function_result=None):
         
-        self.annex.input = io.StringIO(annex_reply)
+        self.annex.input = six.StringIO(annex_reply)
         result = function_to_call(*function_parameters)
         self.assertEqual(result, function_result)
 
@@ -320,7 +321,7 @@ class TestSpecialRemoteMessages_Extensions(utils.GitAnnexTestCase):
         self.assertEqual(utils.buffer_lines(self.output)[2].rstrip(), expected_output)
 
     def TestInfo(self):
-        self.annex.Listen(io.StringIO("EXTENSIONS INFO"))
+        self.annex.Listen(six.StringIO(u"EXTENSIONS INFO"))
         function_to_call = self.annex.info
         function_parameters = ("message",)
         expected_output = "INFO message"

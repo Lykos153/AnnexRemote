@@ -1,5 +1,9 @@
 import unittest
-import unittest.mock as mock
+import six
+try:
+    import unittest.mock as mock
+except ImportError:
+    import mock
 import io
 
 import os, sys
@@ -10,10 +14,9 @@ import annexremote
 
 class GitAnnexTestCase(unittest.TestCase):
     def setUp(self):
-        super().setUp()
 
-        self.output = io.StringIO()
-        self.input = io.StringIO()
+        self.output = six.StringIO()
+        self.input = six.StringIO()
 
         self.annex = annexremote.Master(self.output)
         self.remote = mock.MagicMock(wraps=DummyRemote(self.annex))
@@ -22,10 +25,9 @@ class GitAnnexTestCase(unittest.TestCase):
 
 class MinimalTestCase(unittest.TestCase):
     def setUp(self):
-        super().setUp()
 
-        self.output = io.StringIO()
-        self.input = io.StringIO()
+        self.output = six.StringIO()
+        self.input = six.StringIO()
 
         self.annex = annexremote.Master(self.output)
         self.remote = MinimalRemote(self.annex)

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 # annexremote Setup
 # Copyright (C) 2017 Silvio Ankermann

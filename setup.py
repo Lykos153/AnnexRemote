@@ -52,6 +52,6 @@ setup(
     packages=['annexremote'],
 
     extras_require={
-        'test': ['coverage'],
+        'test': ['coverage', 'nose'],
     },
 )

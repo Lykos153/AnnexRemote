@@ -37,6 +37,12 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         
         self._perform_test(function_to_call, function_parameters, expected_output)
 
+    def TestProgressNotANumber(self):
+        function_to_call = self.annex.progress
+        function_parameters = ("NaN",)
+        with self.assertRaises(ValueError):
+            self._perform_test(function_to_call, function_parameters, "")
+
     def TestDirhash(self):
         function_to_call = self.annex.dirhash
         function_parameters = ("Key",)

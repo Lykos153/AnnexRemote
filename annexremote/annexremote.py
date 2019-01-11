@@ -9,7 +9,19 @@
 # warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 #
 
-from abc import ABC, abstractmethod
+from __future__ import print_function
+from __future__ import unicode_literals
+from __future__ import division
+from __future__ import absolute_import
+from builtins import int
+from builtins import str
+from future import standard_library
+standard_library.install_aliases()
+from future.utils import with_metaclass
+from builtins import object
+
+
+from abc import ABCMeta, abstractmethod
 
 import sys
 import string
@@ -30,7 +42,7 @@ class UnexpectedMessage(ProtocolError):
 class RemoteError(Error):
     pass
 
-class SpecialRemote(ABC):
+class SpecialRemote(with_metaclass(ABCMeta, object)):
 
     def __init__(self, annex):
         self.annex = annex
@@ -131,7 +143,7 @@ class ExportRemote(SpecialRemote):
         pass
 
         
-class Protocol:
+class Protocol(object):
 
     def __init__(self, remote):
         self.remote = remote
@@ -380,7 +392,7 @@ class Protocol:
         else:
             return "RENAMEEXPORT-SUCCESS {key}".format(key=key)
 
-class Master:
+class Master(object):
     def __init__(self, output=sys.stdout):
         self.output = output
 
@@ -451,10 +463,7 @@ class Master:
         self._send("ERROR", *args)
 
     def progress(self, progress):
-        if type(progress) == int:
-            self._send("PROGRESS", progress)
-        else:
-            raise TypeError("Expected integer")
+        self._send("PROGRESS {progress}".format(progress=int(progress)))
 
     def dirhash(self, key):
         return self._askvalue("DIRHASH {key}".format(key=key))

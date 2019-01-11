@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # git-annex external special remote program
 # 
 # This is basically the same as git-annex's built-in directory special remote.

@@ -403,7 +403,11 @@ class Master(object):
     def Listen(self, input_=sys.stdin):
         self.input = input_
         self._send(self.protocol.version)
-        for line in self.input:
+        while True:
+            # due to a bug in python 2 we can't use an iterator here: https://bugs.python.org/issue1633941
+            line = self.input.readline()
+            if not line:
+                break
             line = line.rstrip()
             try:
                 reply = self.protocol.command(line)
@@ -417,7 +421,7 @@ class Master(object):
             #except Exception as e:
             #    self._send ("ERROR", e)
             #    raise SystemExit
-    
+
     def _ask(self, request, reply_keyword, reply_count):
         self._send(request)
         line = self.input.readline().rstrip().split(" ", reply_count)

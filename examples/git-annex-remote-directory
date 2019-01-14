@@ -66,10 +66,9 @@ class DirectoryRemote(ExportRemote):
         location = '/'.join((self.directory, remote_directory))
         try:
             os.rmdir(location)
-        except FileNotFoundError:
-            pass
         except OSError as e:
-            raise RemoteError(e)
+            if e.errno != errno.ENOENT:
+                raise RemoteError(e)
 
     def renameexport(self, key, filename, new_filename):
         oldlocation = '/'.join((self.directory, filename))
@@ -132,9 +131,10 @@ class DirectoryRemote(ExportRemote):
             raise RemoteError("this remote is not currently available")
         try:
             os.remove(location)
-        except FileNotFoundError:
-	        # It's not a failure to remove a file that is not present.
-            pass
+        except OSError as e:
+	    # It's not a failure to remove a file that is not present.
+            if e.errno != errno.ENOENT:
+                raise RemoteError(e)
             
 def main():
 

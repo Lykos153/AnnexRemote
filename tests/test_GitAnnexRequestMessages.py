@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from __future__ import unicode_literals
 from __future__ import print_function
 from __future__ import division
@@ -293,6 +295,14 @@ class TestGitAnnexRequestMessagesExporttree(utils.GitAnnexTestCase):
     def TestTransferexportStore_SpaceInFilename(self):
         self.annex.Listen(io.StringIO("EXPORT Name\nTRANSFEREXPORT STORE Key File with spaces"))
         self.remote.transferexport_store.assert_called_once_with("Key", "File with spaces", "Name")
+
+    def TestTransferexportStore_SpecialCharacterInName(self):
+        self.annex.Listen(io.StringIO("EXPORT Näme\nTRANSFEREXPORT STORE Key File with spaces"))
+        self.remote.transferexport_store.assert_called_once_with("Key", "File with spaces", "Näme")
+
+    def TestTransferexportStore_UnicodeCharacterInName(self):
+        self.annex.Listen(io.StringIO("EXPORT Name 😀\nTRANSFEREXPORT STORE Key File with spaces"))
+        self.remote.transferexport_store.assert_called_once_with("Key", "File with spaces", "Name 😀")
 
     def TestTransferexportRetrieveSuccess(self):
         self.annex.Listen(io.StringIO("EXPORT Name\nTRANSFEREXPORT RETRIEVE Key File"))

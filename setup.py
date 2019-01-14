@@ -51,6 +51,7 @@ setup(
     keywords='git-annex remote',
     packages=['annexremote'],
 
+    install_requires=['future'],
     extras_require={
         'test': ['coverage', 'nose', 'mock'],
     },

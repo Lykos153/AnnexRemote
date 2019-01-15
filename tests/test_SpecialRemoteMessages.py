@@ -294,11 +294,41 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         expected_output = "SETURIMISSING Key Uri"
 
         self._perform_test(function_to_call, function_parameters, expected_output)
-        
-    def TestGeturls(self):
+
+    def TestGeturls_0(self):
         function_to_call = self.annex.geturls
         function_parameters = ("Key", "Prefix")
         expected_output = "GETURLS Key Prefix"
+        annex_reply = "VALUE"
+        function_result = []
+        
+        self._perform_test(function_to_call, function_parameters, expected_output,
+                        annex_reply, function_result)
+        
+    def TestGeturls_1(self):
+        function_to_call = self.annex.geturls
+        function_parameters = ("Key", "Prefix")
+        expected_output = "GETURLS Key Prefix"
+        annex_reply = "VALUE State1\nVALUE"
+        function_result = ["State1"]
+        
+        self._perform_test(function_to_call, function_parameters, expected_output,
+                        annex_reply, function_result)
+        
+    def TestGeturls_2(self):
+        function_to_call = self.annex.geturls
+        function_parameters = ("Key", "Prefix")
+        expected_output = "GETURLS Key Prefix"
+        annex_reply = "VALUE State1\nVALUE State2\nVALUE"
+        function_result = ["State1", "State2"]
+        
+        self._perform_test(function_to_call, function_parameters, expected_output,
+                        annex_reply, function_result)
+
+    def TestGeturls_2_empty_prefix(self):
+        function_to_call = self.annex.geturls
+        function_parameters = ("Key", "")
+        expected_output = "GETURLS Key"
         annex_reply = "VALUE State1\nVALUE State2\nVALUE"
         function_result = ["State1", "State2"]
         

@@ -434,7 +434,9 @@ class Master(object):
     def _askvalues(self, request):
         self._send(request)
         reply = []
-        for line in self.input:
+        while True:
+            # due to a bug in python 2 we can't use an iterator here: https://bugs.python.org/issue1633941
+            line = self.input.readline()
             line = line.rstrip()
             line = line.split(" ", 1)
             if len(line) == 2 and line[0] == "VALUE":

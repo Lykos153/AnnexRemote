@@ -16,9 +16,9 @@ import string
 
 
 # Exceptions
-class Error(Exception):
+class AnnexError(Exception):
     pass
-class ProtocolError(Error):
+class ProtocolError(AnnexError):
     pass
 
 class UnsupportedRequest(ProtocolError):
@@ -27,7 +27,7 @@ class UnsupportedRequest(ProtocolError):
 class UnexpectedMessage(ProtocolError):
     pass
 
-class RemoteError(Error):
+class RemoteError(AnnexError):
     pass
 
 class SpecialRemote(ABC):

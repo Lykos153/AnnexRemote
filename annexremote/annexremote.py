@@ -263,10 +263,9 @@ class Protocol:
         
         if len(reply)==1 and 'url' not in reply[0]:
             entry = reply[0]
-            if 'size' not in entry or entry['size'] is None:
-                entry['size'] = "UNKNOWN"
+            size = entry.get("size", "UNKNOWN")
                 
-            returnvalue = " ".join(("CHECKURL-CONTENTS", str(entry['size'])))
+            returnvalue = " ".join(("CHECKURL-CONTENTS", str(size)))
         
             if 'filename' in entry and entry['filename']:
                 returnvalue = " ".join((returnvalue, entry['filename']))

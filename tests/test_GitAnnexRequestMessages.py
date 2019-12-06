@@ -204,6 +204,20 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
         with self.assertRaises(ValueError):
             self.annex.Listen(io.StringIO("CHECKURL Url"))
         
+    def TestCheckurlMultiTabInUrl(self):
+        urllist = [{'url':"Url  with tabs", 'size':512, 'filename':"Filename1"},
+                   {'url':"Url2",'filename':"Filename2"}]
+        self.remote.checkurl.return_value = urllist
+        with self.assertRaises(ValueError):
+            self.annex.Listen(io.StringIO("CHECKURL Url"))
+        
+    def TestCheckurlMultiTabInFilename(self):
+        urllist = [{'url':"Url1", 'size':512, 'filename':"Filename  with    tabs"},
+                   {'url':"Url2", 'filename':"Filename2"}]
+        self.remote.checkurl.return_value = urllist
+        with self.assertRaises(ValueError):
+            self.annex.Listen(io.StringIO("CHECKURL Url"))
+        
     def TestCheckurlFailure(self):
         self.remote.checkurl.side_effect = RemoteError()
         self.annex.Listen(io.StringIO("CHECKURL Url"))

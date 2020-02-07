@@ -102,6 +102,21 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
         self.remote.remove.assert_called_once_with("Key")
         self.assertEqual(utils.second_buffer_line(self.output), "REMOVE-FAILURE Key ErrorMsg")
                 
+    def TestListconfigs(self):
+        self.remote.listconfigs.return_value = {'Name': 'Description', 'con1': "necessary configuration", 'opt': "optional configuration"}
+        self.annex.Listen(io.StringIO("LISTCONFIGS"))
+        self.assertEqual(self.remote.listconfigs.call_count, 1)
+        self.assertEqual(utils.buffer_lines(self.output)[1:],
+                ['CONFIG Name Description',
+                 'CONFIG con1 necessary configuration',
+                 'CONFIG opt optional configuration',
+                 'CONFIGEND'])
+                
+    def TestListconfigsSpaceInName(self):
+        self.remote.listconfigs.return_value = {'Name with space': 'Description'}
+        with self.assertRaises(ValueError):
+            self.annex.Listen(io.StringIO("LISTCONFIGS"))
+
     def TestGetcost(self):
         self.remote.getcost.return_value = 5
         self.annex.Listen(io.StringIO("GETCOST"))
@@ -453,3 +468,6 @@ class TestUnsupportedRequests(utils.MinimalTestCase):
         self.annex.Listen(io.StringIO("EXPORT Name\nRENAMEEXPORT Key NewName"))
         self.assertEqual(utils.second_buffer_line(self.output), "UNSUPPORTED-REQUEST")
 
+    def TestListconfigsUnsupportedRequest(self):
+        self.annex.Listen(io.StringIO("LISTCONFIGS"))
+        self.assertEqual(utils.second_buffer_line(self.output), "UNSUPPORTED-REQUEST")

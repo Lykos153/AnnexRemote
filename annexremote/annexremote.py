@@ -61,6 +61,9 @@ class SpecialRemote(ABC):
         pass
     
     # Optional requests
+    def listconfigs(self):
+        raise UnsupportedRequest()
+
     def getcost(self):
         raise UnsupportedRequest()
 
@@ -228,6 +231,15 @@ class Protocol:
         else:
             return "REMOVE-SUCCESS {key}".format(key=key)
     
+    def do_LISTCONFIGS(self):
+        return_string = ""
+        for name, description in self.remote.listconfigs().items():
+            if " " in name:
+                raise ValueError("Name must not contain space characters: {}".format(name))
+            return_string += "CONFIG {} {}\n".format(name, description)
+        return_string += "CONFIGEND"
+        return return_string
+
     def do_GETCOST(self):
         cost = self.remote.getcost()
         try:

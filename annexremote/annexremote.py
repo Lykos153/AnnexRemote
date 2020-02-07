@@ -28,9 +28,9 @@ import string
 
 
 # Exceptions
-class Error(Exception):
+class AnnexError(Exception):
     pass
-class ProtocolError(Error):
+class ProtocolError(AnnexError):
     pass
 
 class UnsupportedRequest(ProtocolError):
@@ -39,7 +39,7 @@ class UnsupportedRequest(ProtocolError):
 class UnexpectedMessage(ProtocolError):
     pass
 
-class RemoteError(Error):
+class RemoteError(AnnexError):
     pass
 
 class SpecialRemote(with_metaclass(ABCMeta, object)):
@@ -73,6 +73,9 @@ class SpecialRemote(with_metaclass(ABCMeta, object)):
         pass
     
     # Optional requests
+    def listconfigs(self):
+        raise UnsupportedRequest()
+
     def getcost(self):
         raise UnsupportedRequest()
 
@@ -240,6 +243,15 @@ class Protocol(object):
         else:
             return "REMOVE-SUCCESS {key}".format(key=key)
     
+    def do_LISTCONFIGS(self):
+        return_string = ""
+        for name, description in self.remote.listconfigs().items():
+            if " " in name:
+                raise ValueError("Name must not contain space characters: {}".format(name))
+            return_string += "CONFIG {} {}\n".format(name, description)
+        return_string += "CONFIGEND"
+        return return_string
+
     def do_GETCOST(self):
         cost = self.remote.getcost()
         try:
@@ -275,10 +287,9 @@ class Protocol(object):
         
         if len(reply)==1 and 'url' not in reply[0]:
             entry = reply[0]
-            if 'size' not in entry or entry['size'] is None:
-                entry['size'] = "UNKNOWN"
+            size = entry.get("size", "UNKNOWN")
                 
-            returnvalue = " ".join(("CHECKURL-CONTENTS", str(entry['size'])))
+            returnvalue = " ".join(("CHECKURL-CONTENTS", str(size)))
         
             if 'filename' in entry and entry['filename']:
                 returnvalue = " ".join((returnvalue, entry['filename']))

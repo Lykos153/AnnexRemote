@@ -43,6 +43,20 @@ class RemoteError(AnnexError):
     pass
 
 class SpecialRemote(with_metaclass(ABCMeta, object)):
+    """
+    Metaclass for non-export remotes.
+
+    ...
+
+    Attributes
+    ----------
+    annex : Master
+        The Master object to which this remote is linked. Master acts as an abstraction layer for git-annex.
+    info : dict
+        Contains information describing the configuration of the remote, for display by `git annex info` in
+        the form of {'Name': 'Value', ...} where both can be anything you want to be displayed to the user.
+        Note: Both Name and Value *can* contain spaces.
+    """
 
     def __init__(self, annex):
         self.annex = annex
@@ -50,33 +64,142 @@ class SpecialRemote(with_metaclass(ABCMeta, object)):
 
     @abstractmethod
     def initremote(self):
-        pass
+        """
+        Gets called when `git annex initremote` or `git annex enableremote` are run. 
+        This is where any one-time setup tasks can be done, for example creating the remote folder.
+        Note: This may be run repeatedly over time, as a remote is initialized in different repositories,
+        or as the configuration of a remote is changed. So any one-time setup tasks should be done idempotently.
+
+        Raises
+        ------
+        RemoteError
+            If the remote could not be initialized.
+        """
 
     @abstractmethod
     def prepare(self):
-        pass
+        """
+        Tells the remote that it's time to prepare itself to be used.
+        Gets called whenever git annex is about to access any of the below 
+        methods, so it shouldn't be too expensive. Otherwise it will
+        slow down operations like `git annex whereis` or `git annex info`.
+
+        Internet connection *can* be established here, though it's
+        recommended to defer this until it's actually needed.
+
+        Raises
+        ------
+        RemoteError
+            If the remote could not be prepared.
+        """
 
     @abstractmethod
     def transfer_store(self, key, local_file):
-        pass
+        """
+        Store the file in `local_file` to a unique location derived from `key`.
+
+        It's important that, while a Key is being stored, checkpresent(key)
+        not indicate it's present until all the data has been transferred.
+        While the transfer is running, the remote can repeatedly call 
+        annex.progress(size) to indicate the number of bytes already stored.
+        This will influence the progress shown to the user.
+
+        Parameters
+        ----------
+        key : str
+            The Key to be stored in the remote. In most cases, this is going to be the
+            remote file name. It should be at least be unambigiously derived from it.
+        local_file: str
+            Path to the file to upload.
+            Note that in some cases, local_file may contain whitespace.
+            Note that local_file should not influence the filename used on the remote.
+
+        Raises
+        ------
+        RemoteError
+            If the file could not be stored to the remote.
+        """
 
     @abstractmethod
     def transfer_retrieve(self, key, local_file):
-        pass
+        """
+        Get the file identified by `key` from the remote and store it in `local_file`.
+
+        While the transfer is running, the remote can repeatedly call 
+        annex.progress(size) to indicate the number of bytes already stored.
+        This will influence the progress shown to the user.
+
+        Parameters
+        ----------
+        key : str
+            The Key to get from the remote.
+        local_file: str
+            Path where to store the file.
+            Note that in some cases, local_file may contain whitespace.
+
+        Raises
+        ------
+        RemoteError
+            If the file could not be received from the remote.
+        """
 
     @abstractmethod
     def checkpresent(self, key):
-        pass
+        """
+        Requests the remote to check if a key is present in it.
+
+        Parameters
+        ----------
+        key : str
+
+        Returns
+        -------
+        bool
+            True if the key is present in the remote.
+            False if the key is not present.
+
+        Raises
+        ------
+        RemoteError
+            If the presence of the key couldn't be determined, eg. in case of connection error.
+
+        """
 
     @abstractmethod
     def remove(self, key):
-        pass
+        """
+        Requests the remote to remove a key's contents.
+
+        Parameters
+        ----------
+        key : str
+
+        Raises
+        ------
+        RemoteError
+            If the key couldn't be deleted from the remote.
+        """
     
     # Optional requests
     def listconfigs(self):
         raise UnsupportedRequest()
 
     def getcost(self):
+        """
+        Requests the remote to return a use cost. Higher costs are more expensive. 
+        
+        cheapRemoteCost = 100
+        nearlyCheapRemoteCost = 110
+        semiExpensiveRemoteCost = 175
+        expensiveRemoteCost = 200
+        veryExpensiveRemoteCost = 1000
+        (taken from Config/Cost.hs)
+
+        Returns
+        -------
+        int
+            Indicates the cost of the remote.
+        """
         raise UnsupportedRequest()
 
     def getavailability(self):

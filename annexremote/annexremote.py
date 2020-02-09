@@ -203,15 +203,55 @@ class SpecialRemote(with_metaclass(ABCMeta, object)):
         raise UnsupportedRequest()
 
     def getavailability(self):
+        """
+        Asks the remote if it is locally or globally available. (Ie stored in the cloud vs on a local disk.)
+
+        Returns
+        -------
+        str
+            Allowed values are "global" or "local".
+
+        """
         raise UnsupportedRequest()
 
     def claimurl(self, url):
+        """
+        Asks the remote if it wishes to claim responsibility for downloading an url.
+
+
+        Parameters
+        ----------
+        url : str
+
+        Returns
+        -------
+        bool
+            True if it wants to claim this url.
+            False if it doesn't.
+
+        """
         raise UnsupportedRequest()
 
     def checkurl(self, url):
         raise UnsupportedRequest()
 
     def whereis(self, key):
+        """
+        Asks the remote to provide additional information about ways to access the
+        content of a key stored in it, such as eg, public urls. This will be displayed 
+        to the user by eg, git annex whereis.
+        Note that users expect git annex whereis to run fast, without eg, network access.
+        
+        Parameters
+        ----------
+        key : str
+
+        Returns
+        -------
+        str
+            Information about the location of the key, eg. public urls.
+
+        """
         raise UnsupportedRequest()
     
     # Export methods
@@ -246,28 +286,145 @@ class ExportRemote(SpecialRemote):
 
     @abstractmethod
     def transferexport_store(self, key, local_file, remote_file):
-        pass
+        """
+        Requests the transfer of a file on local disk to the special remote.
+        Note that it's important that, while a file is being stored, 
+        checkpresentexport() not indicate it's present until all the data 
+        has been transferred.
+        While the transfer is running, the remote can send any number of progess(size) messages.
+
+
+        Parameters
+        ----------
+        key : str
+            The Key to be stored in the remote.
+        local_file: str
+            Path to the file to upload.
+            Note that in some cases, local_file may contain whitespace.
+        remote_file : str
+            The path to the location to which the file will be uploaded.
+            It will be in the form of a relative path, and may contain
+            path separators, whitespace, and other special characters.
+
+        Raises
+        ------
+        RemoteError
+            If the key couldn't be stored on the remote.
+        """
 
     @abstractmethod
     def transferexport_retrieve(self, key, local_file, remote_file):
-        pass
+        """
+        Requests the transfer of a file from the special remote to the local disk.
+        Note that it's important that, while a file is being stored, 
+        checkpresentexport() not indicate it's present until all the data 
+        has been transferred.
+        While the transfer is running, the remote can send any number of progess(size) messages.
+
+
+        Parameters
+        ----------
+        key : str
+            The Key to get from the remote.
+        local_file: str
+            Path where to store the file.
+            Note that in some cases, local_file may contain whitespace.
+        remote_file : str
+            The remote path of the file to download.
+            It will be in the form of a relative path, and may contain
+            path separators, whitespace, and other special characters.
+
+        Raises
+        ------
+        RemoteError
+            If the key couldn't be stored on the remote.
+        """
 
     @abstractmethod
     def checkpresentexport(self, key, remote_file):
-        pass
+        """
+        Requests the remote to check if the file is present in it.
+
+        Parameters
+        ----------
+        key : str
+            The key of the file to check. 
+        remote_file : str
+            The remote path of the file to check.
+
+        Returns
+        -------
+        bool
+            True if the file is present in the remote.
+            False if the file is not present in the remote
+
+        Raises
+        ------
+        RemoteError
+            If the the presence of the key couldn't be determined.
+        """
 
     @abstractmethod
     def removeexport(self, key, remote_file):
-        pass
+        """
+        Requests the remote to remove content stored by transferexportstore().
 
-    @abstractmethod
+        Parameters
+        ----------
+        key : str
+            The key of the file to check. 
+        remote_file : str
+            The remote path of the file to delete.
+
+        Raises
+        ------
+        RemoteError
+            If the the remote file couldn't be deleted.
+        """
+
     def removeexportdirectory(self, remote_directory):
-        pass
+        """
+        Requests the remote to remove an exported directory.
+        If the remote does not use directories, or removeexport() cleans
+        up directories that are empty, this does not need to be implemented.
 
-    @abstractmethod
+        Parameters
+        ----------
+        remote_directory : str
+            The remote path to the directory to delete. 
+            The directory will be in the form of a relative path,
+            and may contain path separators, whitespace, and other special characters.
+            Typically the directory will be empty, but it could possibly contain
+            files or other directories, and it's ok to remove those,
+            but not required to do so. 
+
+        Raises
+        ------
+        RemoteError
+            If the the remote directory couldn't be deleted.
+        """
+        raise UnsupportedRequest()
+
     def renameexport(self, key, filename, new_filename):
-        pass
+        """
+        Requests the remote rename a file stored on it from `filename` to `new_filename`. 
+        Remotes that support exports but not renaming do not need to implement this.
 
+        Parameters
+        ----------
+        key : str
+            The key of the file to rename
+        filename : str
+            The old path to the file.
+        new_filename : str
+            The new path to the file.
+
+        Raises
+        ------
+        RemoteError
+            If the the remote directory couldn't be deleted.
+        """
+        raise UnsupportedRequest()
         
 class Protocol(object):
 

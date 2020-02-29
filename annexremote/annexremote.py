@@ -42,6 +42,9 @@ class UnexpectedMessage(ProtocolError):
 class RemoteError(AnnexError):
     pass
 
+class NotLinkedError(AnnexError):
+    pass
+
 class SpecialRemote(with_metaclass(ABCMeta, object)):
     """
     Metaclass for non-export remotes.
@@ -56,11 +59,20 @@ class SpecialRemote(with_metaclass(ABCMeta, object)):
         Contains information describing the configuration of the remote, for display by `git annex info` in
         the form of {'Name': 'Value', ...} where both can be anything you want to be displayed to the user.
         Note: Both Name and Value *can* contain spaces.
+    configs : dict
+        Contains the settings which the remote uses (with getconfig() and setconfig()) in the form of
+        {'Name': 'Description', ...}
+        Note: Name *must not* contain spaces. Description should be reasonably short.
+        Example: {'directory': "store data here"}
+        Providing them makes `git annex initremote` work better, because it can check the user's input, 
+        and can also display a list of settings with descriptions.
+        Note that the user is not required to provided all the settings listed here.
     """
 
     def __init__(self, annex):
         self.annex = annex
         self.info = {}
+        self.configs = {}
 
     @abstractmethod
     def initremote(self):
@@ -182,7 +194,7 @@ class SpecialRemote(with_metaclass(ABCMeta, object)):
     
     # Optional requests
     def listconfigs(self):
-        raise UnsupportedRequest()
+        return self.configs
 
     def getcost(self):
         """
@@ -233,6 +245,38 @@ class SpecialRemote(with_metaclass(ABCMeta, object)):
         raise UnsupportedRequest()
 
     def checkurl(self, url):
+        """
+        Asks the remote to check if the url's content can currently be downloaded (without downloading it).
+        The remote can optionally provide additional information about the file.
+
+        Parameters
+        ----------
+        url : str
+
+        Returns
+        -------
+        Union(bool, List(Dict))
+            True if the url's content can currently be downloaded and no additional information can be provided.
+            False if it can't currently be downloaded.
+
+            In order to provide additional information, a list of dictionaries can be returned.
+            The dictionaries can have 3 keys: {'url': str, 'size': int, 'filename': str}
+            If there is only one file to be downloaded, we could return:
+            [{'size': 512, 'filename':'example_file.txt'}]
+            Both `size` and `filename` can be ommited.
+
+            If there are multiple files to be downloaded from this url
+
+
+
+            The dictionaries are of the form:
+            {'url':"https://example.com", 'size':512, 'filename':"example_file.txt"}
+
+            [{'url':"Url1", 'size':512, 'filename':"Filename1"}, {'url':"Url2", 'filename':"Filename2"}]
+
+
+
+        """
         raise UnsupportedRequest()
 
     def whereis(self, key):
@@ -281,6 +325,29 @@ class SpecialRemote(with_metaclass(ABCMeta, object)):
         print("Nothing to do. Just run 'git annex initremote' with your desired parameters")
 
 class ExportRemote(SpecialRemote):
+    """
+    Metaclass for remotes that support non-export *and* export behaviour.
+
+    ...
+
+    Attributes
+    ----------
+    annex : Master
+        The Master object to which this remote is linked. Master acts as an abstraction layer for git-annex.
+    info : dict
+        Contains information describing the configuration of the remote, for display by `git annex info` in
+        the form of {'Name': 'Value', ...} where both can be anything you want to be displayed to the user.
+        Note: Both Name and Value *can* contain spaces.
+    configs : dict
+        Contains the settings which the remote uses (with getconfig() and setconfig()) in the form of
+        {'Name': 'Description', ...}
+        Note: Name *must not* contain spaces. Description should be reasonably short.
+        Example: {'directory': "store data here"}
+        Providing them makes `git annex initremote` work better, because it can check the user's input, 
+        and can also display a list of settings with descriptions.
+        Note that the user is not required to provided all the settings listed here.
+    """
+
     def exportsupported(self):
         return True
 
@@ -684,15 +751,68 @@ class Protocol(object):
             return "RENAMEEXPORT-SUCCESS {key}".format(key=key)
 
 class Master(object):
+    """
+    Metaclass for non-export remotes.
+
+    ...
+
+    Attributes
+    ----------
+    input : io.TextIOBase
+        Where to listen for git-annex request messages.
+        Default: sys.stdin
+    output : io.TextIOBase
+        Where to send replies and special remote messages
+        Default: sys.stdout
+    remote : SpecialRemote
+        A class implementing either the SpecialRemote or the
+        ExternalSpecialRemote interface to which this master is linked.
+    """
+
     def __init__(self, output=sys.stdout):
+        """
+        Initialize the Master with an ouput.
+
+        Parameters
+        ----------
+        output : io.TextIOBase
+            Where to send replies and special remote messages
+            Default: sys.stdout
+        """
         self.output = output
 
     def LinkRemote(self, remote):
+        """
+        Link the Master to a remote. This must be done before calling Listen()
+
+        Parameters
+        ----------
+        remote : SpecialRemote
+            A class implementing either the SpecialRemote or the
+            ExternalSpecialRemote interface to which this master will be linked.
+        """
         self.remote = remote
         self.protocol = Protocol(remote)
 
-    def Listen(self, input_=sys.stdin):
-        self.input = input_
+    def Listen(self, input=sys.stdin):
+        """
+        Listen on `input` for messages from git annex.
+
+        Parameters
+        ----------
+        input : io.TextIOBase
+            Where to listen for git-annex request messages.
+            Default: sys.stdin
+
+        Raises
+        ----------
+        NotLinkedError
+            If there is no remote linked to this master.
+        """
+        if not (hasattr(self, 'remote') and hasattr(self, 'protocol')):
+            raise NotLinkedError("Please execute LinkRemote(remote) first.")
+
+        self.input = input
         self._send(self.protocol.version)
         while True:
             # due to a bug in python 2 we can't use an iterator here: https://bugs.python.org/issue1633941
@@ -742,6 +862,12 @@ class Master(object):
         return reply
     
     def getconfig(self, req):
+        """
+        Gets one of the special remote's configuration settings,
+        which can have been passed by the user when running `git annex initremote`,
+        `git annex enableremote` or can have been set by a previous SETCONFIG. Can be run at any time.
+It's recommended that special remotes that use this implement LISTCONFIGS. (git-annex replies with VALUE followed by the value. If the setting is not set, the value will be empty.)
+        """
         return self._askvalue("GETCONFIG {req}".format(req=req))
 
     def setconfig(self, key, value):

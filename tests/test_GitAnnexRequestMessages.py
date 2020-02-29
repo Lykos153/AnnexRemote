@@ -125,6 +125,8 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
         with self.assertRaises(ValueError):
             self.annex.Listen(io.StringIO("LISTCONFIGS"))
 
+    #todo listconfigsEmpty
+
     def TestGetcost(self):
         self.remote.getcost.return_value = 5
         self.annex.Listen(io.StringIO("GETCOST"))
@@ -228,6 +230,7 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
             self.annex.Listen(io.StringIO("CHECKURL Url"))
         
     def TestCheckurlMultiTabInUrl(self):
+        #TODO: remove. Tabs are actually allowed. Only b' ' is forbidden.
         urllist = [{'url':"Url  with tabs", 'size':512, 'filename':"Filename1"},
                    {'url':"Url2",'filename':"Filename2"}]
         self.remote.checkurl.return_value = urllist
@@ -235,6 +238,7 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
             self.annex.Listen(io.StringIO("CHECKURL Url"))
         
     def TestCheckurlMultiTabInFilename(self):
+        #TODO: remove.
         urllist = [{'url':"Url1", 'size':512, 'filename':"Filename  with    tabs"},
                    {'url':"Url2", 'filename':"Filename2"}]
         self.remote.checkurl.return_value = urllist
@@ -482,8 +486,4 @@ class TestUnsupportedRequests(utils.MinimalTestCase):
 
     def TestRenameexportUnsupportedRequest(self):
         self.annex.Listen(io.StringIO("EXPORT Name\nRENAMEEXPORT Key NewName"))
-        self.assertEqual(utils.second_buffer_line(self.output), "UNSUPPORTED-REQUEST")
-
-    def TestListconfigsUnsupportedRequest(self):
-        self.annex.Listen(io.StringIO("LISTCONFIGS"))
         self.assertEqual(utils.second_buffer_line(self.output), "UNSUPPORTED-REQUEST")

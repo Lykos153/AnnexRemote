@@ -43,6 +43,20 @@ class RemoteError(AnnexError):
     pass
 
 class SpecialRemote(with_metaclass(ABCMeta, object)):
+    """
+    Metaclass for non-export remotes.
+
+    ...
+
+    Attributes
+    ----------
+    annex : Master
+        The Master object to which this remote is linked. Master acts as an abstraction layer for git-annex.
+    info : dict
+        Contains information describing the configuration of the remote, for display by `git annex info` in
+        the form of {'Name': 'Value', ...} where both can be anything you want to be displayed to the user.
+        Note: Both Name and Value *can* contain spaces.
+    """
 
     def __init__(self, annex):
         self.annex = annex
@@ -50,45 +64,226 @@ class SpecialRemote(with_metaclass(ABCMeta, object)):
 
     @abstractmethod
     def initremote(self):
-        pass
+        """
+        Gets called when `git annex initremote` or `git annex enableremote` are run. 
+        This is where any one-time setup tasks can be done, for example creating the remote folder.
+        Note: This may be run repeatedly over time, as a remote is initialized in different repositories,
+        or as the configuration of a remote is changed. So any one-time setup tasks should be done idempotently.
+
+        Raises
+        ------
+        RemoteError
+            If the remote could not be initialized.
+        """
 
     @abstractmethod
     def prepare(self):
-        pass
+        """
+        Tells the remote that it's time to prepare itself to be used.
+        Gets called whenever git annex is about to access any of the below 
+        methods, so it shouldn't be too expensive. Otherwise it will
+        slow down operations like `git annex whereis` or `git annex info`.
+
+        Internet connection *can* be established here, though it's
+        recommended to defer this until it's actually needed.
+
+        Raises
+        ------
+        RemoteError
+            If the remote could not be prepared.
+        """
 
     @abstractmethod
     def transfer_store(self, key, local_file):
-        pass
+        """
+        Store the file in `local_file` to a unique location derived from `key`.
+
+        It's important that, while a Key is being stored, checkpresent(key)
+        not indicate it's present until all the data has been transferred.
+        While the transfer is running, the remote can repeatedly call 
+        annex.progress(size) to indicate the number of bytes already stored.
+        This will influence the progress shown to the user.
+
+        Parameters
+        ----------
+        key : str
+            The Key to be stored in the remote. In most cases, this is going to be the
+            remote file name. It should be at least be unambigiously derived from it.
+        local_file: str
+            Path to the file to upload.
+            Note that in some cases, local_file may contain whitespace.
+            Note that local_file should not influence the filename used on the remote.
+
+        Raises
+        ------
+        RemoteError
+            If the file could not be stored to the remote.
+        """
 
     @abstractmethod
     def transfer_retrieve(self, key, local_file):
-        pass
+        """
+        Get the file identified by `key` from the remote and store it in `local_file`.
+
+        While the transfer is running, the remote can repeatedly call 
+        annex.progress(size) to indicate the number of bytes already stored.
+        This will influence the progress shown to the user.
+
+        Parameters
+        ----------
+        key : str
+            The Key to get from the remote.
+        local_file: str
+            Path where to store the file.
+            Note that in some cases, local_file may contain whitespace.
+
+        Raises
+        ------
+        RemoteError
+            If the file could not be received from the remote.
+        """
 
     @abstractmethod
     def checkpresent(self, key):
-        pass
+        """
+        Requests the remote to check if a key is present in it.
+
+        Parameters
+        ----------
+        key : str
+
+        Returns
+        -------
+        bool
+            True if the key is present in the remote.
+            False if the key is not present.
+
+        Raises
+        ------
+        RemoteError
+            If the presence of the key couldn't be determined, eg. in case of connection error.
+
+        """
 
     @abstractmethod
     def remove(self, key):
-        pass
+        """
+        Requests the remote to remove a key's contents.
+
+        Parameters
+        ----------
+        key : str
+
+        Raises
+        ------
+        RemoteError
+            If the key couldn't be deleted from the remote.
+        """
     
     # Optional requests
     def listconfigs(self):
         raise UnsupportedRequest()
 
     def getcost(self):
+        """
+        Requests the remote to return a use cost. Higher costs are more expensive. 
+        
+        cheapRemoteCost = 100
+        nearlyCheapRemoteCost = 110
+        semiExpensiveRemoteCost = 175
+        expensiveRemoteCost = 200
+        veryExpensiveRemoteCost = 1000
+        (taken from Config/Cost.hs)
+
+        Returns
+        -------
+        int
+            Indicates the cost of the remote.
+        """
         raise UnsupportedRequest()
 
     def getavailability(self):
+        """
+        Asks the remote if it is locally or globally available. (Ie stored in the cloud vs on a local disk.)
+
+        Returns
+        -------
+        str
+            Allowed values are "global" or "local".
+
+        """
         raise UnsupportedRequest()
 
     def claimurl(self, url):
+        """
+        Asks the remote if it wishes to claim responsibility for downloading an url.
+
+
+        Parameters
+        ----------
+        url : str
+
+        Returns
+        -------
+        bool
+            True if it wants to claim this url.
+            False if it doesn't.
+
+        """
         raise UnsupportedRequest()
 
     def checkurl(self, url):
+        """
+        Asks the remote to check if the url's content can currently be downloaded (without downloading it).
+        The remote can optionally provide additional information about the file.
+
+        Parameters
+        ----------
+        url : str
+
+        Returns
+        -------
+        Union(bool, List(Dict))
+            True if the url's content can currently be downloaded and no additional information can be provided.
+            False if it can't currently be downloaded.
+
+            In order to provide additional information, a list of dictionaries can be returned.
+            The dictionaries can have 3 keys: {'url': str, 'size': int, 'filename': str}
+            If there is only one file to be downloaded, we could return:
+            [{'size': 512, 'filename':'example_file.txt'}]
+            Both `size` and `filename` can be ommited.
+
+            If there are multiple files to be downloaded from this url
+
+
+
+            The dictionaries are of the form:
+            {'url':"https://example.com", 'size':512, 'filename':"example_file.txt"}
+
+            [{'url':"Url1", 'size':512, 'filename':"Filename1"}, {'url':"Url2", 'filename':"Filename2"}]
+
+
+
+        """
         raise UnsupportedRequest()
 
     def whereis(self, key):
+        """
+        Asks the remote to provide additional information about ways to access the
+        content of a key stored in it, such as eg, public urls. This will be displayed 
+        to the user by eg, git annex whereis.
+        Note that users expect git annex whereis to run fast, without eg, network access.
+        
+        Parameters
+        ----------
+        key : str
+
+        Returns
+        -------
+        str
+            Information about the location of the key, eg. public urls.
+
+        """
         raise UnsupportedRequest()
     
     # Export methods
@@ -118,33 +313,165 @@ class SpecialRemote(with_metaclass(ABCMeta, object)):
         print("Nothing to do. Just run 'git annex initremote' with your desired parameters")
 
 class ExportRemote(SpecialRemote):
+    """
+    Metaclass for remotes that support non-export *and* export behaviour.
+
+    ...
+
+    Attributes
+    ----------
+    annex : Master
+        The Master object to which this remote is linked. Master acts as an abstraction layer for git-annex.
+    info : dict
+        Contains information describing the configuration of the remote, for display by `git annex info` in
+        the form of {'Name': 'Value', ...} where both can be anything you want to be displayed to the user.
+        Note: Both Name and Value *can* contain spaces.
+    """
+
     def exportsupported(self):
         return True
 
     @abstractmethod
     def transferexport_store(self, key, local_file, remote_file):
-        pass
+        """
+        Requests the transfer of a file on local disk to the special remote.
+        Note that it's important that, while a file is being stored, 
+        checkpresentexport() not indicate it's present until all the data 
+        has been transferred.
+        While the transfer is running, the remote can send any number of progess(size) messages.
+
+
+        Parameters
+        ----------
+        key : str
+            The Key to be stored in the remote.
+        local_file: str
+            Path to the file to upload.
+            Note that in some cases, local_file may contain whitespace.
+        remote_file : str
+            The path to the location to which the file will be uploaded.
+            It will be in the form of a relative path, and may contain
+            path separators, whitespace, and other special characters.
+
+        Raises
+        ------
+        RemoteError
+            If the key couldn't be stored on the remote.
+        """
 
     @abstractmethod
     def transferexport_retrieve(self, key, local_file, remote_file):
-        pass
+        """
+        Requests the transfer of a file from the special remote to the local disk.
+        Note that it's important that, while a file is being stored, 
+        checkpresentexport() not indicate it's present until all the data 
+        has been transferred.
+        While the transfer is running, the remote can send any number of progess(size) messages.
+
+
+        Parameters
+        ----------
+        key : str
+            The Key to get from the remote.
+        local_file: str
+            Path where to store the file.
+            Note that in some cases, local_file may contain whitespace.
+        remote_file : str
+            The remote path of the file to download.
+            It will be in the form of a relative path, and may contain
+            path separators, whitespace, and other special characters.
+
+        Raises
+        ------
+        RemoteError
+            If the key couldn't be stored on the remote.
+        """
 
     @abstractmethod
     def checkpresentexport(self, key, remote_file):
-        pass
+        """
+        Requests the remote to check if the file is present in it.
+
+        Parameters
+        ----------
+        key : str
+            The key of the file to check. 
+        remote_file : str
+            The remote path of the file to check.
+
+        Returns
+        -------
+        bool
+            True if the file is present in the remote.
+            False if the file is not present in the remote
+
+        Raises
+        ------
+        RemoteError
+            If the the presence of the key couldn't be determined.
+        """
 
     @abstractmethod
     def removeexport(self, key, remote_file):
-        pass
+        """
+        Requests the remote to remove content stored by transferexportstore().
 
-    @abstractmethod
+        Parameters
+        ----------
+        key : str
+            The key of the file to check. 
+        remote_file : str
+            The remote path of the file to delete.
+
+        Raises
+        ------
+        RemoteError
+            If the the remote file couldn't be deleted.
+        """
+
     def removeexportdirectory(self, remote_directory):
-        pass
+        """
+        Requests the remote to remove an exported directory.
+        If the remote does not use directories, or removeexport() cleans
+        up directories that are empty, this does not need to be implemented.
 
-    @abstractmethod
+        Parameters
+        ----------
+        remote_directory : str
+            The remote path to the directory to delete. 
+            The directory will be in the form of a relative path,
+            and may contain path separators, whitespace, and other special characters.
+            Typically the directory will be empty, but it could possibly contain
+            files or other directories, and it's ok to remove those,
+            but not required to do so. 
+
+        Raises
+        ------
+        RemoteError
+            If the the remote directory couldn't be deleted.
+        """
+        raise UnsupportedRequest()
+
     def renameexport(self, key, filename, new_filename):
-        pass
+        """
+        Requests the remote rename a file stored on it from `filename` to `new_filename`. 
+        Remotes that support exports but not renaming do not need to implement this.
 
+        Parameters
+        ----------
+        key : str
+            The key of the file to rename
+        filename : str
+            The old path to the file.
+        new_filename : str
+            The new path to the file.
+
+        Raises
+        ------
+        RemoteError
+            If the the remote directory couldn't be deleted.
+        """
+        raise UnsupportedRequest()
         
 class Protocol(object):
 
@@ -404,15 +731,60 @@ class Protocol(object):
             return "RENAMEEXPORT-SUCCESS {key}".format(key=key)
 
 class Master(object):
+    """
+    Metaclass for non-export remotes.
+
+    ...
+
+    Attributes
+    ----------
+    input : io.TextIOBase
+        Where to listen for git-annex request messages.
+        Default: sys.stdin
+    output : io.TextIOBase
+        Where to send replies and special remote messages
+        Default: sys.stdout
+    remote : SpecialRemote
+        A class implementing either the SpecialRemote or the
+        ExternalSpecialRemote interface to which this master is linked.
+    """
+
     def __init__(self, output=sys.stdout):
+        """
+        Initialize the Master with an ouput.
+
+        Parameters
+        ----------
+        output : io.TextIOBase
+            Where to send replies and special remote messages
+            Default: sys.stdout
+        """
         self.output = output
 
     def LinkRemote(self, remote):
+        """
+        Link the Master to a remote. This must be done before calling Listen()
+
+        Parameters
+        ----------
+        remote : SpecialRemote
+            A class implementing either the SpecialRemote or the
+            ExternalSpecialRemote interface to which this master will be linked.
+        """
         self.remote = remote
         self.protocol = Protocol(remote)
 
-    def Listen(self, input_=sys.stdin):
-        self.input = input_
+    def Listen(self, input=sys.stdin):
+        """
+        Listen on `input` for messages from git annex.
+
+        Parameters
+        ----------
+        input : io.TextIOBase
+            Where to listen for git-annex request messages.
+            Default: sys.stdin
+        """
+        self.input = input
         self._send(self.protocol.version)
         while True:
             # due to a bug in python 2 we can't use an iterator here: https://bugs.python.org/issue1633941
@@ -461,68 +833,389 @@ class Master(object):
         (reply,) = self._ask(request, "VALUE", 1)
         return reply
     
-    def getconfig(self, req):
-        return self._askvalue("GETCONFIG {req}".format(req=req))
+    def getconfig(self, setting):
+        """
+        Gets one of the special remote's configuration settings,
+        which can have been passed by the user when running `git annex initremote`,
+        `git annex enableremote` or can have been set by a previous setconfig(). Can be run at any time.
+        It's recommended that special remotes that use this implement listconfigs(). 
 
-    def setconfig(self, key, value):
-        self._send("SETCONFIG {key} {value}".format(key=key, value=value))
+        Parameters
+        ----------
+        setting : str
+            Which setting to get
+
+        Returns
+        -------
+        str
+            The requested setting. If the setting is not set, the value will an empty string.
+
+        Raises
+        ----------
+        UnexpectedMessage
+            If git-annex does not respond correctly to this request, which is very unlikely.
+        """
+        return self._askvalue("GETCONFIG {}".format(setting))
+
+    def setconfig(self, setting, value):
+        """
+        Sets one of the special remote's configuration settings.
+        Normally this is sent during initremote(), which allows these settings to be
+        stored in the git-annex branch, so will be available if the same special remote
+        is used elsewhere. (If sent after initremote(), the changed configuration will 
+        only be available while the remote is running.)
+
+        Parameters
+        ----------
+        setting : str
+            The name of the setting
+        value : str
+            The value of the setting
+        """
+        self._send("SETCONFIG {} {}".format(setting, value))
 
     def getstate(self, key):
+        """
+        Gets any state that has been stored for the key via setstate().
+
+        Parameters
+        ----------
+        key : str
+            The key for which to get the state
+
+        Returns
+        -------
+        str
+            The requested state. If the state is not set, the value will an empty string.
+
+        Raises
+        ----------
+        UnexpectedMessage
+            If git-annex does not respond correctly to this request, which is very unlikely.
+        """
         return self._askvalue("GETSTATE {key}".format(key=key))
 
     def setstate(self, key, value):
+        """
+        Can be used to store some form of state for a Key. The state stored can be anything
+        this remote needs to store, in any format. It is stored in the git-annex branch.
+        Note that this means that if multiple repositories are using the same special
+        remote, and store different state, whichever one stored the state last will win.
+        Also, it's best to avoid storing much state, since this will bloat the git-annex
+        branch. Most remotes will not need to store any state.
+
+        Parameters
+        ----------
+        key : str
+            The key for which to store the state
+        value : str
+            The state for the key to store
+        """
         self._send("SETSTATE {key} {value}".format(key=key, value=value))
 
     def debug(self, *args):
+        """
+        Tells git-annex to display the message if --debug is enabled.
+
+        Parameters
+        ----------
+        message : str
+            The message to be displayed to the user
+        """
+
         self._send("DEBUG", *args)
         
     def error(self, *args):
+        """
+        Generic error. Can be sent at any time if things get too messed up to continue.
+        When possible, raise a RemoteError inside the respective functions.
+        The special remote program should exit after sending this, as git-annex will
+        not talk to it any further.
+        
+        Parameters
+        ----------
+        error_msg : str
+            The error message to be sent to git-annex
+        """
         self._send("ERROR", *args)
 
     def progress(self, progress):
+        """
+        Indicates the current progress of the transfer (in bytes). May be repeated 
+        any number of times during the transfer process, but it's wasteful to update
+        the progress until at least another 1% of the file has been sent.
+        This is highly recommended for *_store(). (It is optional but good for *_retrieve().)
+
+        Parameters
+        ----------
+        progress : int
+            The current progress of the transfer in bytes.
+        """
         self._send("PROGRESS {progress}".format(progress=int(progress)))
 
     def dirhash(self, key):
+        """
+        Gets a two level hash associated with a Key. Something like "aB/Cd".
+        This is always the same for any given Key, so can be used for eg,
+        creating hash directory structures to store Keys in. This is the
+        same directory hash that git-annex uses inside .git/annex/objects/
+
+        Parameters
+        ----------
+        key : str
+            The key for which to get the hash
+
+        Returns
+        -------
+        str
+            The two level hash. (eg. "aB/Cd")
+
+        Raises
+        ----------
+        UnexpectedMessage
+            If git-annex does not respond correctly to this request, which is very unlikely.
+        """
         return self._askvalue("DIRHASH {key}".format(key=key))
 
     def dirhash_lower(self, key):
+        """
+        Gets a two level hash associated with a Key, using only lower-case.
+        Something like "abc/def".
+        This is always the same for any given Key, so can be used for eg,
+        creating hash directory structures to store Keys in. This is the
+        same directory hash that is used by eg, the directory special remote.
+
+        Parameters
+        ----------
+        key : str
+            The key for which to get the hash
+
+        Returns
+        -------
+        str
+            The two level hash. (eg. "abc/def")
+
+        Raises
+        ----------
+        UnexpectedMessage
+            If git-annex does not respond correctly to this request, which is very unlikely.
+        """
         return self._askvalue("DIRHASH-LOWER {key}".format(key=key))
 
     def setcreds(self, setting, user, password):
+        """
+        When some form of user and password is needed to access a special
+        remote, this can be used to securely store them for later use.
+        (Like setconfig(), this is normally sent only during initremote().)
+        Note that creds are normally only stored in the remote's
+        configuration when it's surely safe to do so; when gpg encryption
+        is used, in which case the creds will be encrypted using it.
+        If creds are not stored in the configuration, they'll only be stored
+        in a local file. (embedcreds can be set to yes by the user or by
+        setconfig() to force the creds to be stored in the remote's configuration).
+
+        Parameters
+        ----------
+        setting : str
+            Indicates which value in a remote's configuration
+            can be used to store the creds.
+        user : str
+            The username to be stored
+        password : str
+            The password to be stored
+        """
         self._send("SETCREDS", setting, user, password)
 
     def getcreds(self, setting):
+        """
+        Gets any creds that were previously stored in the remote's
+        configuration or a file.
+
+        Parameters
+        ----------
+        setting : str
+            Indicates which value in a remote's configuration
+            where the credentials are stored.
+
+        Returns
+        ----------
+        dict of str : str
+            A dict containing username of password in the form:
+            {'user': "username", 'password': "password"}
+            If there are no credentials found, both 'user' and 'password' are empty.
+            Note: In version 2.0, a named tuple will be used instead of a dict.
+
+        Raises
+        ----------
+        UnexpectedMessage
+            If git-annex does not respond correctly to this request, which is very unlikely.
+        """
         (user, password) = self._ask("GETCREDS {setting}".format(setting=setting), "CREDS", 2)
+        #TODO: (v2.0) use namedtuple instead of dict
         return {'user': user, 'password': password}
 
     def getuuid(self):
+        """
+        Queries for the UUID of the special remote being used.
+
+        Returns
+        ----------
+        str
+            The UUID of the special remote
+
+        """
         return self._askvalue("GETUUID")
 
     def getgitdir(self):
+        """
+        Queries for the path to the git directory of the repository that
+        is using the external special remote.
+
+        Returns
+        ----------
+        str
+            The (relative) path to the git directory
+        """
+
         return self._askvalue("GETGITDIR")
 
     def setwanted(self, prefcontent):
+        """
+        Can be used to set the preferred content of a repository. Normally
+        this is not configured by a special remote, but it may make sense
+        in some situations to hint at the kind of content that should be
+        stored in the special remote.
+        Note that if an unparsable expression is set, git-annex will ignore it.
+
+        Parameters
+        ----------
+        prefcontent : str
+            The PreferredContentExpression,
+            see https://git-annex.branchable.com/git-annex-preferred-content/
+        """
         self._send("SETWANTED", prefcontent)
 
     def getwanted(self):
+        """
+        Gets the current preferred content setting of the repository.
+
+        Returns
+        ----------
+        str
+            The PreferredContentExpression,
+            see https://git-annex.branchable.com/git-annex-preferred-content/
+
+        Raises
+        ----------
+        UnexpectedMessage
+            If git-annex does not respond correctly to this request, which is very unlikely.
+        """
         return self._askvalue("GETWANTED")
 
     def seturlpresent(self, key, url):
+        """
+        Records a URL where the Key can be downloaded from.
+        Note that this does not make git-annex think that the url is present
+        on the web special remote.
+        Keep in mind that this stores the url in the git-annex branch. This
+        can result in bloat to the branch if the url is large and/or does not
+        delta pack well with other information (such as the names of keys)
+        already stored in the branch.
+
+        Parameters
+        ----------
+        key : str
+            The key for which to record a URL
+        url : str
+            The URL from which the key can be downloaded
+        """
         self._send("SETURLPRESENT", key, url)
 
     def seturlmissing(self, key, url):
+        """
+        Records that the key can no longer be downloaded from the specified URL.
+
+        Parameters
+        ----------
+        key : str
+            The key for which to delete the URL
+        url : str
+            The URL which is no longer accessible
+        """
         self._send("SETURLMISSING", key, url)
 
     def seturipresent(self, key, uri):
+        """
+        Records a URI where the Key can be downloaded from.
+        For example, "ipfs:ADDRESS" is used for the ipfs special remote;
+        its CLAIMURL handler checks for such URIS and claims them.
+
+        Parameters
+        ----------
+        key : str
+            The key for which to record a URI
+        uri : str
+            The URI from which the key can be downloaded
+        """
         self._send("SETURIPRESENT", key, uri)
     
     def seturimissing(self, key, uri):
+        """
+        Records that the key can no longer be downloaded from the specified URI.
+
+        Parameters
+        ----------
+        key : str
+            The key for which to delete the URI
+        uri : str
+            The URI which is no longer accessible
+        """
         self._send("SETURIMISSING", key, uri)
 
     def geturls(self, key, prefix):
+        """
+        Gets the recorded URLs where a key can be downloaded from.
+
+        Parameters
+        ----------
+        key : str
+            The key for which to get the URLs
+        prefix : str
+            Only urls that start with the prefix will be returned.
+            The Prefix may be empty to get all urls.
+
+        Returns
+        ----------
+        list of str
+            The URLs from which the key can be downloaded
+
+        Raises
+        ----------
+        UnexpectedMessage
+            If git-annex does not respond correctly to this request, which is very unlikely.
+        """
         return self._askvalues("GETURLS {key} {prefix}".format(key=key, prefix=prefix))
         
     def info(self, message):
+        """
+        Tells git-annex to display the message to the user.
+        When git-annex is in --json mode, the message will be emitted immediately
+        in its own json object, with an "info" field.
+
+        Important: This is a protocol extension and may raise a ProtocolError if
+        the particular version of git-annex does not support it. Remotes using info()
+        should always prepare to handle the exception.
+
+        Parameters
+        ----------
+        message : str
+            The message to be displayed to the user
+
+        Raises
+        ----------
+        ProtocolError
+            If INFO is not available in this version of git-annex.
+        """
         if "INFO" in self.protocol.extensions:
             self._send("INFO", message)
         else:

@@ -484,6 +484,6 @@ class TestUnsupportedRequests(utils.MinimalTestCase):
         self.annex.Listen(io.StringIO("EXPORT Name\nRENAMEEXPORT Key NewName"))
         self.assertEqual(utils.second_buffer_line(self.output), "UNSUPPORTED-REQUEST")
 
-    def TestListconfigsUnsupportedRequest(self):
+    def TestListconfigsEmpty(self):
         self.annex.Listen(io.StringIO("LISTCONFIGS"))
-        self.assertEqual(utils.second_buffer_line(self.output), "UNSUPPORTED-REQUEST")
+        self.assertEqual(utils.second_buffer_line(self.output), "CONFIGEND")

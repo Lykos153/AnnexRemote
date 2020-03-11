@@ -56,11 +56,20 @@ class SpecialRemote(with_metaclass(ABCMeta, object)):
         Contains information describing the configuration of the remote, for display by `git annex info` in
         the form of {'Name': 'Value', ...} where both can be anything you want to be displayed to the user.
         Note: Both Name and Value *can* contain spaces.
+    configs : dict
+        Contains the settings which the remote uses (with getconfig() and setconfig()) in the form of
+        {'Name': 'Description', ...}
+        Note: Name *must not* contain spaces. Description should be reasonably short.
+        Example: {'directory': "store data here"}
+        Providing them makes `git annex initremote` work better, because it can check the user's input, 
+        and can also display a list of settings with descriptions.
+        Note that the user is not required to provided all the settings listed here.
     """
 
     def __init__(self, annex):
         self.annex = annex
         self.info = {}
+        self.configs = {}
 
     @abstractmethod
     def initremote(self):
@@ -182,7 +191,8 @@ class SpecialRemote(with_metaclass(ABCMeta, object)):
     
     # Optional requests
     def listconfigs(self):
-        raise UnsupportedRequest()
+        #TODO (v2.0) remove
+        return self.configs
 
     def getcost(self):
         """
@@ -326,6 +336,14 @@ class ExportRemote(SpecialRemote):
         Contains information describing the configuration of the remote, for display by `git annex info` in
         the form of {'Name': 'Value', ...} where both can be anything you want to be displayed to the user.
         Note: Both Name and Value *can* contain spaces.
+    configs : dict
+        Contains the settings which the remote uses (with getconfig() and setconfig()) in the form of
+        {'Name': 'Description', ...}
+        Note: Name *must not* contain spaces. Description should be reasonably short.
+        Example: {'directory': "store data here"}
+        Providing them makes `git annex initremote` work better, because it can check the user's input, 
+        and can also display a list of settings with descriptions.
+        Note that the user is not required to provided all the settings listed here.
     """
 
     def exportsupported(self):
@@ -571,13 +589,13 @@ class Protocol(object):
             return "REMOVE-SUCCESS {key}".format(key=key)
     
     def do_LISTCONFIGS(self):
-        return_string = ""
-        for name, description in self.remote.listconfigs().items():
+        reply = []
+        for name, description in sorted(self.remote.listconfigs().items()):
             if " " in name:
                 raise ValueError("Name must not contain space characters: {}".format(name))
-            return_string += "CONFIG {} {}\n".format(name, description)
-        return_string += "CONFIGEND"
-        return return_string
+            reply.append("CONFIG {} {}".format(name, description))
+        reply.append("CONFIGEND")
+        return '\n'.join(reply)
 
     def do_GETCOST(self):
         cost = self.remote.getcost()

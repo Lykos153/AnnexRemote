@@ -663,7 +663,7 @@ class Protocol(object):
         for entry in reply:
             if 'url' not in entry:
                 raise ValueError("Url must be present when specifying multiple values.")
-            if len(entry['url'].split()) != 1:
+            if " " in entry['url']:
                 raise ValueError("Url must not contain spaces.")
                 
             size = entry.get("size", "UNKNOWN")

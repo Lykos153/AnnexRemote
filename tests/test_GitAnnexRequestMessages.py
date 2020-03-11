@@ -227,19 +227,13 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
         with self.assertRaises(ValueError):
             self.annex.Listen(io.StringIO("CHECKURL Url"))
         
-    def TestCheckurlMultiTabInUrl(self):
-        urllist = [{'url':"Url  with tabs", 'size':512, 'filename':"Filename1"},
-                   {'url':"Url2",'filename':"Filename2"}]
+    def TestCheckurlMultiTabInUrlAndFilename(self):
+        urllist = [{'url':"Url\twith\ttabs", 'size':512, 'filename':"Filename1"},
+                   {'url':"Url2",'filename':"Filename\twith\ttabs"}]
         self.remote.checkurl.return_value = urllist
-        with self.assertRaises(ValueError):
-            self.annex.Listen(io.StringIO("CHECKURL Url"))
-        
-    def TestCheckurlMultiTabInFilename(self):
-        urllist = [{'url':"Url1", 'size':512, 'filename':"Filename  with    tabs"},
-                   {'url':"Url2", 'filename':"Filename2"}]
-        self.remote.checkurl.return_value = urllist
-        with self.assertRaises(ValueError):
-            self.annex.Listen(io.StringIO("CHECKURL Url"))
+        self.annex.Listen(io.StringIO("CHECKURL Url"))
+        result = "CHECKURL-MULTI Url\twith\ttabs 512 Filename1 Url2 UNKNOWN Filename\twith\ttabs"
+        self.assertEqual(utils.second_buffer_line(self.output), result)
         
     def TestCheckurlFailure(self):
         self.remote.checkurl.side_effect = RemoteError()

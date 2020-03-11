@@ -94,6 +94,8 @@ class DummyRemote(annexremote.ExportRemote):
         pass
     def whereis(self, whereis):
         pass
+    def error(self, msg):
+        pass
     # Export methods
     def transferexport_store(self, key, file_, name):
         pass

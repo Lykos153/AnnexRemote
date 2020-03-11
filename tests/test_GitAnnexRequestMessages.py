@@ -281,6 +281,10 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
         self.annex.Listen(io.StringIO("GETINFO"))
         self.assertEqual(utils.buffer_lines(self.output)[1:], ["INFOEND"])
 
+    def TestError(self):
+        self.annex.Listen(io.StringIO("ERROR ErrorMsg"))
+        self.remote.error.assert_called_once_with("ErrorMsg")
+
 class TestGitAnnexRequestMessagesExporttree(utils.GitAnnexTestCase):
     def TestExportsupportedSuccess(self):
         self.annex.Listen(io.StringIO("EXPORTSUPPORTED"))

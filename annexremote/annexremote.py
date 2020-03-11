@@ -296,6 +296,22 @@ class SpecialRemote(with_metaclass(ABCMeta, object)):
         """
         raise UnsupportedRequest()
     
+    def error(self, error_msg):
+        """
+        Generic error. Can be sent at any time if things get too messed up to continue.
+        If the program receives an error() from git-annex, it can exit with its own error().
+        Eg.:
+            self.annex.error("Error received. Exiting.")
+            raise SystemExit
+
+        Parameters
+        ----------
+        error_msg : str
+            The error message received from git-annex
+        """
+        self.annex.error("Error received. Exiting.")
+        raise SystemExit
+
     # Export methods
     def exportsupported(self):
         return False
@@ -672,6 +688,9 @@ class Protocol(object):
             reply.append("INFOVALUE {}".format(info[field]))
         reply.append("INFOEND")
         return '\n'.join(reply)
+
+    def do_ERROR(self, message):
+        self.remote.error(message)
     
     def do_EXPORTSUPPORTED(self):
         if self.remote.exportsupported():

@@ -552,7 +552,7 @@ class Protocol(object):
         
     def do_INITREMOTE(self):
         try:
-            reply = self.remote.initremote()
+            self.remote.initremote()
         except RemoteError as e:
             return "INITREMOTE-FAILURE {e}".format(e=e)
         else:
@@ -564,7 +564,7 @@ class Protocol(object):
     
     def do_PREPARE(self):
         try:
-            reply = self.remote.prepare()
+            self.remote.prepare()
         except RemoteError as e:
             return "PREPARE-FAILURE {e}".format(e=e)
         else:

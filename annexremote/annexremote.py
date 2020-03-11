@@ -42,6 +42,9 @@ class UnexpectedMessage(ProtocolError):
 class RemoteError(AnnexError):
     pass
 
+class NotLinkedError(AnnexError):
+    pass
+
 class SpecialRemote(with_metaclass(ABCMeta, object)):
     """
     Metaclass for non-export remotes.
@@ -820,7 +823,15 @@ class Master(object):
         input : io.TextIOBase
             Where to listen for git-annex request messages.
             Default: sys.stdin
+
+        Raises
+        ----------
+        NotLinkedError
+            If there is no remote linked to this master.
         """
+        if not (hasattr(self, 'remote') and hasattr(self, 'protocol')):
+            raise NotLinkedError("Please execute LinkRemote(remote) first.")
+
         self.input = input
         self._send(self.protocol.version)
         while True:

@@ -29,21 +29,35 @@ import string
 
 # Exceptions
 class AnnexError(Exception):
-    pass
+    """
+    Common base class for all annexremote exceptions.
+    """
+
 class ProtocolError(AnnexError):
-    pass
+    """
+    Base class for protocol errors
+    """
 
 class UnsupportedRequest(ProtocolError):
-    pass
+    """
+    Must be raised when an optional request is not supported by the remote.
+    """
 
 class UnexpectedMessage(ProtocolError):
-    pass
+    """
+    Raised when git-annex sends a message which is not expected at the moment
+    """
 
 class RemoteError(AnnexError):
-    pass
+    """
+    Must be raised by the remote when a request did not succeed.
+    """
 
 class NotLinkedError(AnnexError):
-    pass
+    """
+    Will be raised when a Master instance is accessed without being
+    linked to a SpecialRemote instance
+    """
 
 class SpecialRemote(with_metaclass(ABCMeta, object)):
     """

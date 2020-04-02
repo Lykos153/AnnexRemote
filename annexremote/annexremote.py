@@ -275,18 +275,13 @@ class SpecialRemote(with_metaclass(ABCMeta, object)):
             False if it can't currently be downloaded.
 
             In order to provide additional information, a list of dictionaries can be returned.
-            The dictionaries can have 3 keys: {'url': str, 'size': int, 'filename': str}
+            The dictionaries can have 3 keys: {'url': str, 'size': int, 'filename': str}. All of them are optional.
+            
             If there is only one file to be downloaded, we could return:
             [{'size': 512, 'filename':'example_file.txt'}]
-            Both `size` and `filename` can be ommited.
 
-            If there are multiple files to be downloaded from this url
-
-
-
-            The dictionaries are of the form:
+            Other examples:
             {'url':"https://example.com", 'size':512, 'filename':"example_file.txt"}
-
             [{'url':"Url1", 'size':512, 'filename':"Filename1"}, {'url':"Url2", 'filename':"Filename2"}]
 
 

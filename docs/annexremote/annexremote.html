@@ -336,13 +336,12 @@ The remote can optionally provide additional information about the file.</p>
 <p>True if the url's content can currently be downloaded and no additional information can be provided.
 False if it can't currently be downloaded.</p>
 <p>In order to provide additional information, a list of dictionaries can be returned.
-The dictionaries can have 3 keys: {'url': str, 'size': int, 'filename': str}
-If there is only one file to be downloaded, we could return:
-[{'size': 512, 'filename':'example_file.txt'}]
-Both <code>size</code> and <code>filename</code> can be ommited.</p>
-<p>If there are multiple files to be downloaded from this url</p>
-<p _filename_:_example_file.txt_="'filename':&quot;example_file.txt&quot;" _size_:512_="'size':512," _url_:_https:_example.com_="'url':&quot;https://example.com&quot;,">The dictionaries are of the form:</p>
-<p>[{'url':"Url1", 'size':512, 'filename':"Filename1"}, {'url':"Url2", 'filename':"Filename2"}]</p>
+The dictionaries can have 3 keys: {'url': str, 'size': int, 'filename': str}. All of them are optional.</p>
+<p>If there is only one file to be downloaded, we could return:
+[{'size': 512, 'filename':'example_file.txt'}]</p>
+<p>Other examples:
+{'url':"https://example.com", 'size':512, 'filename':"example_file.txt"}
+[{'url':"Url1", 'size':512, 'filename':"Filename1"}, {'url':"Url2", 'filename':"Filename2"}]</p>
 </dd>
 </dl></section>
 </dd>

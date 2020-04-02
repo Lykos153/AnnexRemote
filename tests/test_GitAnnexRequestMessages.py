@@ -164,6 +164,12 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
         self.annex.Listen(io.StringIO("CLAIMURL Url"))
         self.assertEqual(utils.second_buffer_line(self.output), "CLAIMURL-FAILURE")
         
+    def TestCheckurlContentsTrue(self):
+        self.remote.checkurl.return_value = True
+        self.annex.Listen(io.StringIO("CHECKURL Url"))
+        self.remote.checkurl.assert_called_once_with("Url")
+        self.assertEqual(utils.second_buffer_line(self.output), "CHECKURL-CONTENTS UNKNOWN")
+        
     def TestCheckurlContents(self):
         self.remote.checkurl.return_value = [{'size':512,'filename':"Filename"}]
         self.annex.Listen(io.StringIO("CHECKURL Url"))

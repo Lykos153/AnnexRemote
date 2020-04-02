@@ -5,6 +5,10 @@ It implements the complete [external special remote protocol](https://git-annex.
 and fulfils all specifications regarding whitespaces etc. This is ensured by an excessive test suite.
 Extensions to the protocol are normally added within hours after they've been published.
 
+[Documentation](https://lykos153.github.io/AnnexRemote/annexremote/)
+
+(Also have a look at the [examples](examples) and [git-annex-remote-googledrive](https://github.com/Lykos153/git-annex-remote-googledrive) which is based on AnnexRemote.)
+
 ## Getting started
 ### Prerequisites
 You need python installed on your system. AnnexRemote has been tested with version 2.7 and 3.4 to 3.7.
@@ -115,9 +119,6 @@ class MyRemote(ExportRemote):
         # raise RemoteError if it couldn't be moved
 
 ```
-
-#### Documentation
-A full documentation is being worked on. Until then, have a look at the [example](examples) and check the test cases in order to see how the other methods are used. Also have a look at [git-annex-remote-googledrive](https://github.com/Lykos153/git-annex-remote-googledrive) which is based on AnnexRemote.
 
 ## License
 

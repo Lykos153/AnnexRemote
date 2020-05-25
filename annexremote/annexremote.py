@@ -519,7 +519,7 @@ class ExportRemote(SpecialRemote):
         """
         raise UnsupportedRequest()
         
-class _Protocol(object):
+class Protocol(object):
 
     def __init__(self, remote):
         self.remote = remote
@@ -821,7 +821,7 @@ class Master(object):
             ExternalSpecialRemote interface to which this master will be linked.
         """
         self.remote = remote
-        self._protocol = _Protocol(remote)
+        self.protocol = Protocol(remote)
 
     def Listen(self, input=sys.stdin):
         """
@@ -838,11 +838,11 @@ class Master(object):
         NotLinkedError
             If there is no remote linked to this master.
         """
-        if not (hasattr(self, 'remote') and hasattr(self, '_protocol')):
+        if not (hasattr(self, 'remote') and hasattr(self, 'protocol')):
             raise NotLinkedError("Please execute LinkRemote(remote) first.")
 
         self.input = input
-        self._send(self._protocol.version)
+        self._send(self.protocol.version)
         while True:
             # due to a bug in python 2 we can't use an iterator here: https://bugs.python.org/issue1633941
             line = self.input.readline()
@@ -850,7 +850,7 @@ class Master(object):
                 break
             line = line.rstrip()
             try:
-                reply = self._protocol.command(line)
+                reply = self.protocol.command(line)
                 if reply:
                     self._send(reply)
             except (UnsupportedRequest):
@@ -1273,7 +1273,7 @@ class Master(object):
         ProtocolError
             If INFO is not available in this version of git-annex.
         """
-        if "INFO" in self._protocol.extensions:
+        if "INFO" in self.protocol.extensions:
             self._send("INFO", message)
         else:
             raise ProtocolError("INFO not available") 

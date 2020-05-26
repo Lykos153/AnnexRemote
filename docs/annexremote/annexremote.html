@@ -626,6 +626,169 @@ Remotes that support exports but not renaming do not need to implement this.</p>
 </li>
 </ul>
 </dd>
+<dt id="annexremote.annexremote.Protocol"><code class="flex name class">
+<span>class <span class="ident">Protocol</span></span>
+<span>(</span><span>remote)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Helper class handling the receiving part of the protocol (git-annex to remote)
+It parses the requests coming from git-annex and calls the respective
+method of the remote object.</p>
+<p>It is not further documented as it was never intended to be part of the public API.</p></section>
+<h3>Methods</h3>
+<dl>
+<dt id="annexremote.annexremote.Protocol.command"><code class="name flex">
+<span>def <span class="ident">command</span></span>(<span>self, line)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.lookupMethod"><code class="name flex">
+<span>def <span class="ident">lookupMethod</span></span>(<span>self, command)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.check_key"><code class="name flex">
+<span>def <span class="ident">check_key</span></span>(<span>self, key)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_UNKNOWN"><code class="name flex">
+<span>def <span class="ident">do_UNKNOWN</span></span>(<span>self, *arg)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_INITREMOTE"><code class="name flex">
+<span>def <span class="ident">do_INITREMOTE</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_EXTENSIONS"><code class="name flex">
+<span>def <span class="ident">do_EXTENSIONS</span></span>(<span>self, param)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_PREPARE"><code class="name flex">
+<span>def <span class="ident">do_PREPARE</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_TRANSFER"><code class="name flex">
+<span>def <span class="ident">do_TRANSFER</span></span>(<span>self, param)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_CHECKPRESENT"><code class="name flex">
+<span>def <span class="ident">do_CHECKPRESENT</span></span>(<span>self, key)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_REMOVE"><code class="name flex">
+<span>def <span class="ident">do_REMOVE</span></span>(<span>self, key)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_LISTCONFIGS"><code class="name flex">
+<span>def <span class="ident">do_LISTCONFIGS</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_GETCOST"><code class="name flex">
+<span>def <span class="ident">do_GETCOST</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_GETAVAILABILITY"><code class="name flex">
+<span>def <span class="ident">do_GETAVAILABILITY</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_CLAIMURL"><code class="name flex">
+<span>def <span class="ident">do_CLAIMURL</span></span>(<span>self, url)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_CHECKURL"><code class="name flex">
+<span>def <span class="ident">do_CHECKURL</span></span>(<span>self, url)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_WHEREIS"><code class="name flex">
+<span>def <span class="ident">do_WHEREIS</span></span>(<span>self, key)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_GETINFO"><code class="name flex">
+<span>def <span class="ident">do_GETINFO</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_ERROR"><code class="name flex">
+<span>def <span class="ident">do_ERROR</span></span>(<span>self, message)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_EXPORTSUPPORTED"><code class="name flex">
+<span>def <span class="ident">do_EXPORTSUPPORTED</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_EXPORT"><code class="name flex">
+<span>def <span class="ident">do_EXPORT</span></span>(<span>self, name)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_TRANSFEREXPORT"><code class="name flex">
+<span>def <span class="ident">do_TRANSFEREXPORT</span></span>(<span>self, param)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_CHECKPRESENTEXPORT"><code class="name flex">
+<span>def <span class="ident">do_CHECKPRESENTEXPORT</span></span>(<span>self, key)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_REMOVEEXPORT"><code class="name flex">
+<span>def <span class="ident">do_REMOVEEXPORT</span></span>(<span>self, key)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_REMOVEEXPORTDIRECTORY"><code class="name flex">
+<span>def <span class="ident">do_REMOVEEXPORTDIRECTORY</span></span>(<span>self, name)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+<dt id="annexremote.annexremote.Protocol.do_RENAMEEXPORT"><code class="name flex">
+<span>def <span class="ident">do_RENAMEEXPORT</span></span>(<span>self, param)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+</dl>
+</dd>
 <dt id="annexremote.annexremote.Master"><code class="flex name class">
 <span>class <span class="ident">Master</span></span>
 <span>(</span><span>output=sys.stdout)</span>
@@ -1134,6 +1297,36 @@ should always prepare to handle the exception.</p>
 <li><code><a title="annexremote.annexremote.ExportRemote.removeexport" href="#annexremote.annexremote.ExportRemote.removeexport">removeexport</a></code></li>
 <li><code><a title="annexremote.annexremote.ExportRemote.removeexportdirectory" href="#annexremote.annexremote.ExportRemote.removeexportdirectory">removeexportdirectory</a></code></li>
 <li><code><a title="annexremote.annexremote.ExportRemote.renameexport" href="#annexremote.annexremote.ExportRemote.renameexport">renameexport</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="annexremote.annexremote.Protocol" href="#annexremote.annexremote.Protocol">Protocol</a></code></h4>
+<ul class="">
+<li><code><a title="annexremote.annexremote.Protocol.command" href="#annexremote.annexremote.Protocol.command">command</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.lookupMethod" href="#annexremote.annexremote.Protocol.lookupMethod">lookupMethod</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.check_key" href="#annexremote.annexremote.Protocol.check_key">check_key</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_UNKNOWN" href="#annexremote.annexremote.Protocol.do_UNKNOWN">do_UNKNOWN</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_INITREMOTE" href="#annexremote.annexremote.Protocol.do_INITREMOTE">do_INITREMOTE</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_EXTENSIONS" href="#annexremote.annexremote.Protocol.do_EXTENSIONS">do_EXTENSIONS</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_PREPARE" href="#annexremote.annexremote.Protocol.do_PREPARE">do_PREPARE</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_TRANSFER" href="#annexremote.annexremote.Protocol.do_TRANSFER">do_TRANSFER</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_CHECKPRESENT" href="#annexremote.annexremote.Protocol.do_CHECKPRESENT">do_CHECKPRESENT</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_REMOVE" href="#annexremote.annexremote.Protocol.do_REMOVE">do_REMOVE</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_LISTCONFIGS" href="#annexremote.annexremote.Protocol.do_LISTCONFIGS">do_LISTCONFIGS</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_GETCOST" href="#annexremote.annexremote.Protocol.do_GETCOST">do_GETCOST</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_GETAVAILABILITY" href="#annexremote.annexremote.Protocol.do_GETAVAILABILITY">do_GETAVAILABILITY</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_CLAIMURL" href="#annexremote.annexremote.Protocol.do_CLAIMURL">do_CLAIMURL</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_CHECKURL" href="#annexremote.annexremote.Protocol.do_CHECKURL">do_CHECKURL</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_WHEREIS" href="#annexremote.annexremote.Protocol.do_WHEREIS">do_WHEREIS</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_GETINFO" href="#annexremote.annexremote.Protocol.do_GETINFO">do_GETINFO</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_ERROR" href="#annexremote.annexremote.Protocol.do_ERROR">do_ERROR</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_EXPORTSUPPORTED" href="#annexremote.annexremote.Protocol.do_EXPORTSUPPORTED">do_EXPORTSUPPORTED</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_EXPORT" href="#annexremote.annexremote.Protocol.do_EXPORT">do_EXPORT</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_TRANSFEREXPORT" href="#annexremote.annexremote.Protocol.do_TRANSFEREXPORT">do_TRANSFEREXPORT</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_CHECKPRESENTEXPORT" href="#annexremote.annexremote.Protocol.do_CHECKPRESENTEXPORT">do_CHECKPRESENTEXPORT</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_REMOVEEXPORT" href="#annexremote.annexremote.Protocol.do_REMOVEEXPORT">do_REMOVEEXPORT</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_REMOVEEXPORTDIRECTORY" href="#annexremote.annexremote.Protocol.do_REMOVEEXPORTDIRECTORY">do_REMOVEEXPORTDIRECTORY</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.do_RENAMEEXPORT" href="#annexremote.annexremote.Protocol.do_RENAMEEXPORT">do_RENAMEEXPORT</a></code></li>
 </ul>
 </li>
 <li>

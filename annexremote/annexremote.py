@@ -520,6 +520,13 @@ class ExportRemote(SpecialRemote):
         raise UnsupportedRequest()
         
 class Protocol(object):
+    """
+    Helper class handling the receiving part of the protocol (git-annex to remote)
+    It parses the requests coming from git-annex and calls the respective
+    method of the remote object.
+
+    It is not further documented as it was never intended to be part of the public API.
+    """
 
     def __init__(self, remote):
         self.remote = remote

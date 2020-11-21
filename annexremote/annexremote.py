@@ -23,7 +23,7 @@ from builtins import object
 
 from abc import ABCMeta, abstractmethod
 
-import sys
+import sys, traceback
 import string
 
 
@@ -860,14 +860,13 @@ class Master(object):
                 reply = self.protocol.command(line)
                 if reply:
                     self._send(reply)
-            except (UnsupportedRequest):
+            except UnsupportedRequest:
                 self._send ("UNSUPPORTED-REQUEST")
-            except (NotImplementedError):
-                self._send ("ERROR not yet implemented")
+            except Exception as e:
+                for line in traceback.format_exc().splitlines():
+                    self.debug(line)
+                self.error(e)
                 raise SystemExit
-            #except Exception as e:
-            #    self._send ("ERROR", e)
-            #    raise SystemExit
 
     def _ask(self, request, reply_keyword, reply_count):
         self._send(request)

@@ -55,8 +55,9 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
         self.assertEqual(utils.second_buffer_line(self.output), "TRANSFER-FAILURE STORE Key ErrorMsg")
 
     def TestTransferStoreMissingFilename(self):
-        with self.assertRaises(SyntaxError):
+        with self.assertRaises(SystemExit):
             self.annex.Listen(io.StringIO("TRANSFER STORE Key"))
+        self.assertEqual(utils.last_buffer_line(self.output), "ERROR Expected Key File")
 
     def TestTransferStore_SpaceInFilename(self):
         self.annex.Listen(io.StringIO("TRANSFER STORE Key File with spaces"))
@@ -74,8 +75,9 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
         self.assertEqual(utils.second_buffer_line(self.output), "TRANSFER-FAILURE RETRIEVE Key ErrorMsg")
 
     def TestTransferRetrieve_MissingFilename(self):
-        with self.assertRaises(SyntaxError):
+        with self.assertRaises(SystemExit):
             self.annex.Listen(io.StringIO("TRANSFER RETRIEVE Key"))
+        self.assertEqual(utils.last_buffer_line(self.output), "ERROR Expected Key File")
 
     def TestTransferRetrieve_SpaceInFilename(self):
         self.annex.Listen(io.StringIO("TRANSFER RETRIEVE Key File with spaces"))
@@ -122,8 +124,9 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
                 
     def TestListconfigsSpaceInName(self):
         self.remote.listconfigs.return_value = {'Name with space': 'Description'}
-        with self.assertRaises(ValueError):
+        with self.assertRaises(SystemExit):
             self.annex.Listen(io.StringIO("LISTCONFIGS"))
+        self.assertEqual(utils.last_buffer_line(self.output), "ERROR Name must not contain space characters: Name with space")
 
     def TestGetcost(self):
         self.remote.getcost.return_value = 5
@@ -133,8 +136,9 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
 
     def TestGetcostInvalid(self):
         self.remote.getcost.return_value = "not a number"
-        with self.assertRaises(ValueError):
+        with self.assertRaises(SystemExit):
             self.annex.Listen(io.StringIO("GETCOST"))
+        self.assertEqual(utils.last_buffer_line(self.output), "ERROR Cost must be an integer")
         
     def TestGetavailabilityGlobal(self):
         self.remote.getavailability.return_value = "global"
@@ -150,8 +154,9 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
 
     def TestGetavailabilityInvalid(self):
         self.remote.getavailability.return_value = "something else"
-        with self.assertRaises(ValueError):
+        with self.assertRaises(SystemExit):
             self.annex.Listen(io.StringIO("GETAVAILABILITY"))
+        self.assertEqual(utils.last_buffer_line(self.output), "ERROR Availability must be either 'global' or 'local'")
 
     def TestClaimurlSuccess(self):
         self.remote.claimurl.return_value = True
@@ -223,15 +228,18 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
         urllist = [{'url':"Url with spaces", 'size':512, 'filename':"Filename1"},
                    {'url':"Url2",'filename':"Filename2"}]
         self.remote.checkurl.return_value = urllist
-        with self.assertRaises(ValueError):
+        with self.assertRaises(SystemExit):
             self.annex.Listen(io.StringIO("CHECKURL Url"))
+        self.assertEqual(utils.last_buffer_line(self.output), "ERROR Url must not contain spaces.")
+            
         
     def TestCheckurlMultiSpaceInFilename(self):
         urllist = [{'url':"Url1", 'size':512, 'filename':"Filename with spaces"},
                    {'url':"Url2", 'filename':"Filename2"}]
         self.remote.checkurl.return_value = urllist
-        with self.assertRaises(ValueError):
+        with self.assertRaises(SystemExit):
             self.annex.Listen(io.StringIO("CHECKURL Url"))
+        self.assertEqual(utils.last_buffer_line(self.output), "ERROR Filename must not contain spaces.")
         
     def TestCheckurlMultiTabInUrlAndFilename(self):
         urllist = [{'url':"Url\twith\ttabs", 'size':512, 'filename':"Filename1"},
@@ -298,8 +306,9 @@ class TestGitAnnexRequestMessagesExporttree(utils.GitAnnexTestCase):
         self.assertEqual(utils.second_buffer_line(self.output), "EXPORTSUPPORTED-FAILURE")
 
     def TestExport_MissingName(self):
-        with self.assertRaises(SyntaxError):
+        with self.assertRaises(SystemExit):
             self.annex.Listen(io.StringIO("EXPORT"))
+        self.assertEqual(utils.last_buffer_line(self.output), "ERROR do_EXPORT() missing 1 required positional argument: 'name'")
 
     def TestExport_SpaceInName(self):
         # testing this only with TRANSFEREXPORT
@@ -318,12 +327,14 @@ class TestGitAnnexRequestMessagesExporttree(utils.GitAnnexTestCase):
         self.assertEqual(utils.second_buffer_line(self.output), "TRANSFER-FAILURE STORE Key ErrorMsg")
 
     def TestTransferexportStore_WithoutExport(self):
-        with self.assertRaises(ProtocolError):
+        with self.assertRaises(SystemExit):
             self.annex.Listen(io.StringIO("TRANSFEREXPORT STORE Key"))
+        self.assertEqual(utils.last_buffer_line(self.output), "ERROR Export request without prior EXPORT")
 
     def TestTransferexportStore_MissingFilename(self):
-        with self.assertRaises(SyntaxError):
+        with self.assertRaises(SystemExit):
             self.annex.Listen(io.StringIO("EXPORT Name\nTRANSFEREXPORT STORE Key"))
+        self.assertEqual(utils.last_buffer_line(self.output), "ERROR Expected Key File")
 
     def TestTransferexportStore_SpaceInFilename(self):
         self.annex.Listen(io.StringIO("EXPORT Name\nTRANSFEREXPORT STORE Key File with spaces"))
@@ -349,12 +360,14 @@ class TestGitAnnexRequestMessagesExporttree(utils.GitAnnexTestCase):
         self.assertEqual(utils.second_buffer_line(self.output), "TRANSFER-FAILURE RETRIEVE Key ErrorMsg")
         
     def TestTransferexportRetrieve_WithoutExport(self):
-        with self.assertRaises(ProtocolError):
+        with self.assertRaises(SystemExit):
             self.annex.Listen(io.StringIO("TRANSFEREXPORT RETRIEVE Key"))
+        self.assertEqual(utils.last_buffer_line(self.output), "ERROR Export request without prior EXPORT")
 
     def TestTransferexportRetrieve_MissingFilename(self):
-        with self.assertRaises(SyntaxError):
+        with self.assertRaises(SystemExit):
             self.annex.Listen(io.StringIO("EXPORT Name\nTRANSFEREXPORT RETRIEVE Key"))
+        self.assertEqual(utils.last_buffer_line(self.output), "ERROR Expected Key File")
 
     def TestTransferexportRetrieve_SpaceInFilename(self):
         self.annex.Listen(io.StringIO("EXPORT Name\nTRANSFEREXPORT RETRIEVE Key File with spaces"))
@@ -379,8 +392,9 @@ class TestGitAnnexRequestMessagesExporttree(utils.GitAnnexTestCase):
         self.assertEqual(utils.second_buffer_line(self.output), "CHECKPRESENT-UNKNOWN Key ErrorMsg")
     
     def TestCheckpresentexport_WithoutExport(self):
-        with self.assertRaises(ProtocolError):
+        with self.assertRaises(SystemExit):
             self.annex.Listen(io.StringIO("CHECKPRESENTEXPORT Key"))
+        self.assertEqual(utils.last_buffer_line(self.output), "ERROR Export request without prior EXPORT")
 
     def TestRemoveexportSuccess(self):
         self.annex.Listen(io.StringIO("EXPORT Name\nREMOVEEXPORT Key"))
@@ -394,8 +408,9 @@ class TestGitAnnexRequestMessagesExporttree(utils.GitAnnexTestCase):
         self.assertEqual(utils.second_buffer_line(self.output), "REMOVE-FAILURE Key ErrorMsg")
         
     def TestRemoveexport_WithoutExport(self):
-        with self.assertRaises(ProtocolError):
+        with self.assertRaises(SystemExit):
             self.annex.Listen(io.StringIO("REMOVEEXPORT Key"))
+        self.assertEqual(utils.last_buffer_line(self.output), "ERROR Export request without prior EXPORT")
 
     def TestRemoveexportdirectorySuccess(self):
         self.annex.Listen(io.StringIO("REMOVEEXPORTDIRECTORY Directory"))
@@ -409,8 +424,9 @@ class TestGitAnnexRequestMessagesExporttree(utils.GitAnnexTestCase):
         self.assertEqual(utils.second_buffer_line(self.output), "REMOVEEXPORTDIRECTORY-FAILURE")
 
     def TestRemoveexportdirectory_MissingDirectory(self):
-        with self.assertRaises(SyntaxError):
+        with self.assertRaises(SystemExit):
             self.annex.Listen(io.StringIO("REMOVEEXPORTDIRECTORY"))
+        self.assertEqual(utils.last_buffer_line(self.output), "ERROR do_REMOVEEXPORTDIRECTORY() missing 1 required positional argument: 'name'")
 
     def TestRemoveexportdirectory_SpaceInFilename(self):
         self.annex.Listen(io.StringIO("REMOVEEXPORTDIRECTORY Directory with spaces"))
@@ -428,12 +444,14 @@ class TestGitAnnexRequestMessagesExporttree(utils.GitAnnexTestCase):
         self.assertEqual(utils.second_buffer_line(self.output), "RENAMEEXPORT-FAILURE Key")
     
     def TestRenameexport_WithoutExport(self):
-        with self.assertRaises(ProtocolError):
+        with self.assertRaises(SystemExit):
             self.annex.Listen(io.StringIO("RENAMEEXPORT Key NewName"))
+        self.assertEqual(utils.last_buffer_line(self.output), "ERROR Export request without prior EXPORT")
 
     def TestRenameexport_MissingNewName(self):
-        with self.assertRaises(SyntaxError):
+        with self.assertRaises(SystemExit):
             self.annex.Listen(io.StringIO("EXPORT Name\nRENAMEEXPORT Key"))
+        self.assertEqual(utils.last_buffer_line(self.output), "ERROR Expected TRANSFER STORE Key File")
     
     def TestRenameexport_SpaceInNewName(self):
         self.annex.Listen(io.StringIO("EXPORT Name\nRENAMEEXPORT Key NewName with spaces"))

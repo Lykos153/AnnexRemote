@@ -3,15 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.7.5" />
+<meta name="generator" content="pdoc 0.9.2" />
 <title>annexremote.annexremote API documentation</title>
 <meta name="description" content="" />
-<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
-<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
-<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
-<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
 <style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
 </head>
 <body>
 <main>
@@ -32,10 +34,10 @@
 <dl>
 <dt id="annexremote.annexremote.AnnexError"><code class="flex name class">
 <span>class <span class="ident">AnnexError</span></span>
-<span>(</span><span>...)</span>
+<span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Common base class for all annexremote exceptions.</p></section>
+<div class="desc"><p>Common base class for all annexremote exceptions.</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.Exception</li>
@@ -50,10 +52,10 @@
 </dd>
 <dt id="annexremote.annexremote.ProtocolError"><code class="flex name class">
 <span>class <span class="ident">ProtocolError</span></span>
-<span>(</span><span>...)</span>
+<span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Base class for protocol errors</p></section>
+<div class="desc"><p>Base class for protocol errors</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="annexremote.annexremote.AnnexError" href="#annexremote.annexremote.AnnexError">AnnexError</a></li>
@@ -68,10 +70,10 @@
 </dd>
 <dt id="annexremote.annexremote.UnsupportedRequest"><code class="flex name class">
 <span>class <span class="ident">UnsupportedRequest</span></span>
-<span>(</span><span>...)</span>
+<span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Must be raised when an optional request is not supported by the remote.</p></section>
+<div class="desc"><p>Must be raised when an optional request is not supported by the remote.</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="annexremote.annexremote.ProtocolError" href="#annexremote.annexremote.ProtocolError">ProtocolError</a></li>
@@ -82,10 +84,10 @@
 </dd>
 <dt id="annexremote.annexremote.UnexpectedMessage"><code class="flex name class">
 <span>class <span class="ident">UnexpectedMessage</span></span>
-<span>(</span><span>...)</span>
+<span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Raised when git-annex sends a message which is not expected at the moment</p></section>
+<div class="desc"><p>Raised when git-annex sends a message which is not expected at the moment</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="annexremote.annexremote.ProtocolError" href="#annexremote.annexremote.ProtocolError">ProtocolError</a></li>
@@ -96,10 +98,10 @@
 </dd>
 <dt id="annexremote.annexremote.RemoteError"><code class="flex name class">
 <span>class <span class="ident">RemoteError</span></span>
-<span>(</span><span>...)</span>
+<span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Must be raised by the remote when a request did not succeed.</p></section>
+<div class="desc"><p>Must be raised by the remote when a request did not succeed.</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="annexremote.annexremote.AnnexError" href="#annexremote.annexremote.AnnexError">AnnexError</a></li>
@@ -109,11 +111,11 @@
 </dd>
 <dt id="annexremote.annexremote.NotLinkedError"><code class="flex name class">
 <span>class <span class="ident">NotLinkedError</span></span>
-<span>(</span><span>...)</span>
+<span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Will be raised when a Master instance is accessed without being
-linked to a SpecialRemote instance</p></section>
+<div class="desc"><p>Will be raised when a Master instance is accessed without being
+linked to a SpecialRemote instance</p></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="annexremote.annexremote.AnnexError" href="#annexremote.annexremote.AnnexError">AnnexError</a></li>
@@ -126,11 +128,11 @@ linked to a SpecialRemote instance</p></section>
 <span>(</span><span>annex)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Metaclass for non-export remotes.</p>
+<div class="desc"><p>Metaclass for non-export remotes.</p>
 <p>&hellip;</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
-<dt><strong><code>annex</code></strong> :&ensp;<a title="annexremote.annexremote.Master" href="#annexremote.annexremote.Master"><code>Master</code></a></dt>
+<dt><strong><code>annex</code></strong> :&ensp;<code><a title="annexremote.annexremote.Master" href="#annexremote.annexremote.Master">Master</a></code></dt>
 <dd>The Master object to which this remote is linked. Master acts as an abstraction layer for git-annex.</dd>
 <dt><strong><code>info</code></strong> :&ensp;<code>dict</code></dt>
 <dd>Contains information describing the configuration of the remote, for display by <code>git annex info</code> in
@@ -144,7 +146,7 @@ Example: {'directory': "store data here"}
 Providing them makes <code>git annex initremote</code> work better, because it can check the user's input,
 and can also display a list of settings with descriptions.
 Note that the user is not required to provided all the settings listed here.</dd>
-</dl></section>
+</dl></div>
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="annexremote.annexremote.ExportRemote" href="#annexremote.annexremote.ExportRemote">ExportRemote</a></li>
@@ -155,21 +157,21 @@ Note that the user is not required to provided all the settings listed here.</dd
 <span>def <span class="ident">initremote</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Gets called when <code>git annex initremote</code> or <code>git annex enableremote</code> are run.
+<div class="desc"><p>Gets called when <code>git annex initremote</code> or <code>git annex enableremote</code> are run.
 This is where any one-time setup tasks can be done, for example creating the remote folder.
 Note: This may be run repeatedly over time, as a remote is initialized in different repositories,
 or as the configuration of a remote is changed. So any one-time setup tasks should be done idempotently.</p>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError"><code>RemoteError</code></a></dt>
+<dt><code><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError">RemoteError</a></code></dt>
 <dd>If the remote could not be initialized.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote.prepare"><code class="name flex">
 <span>def <span class="ident">prepare</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Tells the remote that it's time to prepare itself to be used.
+<div class="desc"><p>Tells the remote that it's time to prepare itself to be used.
 Gets called whenever git annex is about to access any of the below
 methods, so it shouldn't be too expensive. Otherwise it will
 slow down operations like <code>git annex whereis</code> or <code>git annex info</code>.</p>
@@ -177,15 +179,15 @@ slow down operations like <code>git annex whereis</code> or <code>git annex info
 recommended to defer this until it's actually needed.</p>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError"><code>RemoteError</code></a></dt>
+<dt><code><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError">RemoteError</a></code></dt>
 <dd>If the remote could not be prepared.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote.transfer_store"><code class="name flex">
 <span>def <span class="ident">transfer_store</span></span>(<span>self, key, local_file)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Store the file in <code>local_file</code> to a unique location derived from <code>key</code>.</p>
+<div class="desc"><p>Store the file in <code>local_file</code> to a unique location derived from <code>key</code>.</p>
 <p>It's important that, while a Key is being stored, checkpresent(key)
 not indicate it's present until all the data has been transferred.
 While the transfer is running, the remote can repeatedly call
@@ -203,15 +205,15 @@ Note that local_file should not influence the filename used on the remote.</dd>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError"><code>RemoteError</code></a></dt>
+<dt><code><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError">RemoteError</a></code></dt>
 <dd>If the file could not be stored to the remote.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote.transfer_retrieve"><code class="name flex">
 <span>def <span class="ident">transfer_retrieve</span></span>(<span>self, key, local_file)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Get the file identified by <code>key</code> from the remote and store it in <code>local_file</code>.</p>
+<div class="desc"><p>Get the file identified by <code>key</code> from the remote and store it in <code>local_file</code>.</p>
 <p>While the transfer is running, the remote can repeatedly call
 annex.progress(size) to indicate the number of bytes already stored.
 This will influence the progress shown to the user.</p>
@@ -225,15 +227,15 @@ Note that in some cases, local_file may contain whitespace.</dd>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError"><code>RemoteError</code></a></dt>
+<dt><code><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError">RemoteError</a></code></dt>
 <dd>If the file could not be received from the remote.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote.checkpresent"><code class="name flex">
 <span>def <span class="ident">checkpresent</span></span>(<span>self, key)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Requests the remote to check if a key is present in it.</p>
+<div class="desc"><p>Requests the remote to check if a key is present in it.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>key</code></strong> :&ensp;<code>str</code></dt>
@@ -247,15 +249,15 @@ False if the key is not present.</dd>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError"><code>RemoteError</code></a></dt>
+<dt><code><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError">RemoteError</a></code></dt>
 <dd>If the presence of the key couldn't be determined, eg. in case of connection error.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote.remove"><code class="name flex">
 <span>def <span class="ident">remove</span></span>(<span>self, key)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Requests the remote to remove a key's contents.</p>
+<div class="desc"><p>Requests the remote to remove a key's contents.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>key</code></strong> :&ensp;<code>str</code></dt>
@@ -263,21 +265,21 @@ False if the key is not present.</dd>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError"><code>RemoteError</code></a></dt>
+<dt><code><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError">RemoteError</a></code></dt>
 <dd>If the key couldn't be deleted from the remote.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote.listconfigs"><code class="name flex">
 <span>def <span class="ident">listconfigs</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote.getcost"><code class="name flex">
 <span>def <span class="ident">getcost</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Requests the remote to return a use cost. Higher costs are more expensive. </p>
+<div class="desc"><p>Requests the remote to return a use cost. Higher costs are more expensive. </p>
 <p>cheapRemoteCost = 100
 nearlyCheapRemoteCost = 110
 semiExpensiveRemoteCost = 175
@@ -288,24 +290,24 @@ veryExpensiveRemoteCost = 1000
 <dl>
 <dt><code>int</code></dt>
 <dd>Indicates the cost of the remote.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote.getavailability"><code class="name flex">
 <span>def <span class="ident">getavailability</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Asks the remote if it is locally or globally available. (Ie stored in the cloud vs on a local disk.)</p>
+<div class="desc"><p>Asks the remote if it is locally or globally available. (Ie stored in the cloud vs on a local disk.)</p>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>str</code></dt>
 <dd>Allowed values are "global" or "local".</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote.claimurl"><code class="name flex">
 <span>def <span class="ident">claimurl</span></span>(<span>self, url)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Asks the remote if it wishes to claim responsibility for downloading an url.</p>
+<div class="desc"><p>Asks the remote if it wishes to claim responsibility for downloading an url.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>url</code></strong> :&ensp;<code>str</code></dt>
@@ -316,13 +318,13 @@ veryExpensiveRemoteCost = 1000
 <dt><code>bool</code></dt>
 <dd>True if it wants to claim this url.
 False if it doesn't.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote.checkurl"><code class="name flex">
 <span>def <span class="ident">checkurl</span></span>(<span>self, url)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Asks the remote to check if the url's content can currently be downloaded (without downloading it).
+<div class="desc"><p>Asks the remote to check if the url's content can currently be downloaded (without downloading it).
 The remote can optionally provide additional information about the file.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -331,7 +333,7 @@ The remote can optionally provide additional information about the file.</p>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>Union</code>(<code>bool</code>, <code>List</code>(<code>Dict</code>))</dt>
+<dt><code>Union(bool, List(Dict))</code></dt>
 <dd>
 <p>True if the url's content can currently be downloaded and no additional information can be provided.
 False if it can't currently be downloaded.</p>
@@ -343,13 +345,13 @@ The dictionaries can have 3 keys: {'url': str, 'size': int, 'filename': str}. Al
 {'url':"https://example.com", 'size':512, 'filename':"example_file.txt"}
 [{'url':"Url1", 'size':512, 'filename':"Filename1"}, {'url':"Url2", 'filename':"Filename2"}]</p>
 </dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote.whereis"><code class="name flex">
 <span>def <span class="ident">whereis</span></span>(<span>self, key)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Asks the remote to provide additional information about ways to access the
+<div class="desc"><p>Asks the remote to provide additional information about ways to access the
 content of a key stored in it, such as eg, public urls. This will be displayed
 to the user by eg, git annex whereis.
 Note that users expect git annex whereis to run fast, without eg, network access.</p>
@@ -362,13 +364,13 @@ Note that users expect git annex whereis to run fast, without eg, network access
 <dl>
 <dt><code>str</code></dt>
 <dd>Information about the location of the key, eg. public urls.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote.error"><code class="name flex">
 <span>def <span class="ident">error</span></span>(<span>self, error_msg)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Generic error. Can be sent at any time if things get too messed up to continue.
+<div class="desc"><p>Generic error. Can be sent at any time if things get too messed up to continue.
 If the program receives an error() from git-annex, it can exit with its own error().
 Eg.:
 self.annex.error("Error received. Exiting.")
@@ -377,55 +379,55 @@ raise SystemExit</p>
 <dl>
 <dt><strong><code>error_msg</code></strong> :&ensp;<code>str</code></dt>
 <dd>The error message received from git-annex</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote.exportsupported"><code class="name flex">
 <span>def <span class="ident">exportsupported</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote.transferexport_store"><code class="name flex">
 <span>def <span class="ident">transferexport_store</span></span>(<span>self, key, local_file, remote_file)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote.transferexport_retrieve"><code class="name flex">
 <span>def <span class="ident">transferexport_retrieve</span></span>(<span>self, key, local_file, remote_file)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote.checkpresentexport"><code class="name flex">
 <span>def <span class="ident">checkpresentexport</span></span>(<span>self, key, remote_file)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote.removeexport"><code class="name flex">
 <span>def <span class="ident">removeexport</span></span>(<span>self, key, remote_file)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote.removeexportdirectory"><code class="name flex">
 <span>def <span class="ident">removeexportdirectory</span></span>(<span>self, remote_directory)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote.renameexport"><code class="name flex">
 <span>def <span class="ident">renameexport</span></span>(<span>self, key, filename, new_filename)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote.setup"><code class="name flex">
 <span>def <span class="ident">setup</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 </dl>
 </dd>
@@ -434,11 +436,11 @@ raise SystemExit</p>
 <span>(</span><span>annex)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Metaclass for remotes that support non-export <em>and</em> export behaviour.</p>
+<div class="desc"><p>Metaclass for remotes that support non-export <em>and</em> export behaviour.</p>
 <p>&hellip;</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
-<dt><strong><code>annex</code></strong> :&ensp;<a title="annexremote.annexremote.Master" href="#annexremote.annexremote.Master"><code>Master</code></a></dt>
+<dt><strong><code>annex</code></strong> :&ensp;<code><a title="annexremote.annexremote.Master" href="#annexremote.annexremote.Master">Master</a></code></dt>
 <dd>The Master object to which this remote is linked. Master acts as an abstraction layer for git-annex.</dd>
 <dt><strong><code>info</code></strong> :&ensp;<code>dict</code></dt>
 <dd>Contains information describing the configuration of the remote, for display by <code>git annex info</code> in
@@ -452,7 +454,7 @@ Example: {'directory': "store data here"}
 Providing them makes <code>git annex initremote</code> work better, because it can check the user's input,
 and can also display a list of settings with descriptions.
 Note that the user is not required to provided all the settings listed here.</dd>
-</dl></section>
+</dl></div>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li><a title="annexremote.annexremote.SpecialRemote" href="#annexremote.annexremote.SpecialRemote">SpecialRemote</a></li>
@@ -463,13 +465,13 @@ Note that the user is not required to provided all the settings listed here.</dd
 <span>def <span class="ident">exportsupported</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.ExportRemote.transferexport_store"><code class="name flex">
 <span>def <span class="ident">transferexport_store</span></span>(<span>self, key, local_file, remote_file)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Requests the transfer of a file on local disk to the special remote.
+<div class="desc"><p>Requests the transfer of a file on local disk to the special remote.
 Note that it's important that, while a file is being stored,
 checkpresentexport() not indicate it's present until all the data
 has been transferred.
@@ -488,15 +490,15 @@ path separators, whitespace, and other special characters.</dd>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError"><code>RemoteError</code></a></dt>
+<dt><code><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError">RemoteError</a></code></dt>
 <dd>If the key couldn't be stored on the remote.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.ExportRemote.transferexport_retrieve"><code class="name flex">
 <span>def <span class="ident">transferexport_retrieve</span></span>(<span>self, key, local_file, remote_file)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Requests the transfer of a file from the special remote to the local disk.
+<div class="desc"><p>Requests the transfer of a file from the special remote to the local disk.
 Note that it's important that, while a file is being stored,
 checkpresentexport() not indicate it's present until all the data
 has been transferred.
@@ -515,15 +517,15 @@ path separators, whitespace, and other special characters.</dd>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError"><code>RemoteError</code></a></dt>
+<dt><code><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError">RemoteError</a></code></dt>
 <dd>If the key couldn't be stored on the remote.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.ExportRemote.checkpresentexport"><code class="name flex">
 <span>def <span class="ident">checkpresentexport</span></span>(<span>self, key, remote_file)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Requests the remote to check if the file is present in it.</p>
+<div class="desc"><p>Requests the remote to check if the file is present in it.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>key</code></strong> :&ensp;<code>str</code></dt>
@@ -539,15 +541,15 @@ False if the file is not present in the remote</dd>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError"><code>RemoteError</code></a></dt>
+<dt><code><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError">RemoteError</a></code></dt>
 <dd>If the the presence of the key couldn't be determined.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.ExportRemote.removeexport"><code class="name flex">
 <span>def <span class="ident">removeexport</span></span>(<span>self, key, remote_file)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Requests the remote to remove content stored by transferexportstore().</p>
+<div class="desc"><p>Requests the remote to remove content stored by transferexportstore().</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>key</code></strong> :&ensp;<code>str</code></dt>
@@ -557,15 +559,15 @@ False if the file is not present in the remote</dd>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError"><code>RemoteError</code></a></dt>
+<dt><code><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError">RemoteError</a></code></dt>
 <dd>If the the remote file couldn't be deleted.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.ExportRemote.removeexportdirectory"><code class="name flex">
 <span>def <span class="ident">removeexportdirectory</span></span>(<span>self, remote_directory)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Requests the remote to remove an exported directory.
+<div class="desc"><p>Requests the remote to remove an exported directory.
 If the remote does not use directories, or removeexport() cleans
 up directories that are empty, this does not need to be implemented.</p>
 <h2 id="parameters">Parameters</h2>
@@ -580,15 +582,15 @@ but not required to do so.</dd>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError"><code>RemoteError</code></a></dt>
+<dt><code><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError">RemoteError</a></code></dt>
 <dd>If the the remote directory couldn't be deleted.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.ExportRemote.renameexport"><code class="name flex">
 <span>def <span class="ident">renameexport</span></span>(<span>self, key, filename, new_filename)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Requests the remote rename a file stored on it from <code>filename</code> to <code>new_filename</code>.
+<div class="desc"><p>Requests the remote rename a file stored on it from <code>filename</code> to <code>new_filename</code>.
 Remotes that support exports but not renaming do not need to implement this.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -601,9 +603,9 @@ Remotes that support exports but not renaming do not need to implement this.</p>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError"><code>RemoteError</code></a></dt>
+<dt><code><a title="annexremote.annexremote.RemoteError" href="#annexremote.annexremote.RemoteError">RemoteError</a></code></dt>
 <dd>If the the remote directory couldn't be deleted.</dd>
-</dl></section>
+</dl></div>
 </dd>
 </dl>
 <h3>Inherited members</h3>
@@ -631,161 +633,161 @@ Remotes that support exports but not renaming do not need to implement this.</p>
 <span>(</span><span>remote)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Helper class handling the receiving part of the protocol (git-annex to remote)
+<div class="desc"><p>Helper class handling the receiving part of the protocol (git-annex to remote)
 It parses the requests coming from git-annex and calls the respective
 method of the remote object.</p>
-<p>It is not further documented as it was never intended to be part of the public API.</p></section>
+<p>It is not further documented as it was never intended to be part of the public API.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="annexremote.annexremote.Protocol.command"><code class="name flex">
 <span>def <span class="ident">command</span></span>(<span>self, line)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.lookupMethod"><code class="name flex">
 <span>def <span class="ident">lookupMethod</span></span>(<span>self, command)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.check_key"><code class="name flex">
 <span>def <span class="ident">check_key</span></span>(<span>self, key)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_UNKNOWN"><code class="name flex">
 <span>def <span class="ident">do_UNKNOWN</span></span>(<span>self, *arg)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_INITREMOTE"><code class="name flex">
 <span>def <span class="ident">do_INITREMOTE</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_EXTENSIONS"><code class="name flex">
 <span>def <span class="ident">do_EXTENSIONS</span></span>(<span>self, param)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_PREPARE"><code class="name flex">
 <span>def <span class="ident">do_PREPARE</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_TRANSFER"><code class="name flex">
 <span>def <span class="ident">do_TRANSFER</span></span>(<span>self, param)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_CHECKPRESENT"><code class="name flex">
 <span>def <span class="ident">do_CHECKPRESENT</span></span>(<span>self, key)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_REMOVE"><code class="name flex">
 <span>def <span class="ident">do_REMOVE</span></span>(<span>self, key)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_LISTCONFIGS"><code class="name flex">
 <span>def <span class="ident">do_LISTCONFIGS</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_GETCOST"><code class="name flex">
 <span>def <span class="ident">do_GETCOST</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_GETAVAILABILITY"><code class="name flex">
 <span>def <span class="ident">do_GETAVAILABILITY</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_CLAIMURL"><code class="name flex">
 <span>def <span class="ident">do_CLAIMURL</span></span>(<span>self, url)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_CHECKURL"><code class="name flex">
 <span>def <span class="ident">do_CHECKURL</span></span>(<span>self, url)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_WHEREIS"><code class="name flex">
 <span>def <span class="ident">do_WHEREIS</span></span>(<span>self, key)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_GETINFO"><code class="name flex">
 <span>def <span class="ident">do_GETINFO</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_ERROR"><code class="name flex">
 <span>def <span class="ident">do_ERROR</span></span>(<span>self, message)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_EXPORTSUPPORTED"><code class="name flex">
 <span>def <span class="ident">do_EXPORTSUPPORTED</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_EXPORT"><code class="name flex">
 <span>def <span class="ident">do_EXPORT</span></span>(<span>self, name)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_TRANSFEREXPORT"><code class="name flex">
 <span>def <span class="ident">do_TRANSFEREXPORT</span></span>(<span>self, param)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_CHECKPRESENTEXPORT"><code class="name flex">
 <span>def <span class="ident">do_CHECKPRESENTEXPORT</span></span>(<span>self, key)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_REMOVEEXPORT"><code class="name flex">
 <span>def <span class="ident">do_REMOVEEXPORT</span></span>(<span>self, key)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_REMOVEEXPORTDIRECTORY"><code class="name flex">
 <span>def <span class="ident">do_REMOVEEXPORTDIRECTORY</span></span>(<span>self, name)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 <dt id="annexremote.annexremote.Protocol.do_RENAMEEXPORT"><code class="name flex">
 <span>def <span class="ident">do_RENAMEEXPORT</span></span>(<span>self, param)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<div class="desc"></div>
 </dd>
 </dl>
 </dd>
@@ -794,7 +796,7 @@ method of the remote object.</p>
 <span>(</span><span>output=sys.stdout)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Metaclass for non-export remotes.</p>
+<div class="desc"><p>Metaclass for non-export remotes.</p>
 <p>&hellip;</p>
 <h2 id="attributes">Attributes</h2>
 <dl>
@@ -804,7 +806,7 @@ Default: sys.stdin</dd>
 <dt><strong><code>output</code></strong> :&ensp;<code>io.TextIOBase</code></dt>
 <dd>Where to send replies and special remote messages
 Default: sys.stdout</dd>
-<dt><strong><code>remote</code></strong> :&ensp;<a title="annexremote.annexremote.SpecialRemote" href="#annexremote.annexremote.SpecialRemote"><code>SpecialRemote</code></a></dt>
+<dt><strong><code>remote</code></strong> :&ensp;<code><a title="annexremote.annexremote.SpecialRemote" href="#annexremote.annexremote.SpecialRemote">SpecialRemote</a></code></dt>
 <dd>A class implementing either the SpecialRemote or the
 ExternalSpecialRemote interface to which this master is linked.</dd>
 </dl>
@@ -814,26 +816,26 @@ ExternalSpecialRemote interface to which this master is linked.</dd>
 <dt><strong><code>output</code></strong> :&ensp;<code>io.TextIOBase</code></dt>
 <dd>Where to send replies and special remote messages
 Default: sys.stdout</dd>
-</dl></section>
+</dl></div>
 <h3>Methods</h3>
 <dl>
 <dt id="annexremote.annexremote.Master.LinkRemote"><code class="name flex">
 <span>def <span class="ident">LinkRemote</span></span>(<span>self, remote)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Link the Master to a remote. This must be done before calling Listen()</p>
+<div class="desc"><p>Link the Master to a remote. This must be done before calling Listen()</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>remote</code></strong> :&ensp;<a title="annexremote.annexremote.SpecialRemote" href="#annexremote.annexremote.SpecialRemote"><code>SpecialRemote</code></a></dt>
+<dt><strong><code>remote</code></strong> :&ensp;<code><a title="annexremote.annexremote.SpecialRemote" href="#annexremote.annexremote.SpecialRemote">SpecialRemote</a></code></dt>
 <dd>A class implementing either the SpecialRemote or the
 ExternalSpecialRemote interface to which this master will be linked.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.Listen"><code class="name flex">
 <span>def <span class="ident">Listen</span></span>(<span>self, input=sys.stdin)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Listen on <code>input</code> for messages from git annex.</p>
+<div class="desc"><p>Listen on <code>input</code> for messages from git annex.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>input</code></strong> :&ensp;<code>io.TextIOBase</code></dt>
@@ -842,15 +844,15 @@ Default: sys.stdin</dd>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.NotLinkedError" href="#annexremote.annexremote.NotLinkedError"><code>NotLinkedError</code></a></dt>
+<dt><code><a title="annexremote.annexremote.NotLinkedError" href="#annexremote.annexremote.NotLinkedError">NotLinkedError</a></code></dt>
 <dd>If there is no remote linked to this master.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.getconfig"><code class="name flex">
 <span>def <span class="ident">getconfig</span></span>(<span>self, setting)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Gets one of the special remote's configuration settings,
+<div class="desc"><p>Gets one of the special remote's configuration settings,
 which can have been passed by the user when running <code>git annex initremote</code>,
 <code>git annex enableremote</code> or can have been set by a previous setconfig(). Can be run at any time.
 It's recommended that special remotes that use this implement listconfigs(). </p>
@@ -866,15 +868,15 @@ It's recommended that special remotes that use this implement listconfigs(). </p
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.UnexpectedMessage" href="#annexremote.annexremote.UnexpectedMessage"><code>UnexpectedMessage</code></a></dt>
+<dt><code><a title="annexremote.annexremote.UnexpectedMessage" href="#annexremote.annexremote.UnexpectedMessage">UnexpectedMessage</a></code></dt>
 <dd>If git-annex does not respond correctly to this request, which is very unlikely.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.setconfig"><code class="name flex">
 <span>def <span class="ident">setconfig</span></span>(<span>self, setting, value)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Sets one of the special remote's configuration settings.
+<div class="desc"><p>Sets one of the special remote's configuration settings.
 Normally this is sent during initremote(), which allows these settings to be
 stored in the git-annex branch, so will be available if the same special remote
 is used elsewhere. (If sent after initremote(), the changed configuration will
@@ -885,13 +887,13 @@ only be available while the remote is running.)</p>
 <dd>The name of the setting</dd>
 <dt><strong><code>value</code></strong> :&ensp;<code>str</code></dt>
 <dd>The value of the setting</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.getstate"><code class="name flex">
 <span>def <span class="ident">getstate</span></span>(<span>self, key)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Gets any state that has been stored for the key via setstate().</p>
+<div class="desc"><p>Gets any state that has been stored for the key via setstate().</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>key</code></strong> :&ensp;<code>str</code></dt>
@@ -904,15 +906,15 @@ only be available while the remote is running.)</p>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.UnexpectedMessage" href="#annexremote.annexremote.UnexpectedMessage"><code>UnexpectedMessage</code></a></dt>
+<dt><code><a title="annexremote.annexremote.UnexpectedMessage" href="#annexremote.annexremote.UnexpectedMessage">UnexpectedMessage</a></code></dt>
 <dd>If git-annex does not respond correctly to this request, which is very unlikely.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.setstate"><code class="name flex">
 <span>def <span class="ident">setstate</span></span>(<span>self, key, value)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Can be used to store some form of state for a Key. The state stored can be anything
+<div class="desc"><p>Can be used to store some form of state for a Key. The state stored can be anything
 this remote needs to store, in any format. It is stored in the git-annex branch.
 Note that this means that if multiple repositories are using the same special
 remote, and store different state, whichever one stored the state last will win.
@@ -924,24 +926,24 @@ branch. Most remotes will not need to store any state.</p>
 <dd>The key for which to store the state</dd>
 <dt><strong><code>value</code></strong> :&ensp;<code>str</code></dt>
 <dd>The state for the key to store</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.debug"><code class="name flex">
 <span>def <span class="ident">debug</span></span>(<span>self, *args)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Tells git-annex to display the message if &ndash;debug is enabled.</p>
+<div class="desc"><p>Tells git-annex to display the message if &ndash;debug is enabled.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>message</code></strong> :&ensp;<code>str</code></dt>
 <dd>The message to be displayed to the user</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.error"><code class="name flex">
 <span>def <span class="ident">error</span></span>(<span>self, *args)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Generic error. Can be sent at any time if things get too messed up to continue.
+<div class="desc"><p>Generic error. Can be sent at any time if things get too messed up to continue.
 When possible, raise a RemoteError inside the respective functions.
 The special remote program should exit after sending this, as git-annex will
 not talk to it any further.</p>
@@ -949,13 +951,13 @@ not talk to it any further.</p>
 <dl>
 <dt><strong><code>error_msg</code></strong> :&ensp;<code>str</code></dt>
 <dd>The error message to be sent to git-annex</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.progress"><code class="name flex">
 <span>def <span class="ident">progress</span></span>(<span>self, progress)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Indicates the current progress of the transfer (in bytes). May be repeated
+<div class="desc"><p>Indicates the current progress of the transfer (in bytes). May be repeated
 any number of times during the transfer process, but it's wasteful to update
 the progress until at least another 1% of the file has been sent.
 This is highly recommended for <em>_store(). (It is optional but good for </em>_retrieve().)</p>
@@ -963,13 +965,13 @@ This is highly recommended for <em>_store(). (It is optional but good for </em>_
 <dl>
 <dt><strong><code>progress</code></strong> :&ensp;<code>int</code></dt>
 <dd>The current progress of the transfer in bytes.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.dirhash"><code class="name flex">
 <span>def <span class="ident">dirhash</span></span>(<span>self, key)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Gets a two level hash associated with a Key. Something like "aB/Cd".
+<div class="desc"><p>Gets a two level hash associated with a Key. Something like "aB/Cd".
 This is always the same for any given Key, so can be used for eg,
 creating hash directory structures to store Keys in. This is the
 same directory hash that git-annex uses inside .git/annex/objects/</p>
@@ -985,15 +987,15 @@ same directory hash that git-annex uses inside .git/annex/objects/</p>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.UnexpectedMessage" href="#annexremote.annexremote.UnexpectedMessage"><code>UnexpectedMessage</code></a></dt>
+<dt><code><a title="annexremote.annexremote.UnexpectedMessage" href="#annexremote.annexremote.UnexpectedMessage">UnexpectedMessage</a></code></dt>
 <dd>If git-annex does not respond correctly to this request, which is very unlikely.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.dirhash_lower"><code class="name flex">
 <span>def <span class="ident">dirhash_lower</span></span>(<span>self, key)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Gets a two level hash associated with a Key, using only lower-case.
+<div class="desc"><p>Gets a two level hash associated with a Key, using only lower-case.
 Something like "abc/def".
 This is always the same for any given Key, so can be used for eg,
 creating hash directory structures to store Keys in. This is the
@@ -1010,15 +1012,15 @@ same directory hash that is used by eg, the directory special remote.</p>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.UnexpectedMessage" href="#annexremote.annexremote.UnexpectedMessage"><code>UnexpectedMessage</code></a></dt>
+<dt><code><a title="annexremote.annexremote.UnexpectedMessage" href="#annexremote.annexremote.UnexpectedMessage">UnexpectedMessage</a></code></dt>
 <dd>If git-annex does not respond correctly to this request, which is very unlikely.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.setcreds"><code class="name flex">
 <span>def <span class="ident">setcreds</span></span>(<span>self, setting, user, password)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>When some form of user and password is needed to access a special
+<div class="desc"><p>When some form of user and password is needed to access a special
 remote, this can be used to securely store them for later use.
 (Like setconfig(), this is normally sent only during initremote().)
 Note that creds are normally only stored in the remote's
@@ -1036,13 +1038,13 @@ can be used to store the creds.</dd>
 <dd>The username to be stored</dd>
 <dt><strong><code>password</code></strong> :&ensp;<code>str</code></dt>
 <dd>The password to be stored</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.getcreds"><code class="name flex">
 <span>def <span class="ident">getcreds</span></span>(<span>self, setting)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Gets any creds that were previously stored in the remote's
+<div class="desc"><p>Gets any creds that were previously stored in the remote's
 configuration or a file.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -1052,7 +1054,7 @@ where the credentials are stored.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>dict</code> of <code>str</code> : <code>str</code></dt>
+<dt><code>dict</code> of <code>str : str</code></dt>
 <dd>A dict containing username of password in the form:
 {'user': "username", 'password': "password"}
 If there are no credentials found, both 'user' and 'password' are empty.
@@ -1060,38 +1062,38 @@ Note: In version 2.0, a named tuple will be used instead of a dict.</dd>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.UnexpectedMessage" href="#annexremote.annexremote.UnexpectedMessage"><code>UnexpectedMessage</code></a></dt>
+<dt><code><a title="annexremote.annexremote.UnexpectedMessage" href="#annexremote.annexremote.UnexpectedMessage">UnexpectedMessage</a></code></dt>
 <dd>If git-annex does not respond correctly to this request, which is very unlikely.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.getuuid"><code class="name flex">
 <span>def <span class="ident">getuuid</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Queries for the UUID of the special remote being used.</p>
+<div class="desc"><p>Queries for the UUID of the special remote being used.</p>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>str</code></dt>
 <dd>The UUID of the special remote</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.getgitdir"><code class="name flex">
 <span>def <span class="ident">getgitdir</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Queries for the path to the git directory of the repository that
+<div class="desc"><p>Queries for the path to the git directory of the repository that
 is using the external special remote.</p>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>str</code></dt>
 <dd>The (relative) path to the git directory</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.setwanted"><code class="name flex">
 <span>def <span class="ident">setwanted</span></span>(<span>self, prefcontent)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Can be used to set the preferred content of a repository. Normally
+<div class="desc"><p>Can be used to set the preferred content of a repository. Normally
 this is not configured by a special remote, but it may make sense
 in some situations to hint at the kind of content that should be
 stored in the special remote.
@@ -1101,13 +1103,13 @@ Note that if an unparsable expression is set, git-annex will ignore it.</p>
 <dt><strong><code>prefcontent</code></strong> :&ensp;<code>str</code></dt>
 <dd>The PreferredContentExpression,
 see <a href="https://git-annex.branchable.com/git-annex-preferred-content/">https://git-annex.branchable.com/git-annex-preferred-content/</a></dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.getwanted"><code class="name flex">
 <span>def <span class="ident">getwanted</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Gets the current preferred content setting of the repository.</p>
+<div class="desc"><p>Gets the current preferred content setting of the repository.</p>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><code>str</code></dt>
@@ -1116,15 +1118,15 @@ see <a href="https://git-annex.branchable.com/git-annex-preferred-content/">http
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.UnexpectedMessage" href="#annexremote.annexremote.UnexpectedMessage"><code>UnexpectedMessage</code></a></dt>
+<dt><code><a title="annexremote.annexremote.UnexpectedMessage" href="#annexremote.annexremote.UnexpectedMessage">UnexpectedMessage</a></code></dt>
 <dd>If git-annex does not respond correctly to this request, which is very unlikely.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.seturlpresent"><code class="name flex">
 <span>def <span class="ident">seturlpresent</span></span>(<span>self, key, url)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Records a URL where the Key can be downloaded from.
+<div class="desc"><p>Records a URL where the Key can be downloaded from.
 Note that this does not make git-annex think that the url is present
 on the web special remote.
 Keep in mind that this stores the url in the git-annex branch. This
@@ -1137,26 +1139,26 @@ already stored in the branch.</p>
 <dd>The key for which to record a URL</dd>
 <dt><strong><code>url</code></strong> :&ensp;<code>str</code></dt>
 <dd>The URL from which the key can be downloaded</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.seturlmissing"><code class="name flex">
 <span>def <span class="ident">seturlmissing</span></span>(<span>self, key, url)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Records that the key can no longer be downloaded from the specified URL.</p>
+<div class="desc"><p>Records that the key can no longer be downloaded from the specified URL.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>key</code></strong> :&ensp;<code>str</code></dt>
 <dd>The key for which to delete the URL</dd>
 <dt><strong><code>url</code></strong> :&ensp;<code>str</code></dt>
 <dd>The URL which is no longer accessible</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.seturipresent"><code class="name flex">
 <span>def <span class="ident">seturipresent</span></span>(<span>self, key, uri)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Records a URI where the Key can be downloaded from.
+<div class="desc"><p>Records a URI where the Key can be downloaded from.
 For example, "ipfs:ADDRESS" is used for the ipfs special remote;
 its CLAIMURL handler checks for such URIS and claims them.</p>
 <h2 id="parameters">Parameters</h2>
@@ -1165,26 +1167,26 @@ its CLAIMURL handler checks for such URIS and claims them.</p>
 <dd>The key for which to record a URI</dd>
 <dt><strong><code>uri</code></strong> :&ensp;<code>str</code></dt>
 <dd>The URI from which the key can be downloaded</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.seturimissing"><code class="name flex">
 <span>def <span class="ident">seturimissing</span></span>(<span>self, key, uri)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Records that the key can no longer be downloaded from the specified URI.</p>
+<div class="desc"><p>Records that the key can no longer be downloaded from the specified URI.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>key</code></strong> :&ensp;<code>str</code></dt>
 <dd>The key for which to delete the URI</dd>
 <dt><strong><code>uri</code></strong> :&ensp;<code>str</code></dt>
 <dd>The URI which is no longer accessible</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.geturls"><code class="name flex">
 <span>def <span class="ident">geturls</span></span>(<span>self, key, prefix)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Gets the recorded URLs where a key can be downloaded from.</p>
+<div class="desc"><p>Gets the recorded URLs where a key can be downloaded from.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>key</code></strong> :&ensp;<code>str</code></dt>
@@ -1200,15 +1202,15 @@ The Prefix may be empty to get all urls.</dd>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.UnexpectedMessage" href="#annexremote.annexremote.UnexpectedMessage"><code>UnexpectedMessage</code></a></dt>
+<dt><code><a title="annexremote.annexremote.UnexpectedMessage" href="#annexremote.annexremote.UnexpectedMessage">UnexpectedMessage</a></code></dt>
 <dd>If git-annex does not respond correctly to this request, which is very unlikely.</dd>
-</dl></section>
+</dl></div>
 </dd>
 <dt id="annexremote.annexremote.Master.info"><code class="name flex">
 <span>def <span class="ident">info</span></span>(<span>self, message)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Tells git-annex to display the message to the user.
+<div class="desc"><p>Tells git-annex to display the message to the user.
 When git-annex is in &ndash;json mode, the message will be emitted immediately
 in its own json object, with an "info" field.</p>
 <p>Important: This is a protocol extension and may raise a ProtocolError if
@@ -1221,9 +1223,9 @@ should always prepare to handle the exception.</p>
 </dl>
 <h2 id="raises">Raises</h2>
 <dl>
-<dt><a title="annexremote.annexremote.ProtocolError" href="#annexremote.annexremote.ProtocolError"><code>ProtocolError</code></a></dt>
+<dt><code><a title="annexremote.annexremote.ProtocolError" href="#annexremote.annexremote.ProtocolError">ProtocolError</a></code></dt>
 <dd>If INFO is not available in this version of git-annex.</dd>
-</dl></section>
+</dl></div>
 </dd>
 </dl>
 </dd>
@@ -1363,9 +1365,7 @@ should always prepare to handle the exception.</p>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.5</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
-<script>hljs.initHighlightingOnLoad()</script>
 </body>
 </html>

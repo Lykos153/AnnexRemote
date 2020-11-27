@@ -47,6 +47,9 @@ def first_buffer_line(buf):
     
 def second_buffer_line(buf):
     return buffer_lines(buf)[1]
+
+def last_buffer_line(buf):
+    return buffer_lines(buf)[-1]
     
 def buffer_lines(buf):
     current_position = buf.tell()

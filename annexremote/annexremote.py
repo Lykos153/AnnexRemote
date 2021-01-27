@@ -1284,6 +1284,34 @@ class Master(object):
         else:
             raise ProtocolError("INFO not available") 
 
+    def getgitremotename(self):
+        """
+        Gets the name of the git remote that represents this special remote.
+        This can be used, for example, to look up git configuration belonging to that
+        git remote. This name will often be the same as what is passed to git-annex
+        initremote and enableremote, but it is possible for git remotes to be renamed,
+        and this will provide the remote's current name.
+
+        Important: This is a protocol extension and may raise a ProtocolError if
+        the particular version of git-annex does not support it. Remotes using 
+        getgetremotename() should always prepare to handle the exception.
+
+        Returns
+        ----------
+        str
+            The name of the git remote that represents this special remote
+
+        Raises
+        ----------
+        ProtocolError
+            If GETGITREMOTENAME is not available in this version of git-annex.
+        """
+        if "GETGITREMOTENAME" in self.protocol.extensions:
+            return self._askvalue("GETGITREMOTENAME")
+        else:
+            raise ProtocolError("GETGITREMOTENAME not available") 
+            
+
     def _send(self, *args, **kwargs):
         print(*args, file=self.output, **kwargs)
         self.output.flush()

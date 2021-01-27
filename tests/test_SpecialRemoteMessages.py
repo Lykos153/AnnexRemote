@@ -376,6 +376,24 @@ class TestSpecialRemoteMessages_Extensions(utils.GitAnnexTestCase):
         with self.assertRaises(ProtocolError):
             self._perform_test(function_to_call, function_parameters, "")
         
+    def TestGetgitremotename(self):
+        self.annex.Listen(io.StringIO("EXTENSIONS GETGITREMOTENAME"))
+        function_to_call = self.annex.getgitremotename
+        function_parameters = ()
+        expected_output = "GETGITREMOTENAME"
+        annex_reply = "VALUE nameofremote"
+        function_result = "nameofremote"
+        
+        self._perform_test(function_to_call, function_parameters, expected_output,
+                        annex_reply, function_result)
+        
+
+    def TestGetgitremotename_Unannounced(self):
+        function_to_call = self.annex.getgitremotename
+        function_parameters = ()
+        with self.assertRaises(ProtocolError):
+            self._perform_test(function_to_call, function_parameters, "")
+        
                 
         
         

@@ -1227,6 +1227,29 @@ should always prepare to handle the exception.</p>
 <dd>If INFO is not available in this version of git-annex.</dd>
 </dl></div>
 </dd>
+<dt id="annexremote.annexremote.Master.getgitremotename"><code class="name flex">
+<span>def <span class="ident">getgitremotename</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets the name of the git remote that represents this special remote.
+This can be used, for example, to look up git configuration belonging to that
+git remote. This name will often be the same as what is passed to git-annex
+initremote and enableremote, but it is possible for git remotes to be renamed,
+and this will provide the remote's current name.</p>
+<p>Important: This is a protocol extension and may raise a ProtocolError if
+the particular version of git-annex does not support it. Remotes using
+getgetremotename() should always prepare to handle the exception.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>str</code></dt>
+<dd>The name of the git remote that represents this special remote</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code><a title="annexremote.annexremote.ProtocolError" href="#annexremote.annexremote.ProtocolError">ProtocolError</a></code></dt>
+<dd>If GETGITREMOTENAME is not available in this version of git-annex.</dd>
+</dl></div>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -1357,6 +1380,7 @@ should always prepare to handle the exception.</p>
 <li><code><a title="annexremote.annexremote.Master.seturimissing" href="#annexremote.annexremote.Master.seturimissing">seturimissing</a></code></li>
 <li><code><a title="annexremote.annexremote.Master.geturls" href="#annexremote.annexremote.Master.geturls">geturls</a></code></li>
 <li><code><a title="annexremote.annexremote.Master.info" href="#annexremote.annexremote.Master.info">info</a></code></li>
+<li><code><a title="annexremote.annexremote.Master.getgitremotename" href="#annexremote.annexremote.Master.getgitremotename">getgitremotename</a></code></li>
 </ul>
 </li>
 </ul>

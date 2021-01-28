@@ -120,6 +120,29 @@ class MyRemote(ExportRemote):
 
 ```
 
+#### Logging
+This module includes a StreamHandler to send log records to git annex via the special remote protocol (using DEBUG). You can use it like this:
+
+```
+...
+import logging
+...
+
+def main():
+    master = Master()
+    remote = MyRemote(master)
+    master.LinkRemote(remote)
+
+    logger = logging.getLogger()
+    logger.addHandler(master.LoggingHandler())
+
+    master.Listen()
+
+if __name__ == "__main__":
+    main()
+```
+
+
 ## License
 
 This project is licensed under GPLv3 - see the [LICENSE](LICENSE) file for details

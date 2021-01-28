@@ -20,6 +20,7 @@ standard_library.install_aliases()
 from future.utils import with_metaclass
 from builtins import object
 
+import logging
 
 from abc import ABCMeta, abstractmethod
 
@@ -58,6 +59,20 @@ class NotLinkedError(AnnexError):
     Will be raised when a Master instance is accessed without being
     linked to a SpecialRemote instance
     """
+
+class AnnexLoggingHandler(logging.StreamHandler):
+    """
+    Stream Handler that sends log records to git annex via the special remote protocol
+    """
+    def __init__(self, annex):
+        super().__init__()
+        self.annex = annex
+        self.setFormatter(logging.Formatter('%(name)s - %(levelname)s - %(message)s'))
+
+    def emit(self, record: logging.LogRecord):
+        log_entry = self.format(record)
+        for line in log_entry.splitlines():
+            self.annex.debug(line)
 
 class SpecialRemote(with_metaclass(ABCMeta, object)):
     """
@@ -829,6 +844,16 @@ class Master(object):
         """
         self.remote = remote
         self.protocol = Protocol(remote)
+
+    def LoggingHandler(self):
+        """
+        Gets an instance of AnnexLoggingHandler
+
+        Returns
+        -------
+        AnnexLoggingHandler
+        """
+        return AnnexLoggingHandler(self)
 
     def Listen(self, input=sys.stdin):
         """

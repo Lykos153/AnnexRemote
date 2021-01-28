@@ -8,6 +8,7 @@ from future import standard_library
 standard_library.install_aliases()
 import io
 from unittest import skip
+import logging
 
 import utils
 RemoteError = utils.annexremote.RemoteError
@@ -509,3 +510,29 @@ class TestUnsupportedRequests(utils.MinimalTestCase):
     def TestListconfigsEmpty(self):
         self.annex.Listen(io.StringIO("LISTCONFIGS"))
         self.assertEqual(utils.second_buffer_line(self.output), "CONFIGEND")
+
+
+class LoggingRemote(utils.MinimalRemote):
+    def __init__(self, annex):
+        super().__init__(annex)
+        self.logger = logging.getLogger()
+        self.logger.addHandler(self.annex.LoggingHandler())
+
+    def prepare(self):
+        self.logger.warning("test\nthis is a new line")
+
+class TestLogging(utils.GitAnnexTestCase):
+    def setUp(self):
+        super().setUp()
+        self.remote = LoggingRemote(self.annex)
+
+        self.annex.LinkRemote(self.remote)
+
+
+    def TestLogging(self):
+        self.annex.Listen(io.StringIO("PREPARE"))
+
+        buffer_lines = utils.buffer_lines(self.output)
+
+        self.assertEqual(buffer_lines[1], "DEBUG root - WARNING - test")
+        self.assertEqual(buffer_lines[2], "DEBUG this is a new line")

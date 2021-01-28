@@ -123,6 +123,38 @@ linked to a SpecialRemote instance</p></div>
 <li>builtins.BaseException</li>
 </ul>
 </dd>
+<dt id="annexremote.annexremote.AnnexLoggingHandler"><code class="flex name class">
+<span>class <span class="ident">AnnexLoggingHandler</span></span>
+<span>(</span><span>annex)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Stream Handler that sends log records to git annex via the special remote protocol</p>
+<p>Initialize the handler.</p>
+<p>If stream is not specified, sys.stderr is used.</p></div>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>logging.StreamHandler</li>
+<li>logging.Handler</li>
+<li>logging.Filterer</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="annexremote.annexremote.AnnexLoggingHandler.emit"><code class="name flex">
+<span>def <span class="ident">emit</span></span>(<span>self, record)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Emit a record.</p>
+<p>If a formatter is specified, it is used to format the record.
+The record is then written to the stream with a trailing newline.
+If
+exception information is present, it is formatted using
+traceback.print_exception and appended to the stream.
+If the stream
+has an 'encoding' attribute, it is used to determine how to do the
+output to the stream.</p></div>
+</dd>
+</dl>
+</dd>
 <dt id="annexremote.annexremote.SpecialRemote"><code class="flex name class">
 <span>class <span class="ident">SpecialRemote</span></span>
 <span>(</span><span>annex)</span>
@@ -831,6 +863,17 @@ Default: sys.stdout</dd>
 ExternalSpecialRemote interface to which this master will be linked.</dd>
 </dl></div>
 </dd>
+<dt id="annexremote.annexremote.Master.LoggingHandler"><code class="name flex">
+<span>def <span class="ident">LoggingHandler</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets an instance of AnnexLoggingHandler</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="annexremote.annexremote.AnnexLoggingHandler" href="#annexremote.annexremote.AnnexLoggingHandler">AnnexLoggingHandler</a></code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+</dd>
 <dt id="annexremote.annexremote.Master.Listen"><code class="name flex">
 <span>def <span class="ident">Listen</span></span>(<span>self, input=sys.stdin)</span>
 </code></dt>
@@ -1287,6 +1330,12 @@ getgetremotename() should always prepare to handle the exception.</p>
 <h4><code><a title="annexremote.annexremote.NotLinkedError" href="#annexremote.annexremote.NotLinkedError">NotLinkedError</a></code></h4>
 </li>
 <li>
+<h4><code><a title="annexremote.annexremote.AnnexLoggingHandler" href="#annexremote.annexremote.AnnexLoggingHandler">AnnexLoggingHandler</a></code></h4>
+<ul class="">
+<li><code><a title="annexremote.annexremote.AnnexLoggingHandler.emit" href="#annexremote.annexremote.AnnexLoggingHandler.emit">emit</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="annexremote.annexremote.SpecialRemote" href="#annexremote.annexremote.SpecialRemote">SpecialRemote</a></code></h4>
 <ul class="">
 <li><code><a title="annexremote.annexremote.SpecialRemote.initremote" href="#annexremote.annexremote.SpecialRemote.initremote">initremote</a></code></li>
@@ -1358,6 +1407,7 @@ getgetremotename() should always prepare to handle the exception.</p>
 <h4><code><a title="annexremote.annexremote.Master" href="#annexremote.annexremote.Master">Master</a></code></h4>
 <ul class="two-column">
 <li><code><a title="annexremote.annexremote.Master.LinkRemote" href="#annexremote.annexremote.Master.LinkRemote">LinkRemote</a></code></li>
+<li><code><a title="annexremote.annexremote.Master.LoggingHandler" href="#annexremote.annexremote.Master.LoggingHandler">LoggingHandler</a></code></li>
 <li><code><a title="annexremote.annexremote.Master.Listen" href="#annexremote.annexremote.Master.Listen">Listen</a></code></li>
 <li><code><a title="annexremote.annexremote.Master.getconfig" href="#annexremote.annexremote.Master.getconfig">getconfig</a></code></li>
 <li><code><a title="annexremote.annexremote.Master.setconfig" href="#annexremote.annexremote.Master.setconfig">setconfig</a></code></li>

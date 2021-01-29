@@ -157,7 +157,7 @@ output to the stream.</p></div>
 </dd>
 <dt id="annexremote.annexremote.SpecialRemote"><code class="flex name class">
 <span>class <span class="ident">SpecialRemote</span></span>
-<span>(</span><span>annex)</span>
+<span>(</span><span>annex=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Metaclass for non-export remotes.</p>
@@ -465,7 +465,7 @@ raise SystemExit</p>
 </dd>
 <dt id="annexremote.annexremote.ExportRemote"><code class="flex name class">
 <span>class <span class="ident">ExportRemote</span></span>
-<span>(</span><span>annex)</span>
+<span>(</span><span>annex=None)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Metaclass for remotes that support non-export <em>and</em> export behaviour.</p>
@@ -660,9 +660,24 @@ Remotes that support exports but not renaming do not need to implement this.</p>
 </li>
 </ul>
 </dd>
+<dt id="annexremote.annexremote.AsyncRemote"><code class="flex name class">
+<span>class <span class="ident">AsyncRemote</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<h3>Methods</h3>
+<dl>
+<dt id="annexremote.annexremote.AsyncRemote.getRemoteJob"><code class="name flex">
+<span>def <span class="ident">getRemoteJob</span></span>(<span>self, job_number)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
 <dt id="annexremote.annexremote.Protocol"><code class="flex name class">
 <span>class <span class="ident">Protocol</span></span>
-<span>(</span><span>remote)</span>
+<span>(</span><span>remote, master)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class handling the receiving part of the protocol (git-annex to remote)
@@ -683,140 +698,20 @@ method of the remote object.</p>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="annexremote.annexremote.Protocol.check_key"><code class="name flex">
-<span>def <span class="ident">check_key</span></span>(<span>self, key)</span>
+<dt id="annexremote.annexremote.Protocol.get_job"><code class="name flex">
+<span>def <span class="ident">get_job</span></span>(<span>self, job_number)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="annexremote.annexremote.Protocol.do_UNKNOWN"><code class="name flex">
-<span>def <span class="ident">do_UNKNOWN</span></span>(<span>self, *arg)</span>
+<dt id="annexremote.annexremote.Protocol.error"><code class="name flex">
+<span>def <span class="ident">error</span></span>(<span>self, *args)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
 </dd>
-<dt id="annexremote.annexremote.Protocol.do_INITREMOTE"><code class="name flex">
-<span>def <span class="ident">do_INITREMOTE</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="annexremote.annexremote.Protocol.do_EXTENSIONS"><code class="name flex">
-<span>def <span class="ident">do_EXTENSIONS</span></span>(<span>self, param)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="annexremote.annexremote.Protocol.do_PREPARE"><code class="name flex">
-<span>def <span class="ident">do_PREPARE</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="annexremote.annexremote.Protocol.do_TRANSFER"><code class="name flex">
-<span>def <span class="ident">do_TRANSFER</span></span>(<span>self, param)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="annexremote.annexremote.Protocol.do_CHECKPRESENT"><code class="name flex">
-<span>def <span class="ident">do_CHECKPRESENT</span></span>(<span>self, key)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="annexremote.annexremote.Protocol.do_REMOVE"><code class="name flex">
-<span>def <span class="ident">do_REMOVE</span></span>(<span>self, key)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="annexremote.annexremote.Protocol.do_LISTCONFIGS"><code class="name flex">
-<span>def <span class="ident">do_LISTCONFIGS</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="annexremote.annexremote.Protocol.do_GETCOST"><code class="name flex">
-<span>def <span class="ident">do_GETCOST</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="annexremote.annexremote.Protocol.do_GETAVAILABILITY"><code class="name flex">
-<span>def <span class="ident">do_GETAVAILABILITY</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="annexremote.annexremote.Protocol.do_CLAIMURL"><code class="name flex">
-<span>def <span class="ident">do_CLAIMURL</span></span>(<span>self, url)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="annexremote.annexremote.Protocol.do_CHECKURL"><code class="name flex">
-<span>def <span class="ident">do_CHECKURL</span></span>(<span>self, url)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="annexremote.annexremote.Protocol.do_WHEREIS"><code class="name flex">
-<span>def <span class="ident">do_WHEREIS</span></span>(<span>self, key)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="annexremote.annexremote.Protocol.do_GETINFO"><code class="name flex">
-<span>def <span class="ident">do_GETINFO</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="annexremote.annexremote.Protocol.do_ERROR"><code class="name flex">
-<span>def <span class="ident">do_ERROR</span></span>(<span>self, message)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="annexremote.annexremote.Protocol.do_EXPORTSUPPORTED"><code class="name flex">
-<span>def <span class="ident">do_EXPORTSUPPORTED</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="annexremote.annexremote.Protocol.do_EXPORT"><code class="name flex">
-<span>def <span class="ident">do_EXPORT</span></span>(<span>self, name)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="annexremote.annexremote.Protocol.do_TRANSFEREXPORT"><code class="name flex">
-<span>def <span class="ident">do_TRANSFEREXPORT</span></span>(<span>self, param)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="annexremote.annexremote.Protocol.do_CHECKPRESENTEXPORT"><code class="name flex">
-<span>def <span class="ident">do_CHECKPRESENTEXPORT</span></span>(<span>self, key)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="annexremote.annexremote.Protocol.do_REMOVEEXPORT"><code class="name flex">
-<span>def <span class="ident">do_REMOVEEXPORT</span></span>(<span>self, key)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="annexremote.annexremote.Protocol.do_REMOVEEXPORTDIRECTORY"><code class="name flex">
-<span>def <span class="ident">do_REMOVEEXPORTDIRECTORY</span></span>(<span>self, name)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-</dd>
-<dt id="annexremote.annexremote.Protocol.do_RENAMEEXPORT"><code class="name flex">
-<span>def <span class="ident">do_RENAMEEXPORT</span></span>(<span>self, param)</span>
+<dt id="annexremote.annexremote.Protocol.debug"><code class="name flex">
+<span>def <span class="ident">debug</span></span>(<span>self, *args)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -891,7 +786,17 @@ Default: sys.stdin</dd>
 <dd>If there is no remote linked to this master.</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.getconfig"><code class="name flex">
+</dl>
+</dd>
+<dt id="annexremote.annexremote.SpecialRemoteMessages"><code class="flex name class">
+<span>class <span class="ident">SpecialRemoteMessages</span></span>
+<span>(</span><span>protocol)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<h3>Methods</h3>
+<dl>
+<dt id="annexremote.annexremote.SpecialRemoteMessages.getconfig"><code class="name flex">
 <span>def <span class="ident">getconfig</span></span>(<span>self, setting)</span>
 </code></dt>
 <dd>
@@ -915,7 +820,7 @@ It's recommended that special remotes that use this implement listconfigs(). </p
 <dd>If git-annex does not respond correctly to this request, which is very unlikely.</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.setconfig"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.setconfig"><code class="name flex">
 <span>def <span class="ident">setconfig</span></span>(<span>self, setting, value)</span>
 </code></dt>
 <dd>
@@ -932,7 +837,7 @@ only be available while the remote is running.)</p>
 <dd>The value of the setting</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.getstate"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.getstate"><code class="name flex">
 <span>def <span class="ident">getstate</span></span>(<span>self, key)</span>
 </code></dt>
 <dd>
@@ -953,7 +858,7 @@ only be available while the remote is running.)</p>
 <dd>If git-annex does not respond correctly to this request, which is very unlikely.</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.setstate"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.setstate"><code class="name flex">
 <span>def <span class="ident">setstate</span></span>(<span>self, key, value)</span>
 </code></dt>
 <dd>
@@ -971,7 +876,7 @@ branch. Most remotes will not need to store any state.</p>
 <dd>The state for the key to store</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.debug"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.debug"><code class="name flex">
 <span>def <span class="ident">debug</span></span>(<span>self, *args)</span>
 </code></dt>
 <dd>
@@ -982,7 +887,7 @@ branch. Most remotes will not need to store any state.</p>
 <dd>The message to be displayed to the user</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.error"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.error"><code class="name flex">
 <span>def <span class="ident">error</span></span>(<span>self, *args)</span>
 </code></dt>
 <dd>
@@ -996,7 +901,7 @@ not talk to it any further.</p>
 <dd>The error message to be sent to git-annex</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.progress"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.progress"><code class="name flex">
 <span>def <span class="ident">progress</span></span>(<span>self, progress)</span>
 </code></dt>
 <dd>
@@ -1010,7 +915,7 @@ This is highly recommended for <em>_store(). (It is optional but good for </em>_
 <dd>The current progress of the transfer in bytes.</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.dirhash"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.dirhash"><code class="name flex">
 <span>def <span class="ident">dirhash</span></span>(<span>self, key)</span>
 </code></dt>
 <dd>
@@ -1034,7 +939,7 @@ same directory hash that git-annex uses inside .git/annex/objects/</p>
 <dd>If git-annex does not respond correctly to this request, which is very unlikely.</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.dirhash_lower"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.dirhash_lower"><code class="name flex">
 <span>def <span class="ident">dirhash_lower</span></span>(<span>self, key)</span>
 </code></dt>
 <dd>
@@ -1059,7 +964,7 @@ same directory hash that is used by eg, the directory special remote.</p>
 <dd>If git-annex does not respond correctly to this request, which is very unlikely.</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.setcreds"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.setcreds"><code class="name flex">
 <span>def <span class="ident">setcreds</span></span>(<span>self, setting, user, password)</span>
 </code></dt>
 <dd>
@@ -1083,7 +988,7 @@ can be used to store the creds.</dd>
 <dd>The password to be stored</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.getcreds"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.getcreds"><code class="name flex">
 <span>def <span class="ident">getcreds</span></span>(<span>self, setting)</span>
 </code></dt>
 <dd>
@@ -1109,7 +1014,7 @@ Note: In version 2.0, a named tuple will be used instead of a dict.</dd>
 <dd>If git-annex does not respond correctly to this request, which is very unlikely.</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.getuuid"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.getuuid"><code class="name flex">
 <span>def <span class="ident">getuuid</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -1120,7 +1025,7 @@ Note: In version 2.0, a named tuple will be used instead of a dict.</dd>
 <dd>The UUID of the special remote</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.getgitdir"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.getgitdir"><code class="name flex">
 <span>def <span class="ident">getgitdir</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -1132,7 +1037,7 @@ is using the external special remote.</p>
 <dd>The (relative) path to the git directory</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.setwanted"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.setwanted"><code class="name flex">
 <span>def <span class="ident">setwanted</span></span>(<span>self, prefcontent)</span>
 </code></dt>
 <dd>
@@ -1148,7 +1053,7 @@ Note that if an unparsable expression is set, git-annex will ignore it.</p>
 see <a href="https://git-annex.branchable.com/git-annex-preferred-content/">https://git-annex.branchable.com/git-annex-preferred-content/</a></dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.getwanted"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.getwanted"><code class="name flex">
 <span>def <span class="ident">getwanted</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -1165,7 +1070,7 @@ see <a href="https://git-annex.branchable.com/git-annex-preferred-content/">http
 <dd>If git-annex does not respond correctly to this request, which is very unlikely.</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.seturlpresent"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.seturlpresent"><code class="name flex">
 <span>def <span class="ident">seturlpresent</span></span>(<span>self, key, url)</span>
 </code></dt>
 <dd>
@@ -1184,7 +1089,7 @@ already stored in the branch.</p>
 <dd>The URL from which the key can be downloaded</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.seturlmissing"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.seturlmissing"><code class="name flex">
 <span>def <span class="ident">seturlmissing</span></span>(<span>self, key, url)</span>
 </code></dt>
 <dd>
@@ -1197,7 +1102,7 @@ already stored in the branch.</p>
 <dd>The URL which is no longer accessible</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.seturipresent"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.seturipresent"><code class="name flex">
 <span>def <span class="ident">seturipresent</span></span>(<span>self, key, uri)</span>
 </code></dt>
 <dd>
@@ -1212,7 +1117,7 @@ its CLAIMURL handler checks for such URIS and claims them.</p>
 <dd>The URI from which the key can be downloaded</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.seturimissing"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.seturimissing"><code class="name flex">
 <span>def <span class="ident">seturimissing</span></span>(<span>self, key, uri)</span>
 </code></dt>
 <dd>
@@ -1225,7 +1130,7 @@ its CLAIMURL handler checks for such URIS and claims them.</p>
 <dd>The URI which is no longer accessible</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.geturls"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.geturls"><code class="name flex">
 <span>def <span class="ident">geturls</span></span>(<span>self, key, prefix)</span>
 </code></dt>
 <dd>
@@ -1249,7 +1154,7 @@ The Prefix may be empty to get all urls.</dd>
 <dd>If git-annex does not respond correctly to this request, which is very unlikely.</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.info"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.info"><code class="name flex">
 <span>def <span class="ident">info</span></span>(<span>self, message)</span>
 </code></dt>
 <dd>
@@ -1270,7 +1175,7 @@ should always prepare to handle the exception.</p>
 <dd>If INFO is not available in this version of git-annex.</dd>
 </dl></div>
 </dd>
-<dt id="annexremote.annexremote.Master.getgitremotename"><code class="name flex">
+<dt id="annexremote.annexremote.SpecialRemoteMessages.getgitremotename"><code class="name flex">
 <span>def <span class="ident">getgitremotename</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -1374,63 +1279,54 @@ getgetremotename() should always prepare to handle the exception.</p>
 </ul>
 </li>
 <li>
+<h4><code><a title="annexremote.annexremote.AsyncRemote" href="#annexremote.annexremote.AsyncRemote">AsyncRemote</a></code></h4>
+<ul class="">
+<li><code><a title="annexremote.annexremote.AsyncRemote.getRemoteJob" href="#annexremote.annexremote.AsyncRemote.getRemoteJob">getRemoteJob</a></code></li>
+</ul>
+</li>
+<li>
 <h4><code><a title="annexremote.annexremote.Protocol" href="#annexremote.annexremote.Protocol">Protocol</a></code></h4>
 <ul class="">
 <li><code><a title="annexremote.annexremote.Protocol.command" href="#annexremote.annexremote.Protocol.command">command</a></code></li>
 <li><code><a title="annexremote.annexremote.Protocol.lookupMethod" href="#annexremote.annexremote.Protocol.lookupMethod">lookupMethod</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.check_key" href="#annexremote.annexremote.Protocol.check_key">check_key</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_UNKNOWN" href="#annexremote.annexremote.Protocol.do_UNKNOWN">do_UNKNOWN</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_INITREMOTE" href="#annexremote.annexremote.Protocol.do_INITREMOTE">do_INITREMOTE</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_EXTENSIONS" href="#annexremote.annexremote.Protocol.do_EXTENSIONS">do_EXTENSIONS</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_PREPARE" href="#annexremote.annexremote.Protocol.do_PREPARE">do_PREPARE</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_TRANSFER" href="#annexremote.annexremote.Protocol.do_TRANSFER">do_TRANSFER</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_CHECKPRESENT" href="#annexremote.annexremote.Protocol.do_CHECKPRESENT">do_CHECKPRESENT</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_REMOVE" href="#annexremote.annexremote.Protocol.do_REMOVE">do_REMOVE</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_LISTCONFIGS" href="#annexremote.annexremote.Protocol.do_LISTCONFIGS">do_LISTCONFIGS</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_GETCOST" href="#annexremote.annexremote.Protocol.do_GETCOST">do_GETCOST</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_GETAVAILABILITY" href="#annexremote.annexremote.Protocol.do_GETAVAILABILITY">do_GETAVAILABILITY</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_CLAIMURL" href="#annexremote.annexremote.Protocol.do_CLAIMURL">do_CLAIMURL</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_CHECKURL" href="#annexremote.annexremote.Protocol.do_CHECKURL">do_CHECKURL</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_WHEREIS" href="#annexremote.annexremote.Protocol.do_WHEREIS">do_WHEREIS</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_GETINFO" href="#annexremote.annexremote.Protocol.do_GETINFO">do_GETINFO</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_ERROR" href="#annexremote.annexremote.Protocol.do_ERROR">do_ERROR</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_EXPORTSUPPORTED" href="#annexremote.annexremote.Protocol.do_EXPORTSUPPORTED">do_EXPORTSUPPORTED</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_EXPORT" href="#annexremote.annexremote.Protocol.do_EXPORT">do_EXPORT</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_TRANSFEREXPORT" href="#annexremote.annexremote.Protocol.do_TRANSFEREXPORT">do_TRANSFEREXPORT</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_CHECKPRESENTEXPORT" href="#annexremote.annexremote.Protocol.do_CHECKPRESENTEXPORT">do_CHECKPRESENTEXPORT</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_REMOVEEXPORT" href="#annexremote.annexremote.Protocol.do_REMOVEEXPORT">do_REMOVEEXPORT</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_REMOVEEXPORTDIRECTORY" href="#annexremote.annexremote.Protocol.do_REMOVEEXPORTDIRECTORY">do_REMOVEEXPORTDIRECTORY</a></code></li>
-<li><code><a title="annexremote.annexremote.Protocol.do_RENAMEEXPORT" href="#annexremote.annexremote.Protocol.do_RENAMEEXPORT">do_RENAMEEXPORT</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.get_job" href="#annexremote.annexremote.Protocol.get_job">get_job</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.error" href="#annexremote.annexremote.Protocol.error">error</a></code></li>
+<li><code><a title="annexremote.annexremote.Protocol.debug" href="#annexremote.annexremote.Protocol.debug">debug</a></code></li>
 </ul>
 </li>
 <li>
 <h4><code><a title="annexremote.annexremote.Master" href="#annexremote.annexremote.Master">Master</a></code></h4>
-<ul class="two-column">
+<ul class="">
 <li><code><a title="annexremote.annexremote.Master.LinkRemote" href="#annexremote.annexremote.Master.LinkRemote">LinkRemote</a></code></li>
 <li><code><a title="annexremote.annexremote.Master.LoggingHandler" href="#annexremote.annexremote.Master.LoggingHandler">LoggingHandler</a></code></li>
 <li><code><a title="annexremote.annexremote.Master.Listen" href="#annexremote.annexremote.Master.Listen">Listen</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.getconfig" href="#annexremote.annexremote.Master.getconfig">getconfig</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.setconfig" href="#annexremote.annexremote.Master.setconfig">setconfig</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.getstate" href="#annexremote.annexremote.Master.getstate">getstate</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.setstate" href="#annexremote.annexremote.Master.setstate">setstate</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.debug" href="#annexremote.annexremote.Master.debug">debug</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.error" href="#annexremote.annexremote.Master.error">error</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.progress" href="#annexremote.annexremote.Master.progress">progress</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.dirhash" href="#annexremote.annexremote.Master.dirhash">dirhash</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.dirhash_lower" href="#annexremote.annexremote.Master.dirhash_lower">dirhash_lower</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.setcreds" href="#annexremote.annexremote.Master.setcreds">setcreds</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.getcreds" href="#annexremote.annexremote.Master.getcreds">getcreds</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.getuuid" href="#annexremote.annexremote.Master.getuuid">getuuid</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.getgitdir" href="#annexremote.annexremote.Master.getgitdir">getgitdir</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.setwanted" href="#annexremote.annexremote.Master.setwanted">setwanted</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.getwanted" href="#annexremote.annexremote.Master.getwanted">getwanted</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.seturlpresent" href="#annexremote.annexremote.Master.seturlpresent">seturlpresent</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.seturlmissing" href="#annexremote.annexremote.Master.seturlmissing">seturlmissing</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.seturipresent" href="#annexremote.annexremote.Master.seturipresent">seturipresent</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.seturimissing" href="#annexremote.annexremote.Master.seturimissing">seturimissing</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.geturls" href="#annexremote.annexremote.Master.geturls">geturls</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.info" href="#annexremote.annexremote.Master.info">info</a></code></li>
-<li><code><a title="annexremote.annexremote.Master.getgitremotename" href="#annexremote.annexremote.Master.getgitremotename">getgitremotename</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="annexremote.annexremote.SpecialRemoteMessages" href="#annexremote.annexremote.SpecialRemoteMessages">SpecialRemoteMessages</a></code></h4>
+<ul class="two-column">
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.getconfig" href="#annexremote.annexremote.SpecialRemoteMessages.getconfig">getconfig</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.setconfig" href="#annexremote.annexremote.SpecialRemoteMessages.setconfig">setconfig</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.getstate" href="#annexremote.annexremote.SpecialRemoteMessages.getstate">getstate</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.setstate" href="#annexremote.annexremote.SpecialRemoteMessages.setstate">setstate</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.debug" href="#annexremote.annexremote.SpecialRemoteMessages.debug">debug</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.error" href="#annexremote.annexremote.SpecialRemoteMessages.error">error</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.progress" href="#annexremote.annexremote.SpecialRemoteMessages.progress">progress</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.dirhash" href="#annexremote.annexremote.SpecialRemoteMessages.dirhash">dirhash</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.dirhash_lower" href="#annexremote.annexremote.SpecialRemoteMessages.dirhash_lower">dirhash_lower</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.setcreds" href="#annexremote.annexremote.SpecialRemoteMessages.setcreds">setcreds</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.getcreds" href="#annexremote.annexremote.SpecialRemoteMessages.getcreds">getcreds</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.getuuid" href="#annexremote.annexremote.SpecialRemoteMessages.getuuid">getuuid</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.getgitdir" href="#annexremote.annexremote.SpecialRemoteMessages.getgitdir">getgitdir</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.setwanted" href="#annexremote.annexremote.SpecialRemoteMessages.setwanted">setwanted</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.getwanted" href="#annexremote.annexremote.SpecialRemoteMessages.getwanted">getwanted</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.seturlpresent" href="#annexremote.annexremote.SpecialRemoteMessages.seturlpresent">seturlpresent</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.seturlmissing" href="#annexremote.annexremote.SpecialRemoteMessages.seturlmissing">seturlmissing</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.seturipresent" href="#annexremote.annexremote.SpecialRemoteMessages.seturipresent">seturipresent</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.seturimissing" href="#annexremote.annexremote.SpecialRemoteMessages.seturimissing">seturimissing</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.geturls" href="#annexremote.annexremote.SpecialRemoteMessages.geturls">geturls</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.info" href="#annexremote.annexremote.SpecialRemoteMessages.info">info</a></code></li>
+<li><code><a title="annexremote.annexremote.SpecialRemoteMessages.getgitremotename" href="#annexremote.annexremote.SpecialRemoteMessages.getgitremotename">getgitremotename</a></code></li>
 </ul>
 </li>
 </ul>

@@ -522,7 +522,14 @@ class ExportRemote(SpecialRemote):
         """
         raise UnsupportedRequest()
         
-class Protocol(object):
+class AsyncRemote:
+    def __init__(self):
+        self.async_supported = True
+
+    def getRemoteJob(self, job_number):
+        raise NotImplementedError
+
+class Protocol:
     """
     Helper class handling the receiving part of the protocol (git-annex to remote)
     It parses the requests coming from git-annex and calls the respective
@@ -538,6 +545,7 @@ class Protocol(object):
         self.version = "VERSION 1"
         self.exporting = False
         self.extensions = list()
+        self.jobs = {}
         
     def command(self, line):
         line = line.strip()
@@ -564,6 +572,12 @@ class Protocol(object):
     def lookupMethod(self, command):
         return getattr(self.request_messages, 'do_' + command.upper(), self.request_messages.do_UNKNOWN)
         
+
+    def get_job(self, job_number: int) -> "Protocol":
+        if job_number not in self.jobs:
+            self.jobs[job_number] = Protocol(self.remote.getRemoteJob(job_number))
+        return self.jobs[job_number]
+
     def error(self, *args):
         self._send("ERROR", *args)
         
@@ -624,8 +638,19 @@ class _GitAnnexRequestMessages(object):
             
     def do_EXTENSIONS(self, param):
         self.protocol.extensions = param.split(" ")
-        return "EXTENSIONS"
+        remote_extensions = []
+        if hasattr(self.remote, "async_support") and \
+                    self.remote.async_support == True:
+            remote_extensions.append("ASYNC")
+        return ' '.join(["EXTENSIONS"] + remote_extensions)
     
+    def do_J(self, param):
+        try:
+            (job_number, command) = param.split(" ", 1)
+        except ValueError:
+            raise SyntaxError("Expected Jobnumber Command")
+        return self.protocol.get_job(job_number).command(command)
+
     def do_PREPARE(self):
         try:
             self.remote.prepare()

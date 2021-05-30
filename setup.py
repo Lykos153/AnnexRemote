@@ -53,6 +53,6 @@ setup(
 
     install_requires=[],
     extras_require={
-        'test': ['coverage', 'nose', 'mock'],
+        'test': ['coverage', 'nose'],
     },
 )

@@ -1,15 +1,5 @@
-from __future__ import unicode_literals
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-from builtins import super
-from future import standard_library
-standard_library.install_aliases()
 import unittest
-try:
-    import unittest.mock as mock
-except ImportError:
-    import mock
+from unittest import mock
 import io
 
 import os, sys

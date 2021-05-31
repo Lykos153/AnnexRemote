@@ -9,23 +9,11 @@
 # warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 #
 
-from __future__ import print_function
-from __future__ import unicode_literals
-from __future__ import division
-from __future__ import absolute_import
-from builtins import int
-from builtins import str
-from future import standard_library
-standard_library.install_aliases()
-from future.utils import with_metaclass
-from builtins import object
-
 import logging
 
 from abc import ABCMeta, abstractmethod
 
 import sys, traceback
-import string
 
 
 # Exceptions
@@ -74,7 +62,7 @@ class AnnexLoggingHandler(logging.StreamHandler):
         for line in log_entry.splitlines():
             self.annex.debug(line)
 
-class SpecialRemote(with_metaclass(ABCMeta, object)):
+class SpecialRemote(metaclass=ABCMeta):
     """
     Metaclass for non-export remotes.
 

@@ -11,10 +11,10 @@ Extensions to the protocol are normally added within hours after they've been pu
 
 ## Getting started
 ### Prerequisites
-You need python installed on your system. AnnexRemote has been tested with version 2.7 and 3.4 to 3.7.
+You need python3 installed on your system.
 
 ### Installing
-`pip install annexremote`
+`pip3 install annexremote`
 
 ### Running the tests
 If you want to run the tests, copy the content of the `tests` folder to the same location as `annexremote.py`.

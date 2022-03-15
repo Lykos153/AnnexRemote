@@ -1,4 +1,4 @@
-![Tests](https://github.com/Lykos153/AnnexRemote/actions/workflows/unittests.yml/badge.svg)
+![Tests](https://github.com/Lykos153/AnnexRemote/actions/workflows/unittests.yml/badge.svg) [![PyPI version](https://badge.fury.io/py/annexremote.svg)](https://badge.fury.io/py/annexremote)
 
 
 # AnnexRemote

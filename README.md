@@ -1,3 +1,6 @@
+![Tests](https://github.com/github/docs/actions/workflows/main.yml/badge.svg)
+
+
 # AnnexRemote
 Helper module to easily develop special remotes for [git annex](https://git-annex.branchable.com).
 AnnexRemote handles all the protocol stuff for you, so you can focus on the remote itself.

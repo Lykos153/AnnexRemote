@@ -1,3 +1,6 @@
+![Tests](https://github.com/Lykos153/AnnexRemote/actions/workflows/unittests.yml/badge.svg) [![PyPI version](https://badge.fury.io/py/annexremote.svg)](https://badge.fury.io/py/annexremote)
+
+
 # AnnexRemote
 Helper module to easily develop special remotes for [git annex](https://git-annex.branchable.com).
 AnnexRemote handles all the protocol stuff for you, so you can focus on the remote itself.

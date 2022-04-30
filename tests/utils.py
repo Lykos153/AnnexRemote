@@ -15,10 +15,10 @@ class GitAnnexTestCase(unittest.TestCase):
         self.output = io.StringIO()
         self.input = io.StringIO()
 
-        self.annex = annexremote.Master(self.output)
-        self.remote = mock.MagicMock(wraps=DummyRemote(self.annex))
+        self.master = annexremote.Master(self.output)
+        self.remote = mock.MagicMock(wraps=DummyRemote(self.master))
 
-        self.annex.LinkRemote(self.remote)
+        self.master.LinkRemote(self.remote)
 
 class MinimalTestCase(unittest.TestCase):
     def setUp(self):
@@ -27,10 +27,10 @@ class MinimalTestCase(unittest.TestCase):
         self.output = io.StringIO()
         self.input = io.StringIO()
 
-        self.annex = annexremote.Master(self.output)
-        self.remote = MinimalRemote(self.annex)
+        self.master = annexremote.Master(self.output)
+        self.remote = MinimalRemote(self.master)
 
-        self.annex.LinkRemote(self.remote)
+        self.master.LinkRemote(self.remote)
 
 def first_buffer_line(buf):
     return buffer_lines(buf)[0]

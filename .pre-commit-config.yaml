@@ -3,3 +3,11 @@ repos:
   rev: 22.3.0
   hooks:
   - id: black
+- repo: local
+  hooks:
+    - id: nosetests
+      name: nosetests
+      entry: nosetests
+      language: system
+      always_run: true
+      pass_filenames: false

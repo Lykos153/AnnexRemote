@@ -11,15 +11,22 @@
     let
       pkgs = nixpkgs.legacyPackages.${system};
     in rec {
-      packages = {
+      packages = rec {
         pythonEnv = pkgs.python3.withPackages(
           ps: with ps; [
             virtualenv
           ]
         );
+        annexremote = pkgs.python3Packages.buildPythonPackage rec {
+          pname = "annexremote";
+          version = self.rev;
+          # format = "setuptools";
+          src = self;
+        };
+        default = annexremote;
       };
 
-      defaultPackage = packages.pythonEnv;
+      defaultPackage = packages.default;
       devShell = packages.pythonEnv.env;
     });
 }

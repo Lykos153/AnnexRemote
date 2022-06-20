@@ -22,25 +22,30 @@ class AnnexError(Exception):
     Common base class for all annexremote exceptions.
     """
 
+
 class ProtocolError(AnnexError):
     """
     Base class for protocol errors
     """
+
 
 class UnsupportedRequest(ProtocolError):
     """
     Must be raised when an optional request is not supported by the remote.
     """
 
+
 class UnexpectedMessage(ProtocolError):
     """
     Raised when git-annex sends a message which is not expected at the moment
     """
 
+
 class RemoteError(AnnexError):
     """
     Must be raised by the remote when a request did not succeed.
     """
+
 
 class NotLinkedError(AnnexError):
     """
@@ -48,19 +53,22 @@ class NotLinkedError(AnnexError):
     linked to a SpecialRemote instance
     """
 
+
 class AnnexLoggingHandler(logging.StreamHandler):
     """
     Stream Handler that sends log records to git annex via the special remote protocol
     """
+
     def __init__(self, annex):
         super().__init__()
         self.annex = annex
-        self.setFormatter(logging.Formatter('%(name)s - %(levelname)s - %(message)s'))
+        self.setFormatter(logging.Formatter("%(name)s - %(levelname)s - %(message)s"))
 
     def emit(self, record: logging.LogRecord):
         log_entry = self.format(record)
         for line in log_entry.splitlines():
             self.annex.debug(line)
+
 
 class SpecialRemote(metaclass=ABCMeta):
     """
@@ -81,7 +89,7 @@ class SpecialRemote(metaclass=ABCMeta):
         {'Name': 'Description', ...}
         Note: Name *must not* contain spaces. Description should be reasonably short.
         Example: {'directory': "store data here"}
-        Providing them makes `git annex initremote` work better, because it can check the user's input, 
+        Providing them makes `git annex initremote` work better, because it can check the user's input,
         and can also display a list of settings with descriptions.
         Note that the user is not required to provided all the settings listed here.
     """
@@ -94,7 +102,7 @@ class SpecialRemote(metaclass=ABCMeta):
     @abstractmethod
     def initremote(self):
         """
-        Gets called when `git annex initremote` or `git annex enableremote` are run. 
+        Gets called when `git annex initremote` or `git annex enableremote` are run.
         This is where any one-time setup tasks can be done, for example creating the remote folder.
         Note: This may be run repeatedly over time, as a remote is initialized in different repositories,
         or as the configuration of a remote is changed. So any one-time setup tasks should be done idempotently.
@@ -109,7 +117,7 @@ class SpecialRemote(metaclass=ABCMeta):
     def prepare(self):
         """
         Tells the remote that it's time to prepare itself to be used.
-        Gets called whenever git annex is about to access any of the below 
+        Gets called whenever git annex is about to access any of the below
         methods, so it shouldn't be too expensive. Otherwise it will
         slow down operations like `git annex whereis` or `git annex info`.
 
@@ -129,7 +137,7 @@ class SpecialRemote(metaclass=ABCMeta):
 
         It's important that, while a Key is being stored, checkpresent(key)
         not indicate it's present until all the data has been transferred.
-        While the transfer is running, the remote can repeatedly call 
+        While the transfer is running, the remote can repeatedly call
         annex.progress(size) to indicate the number of bytes already stored.
         This will influence the progress shown to the user.
 
@@ -154,7 +162,7 @@ class SpecialRemote(metaclass=ABCMeta):
         """
         Get the file identified by `key` from the remote and store it in `local_file`.
 
-        While the transfer is running, the remote can repeatedly call 
+        While the transfer is running, the remote can repeatedly call
         annex.progress(size) to indicate the number of bytes already stored.
         This will influence the progress shown to the user.
 
@@ -208,16 +216,16 @@ class SpecialRemote(metaclass=ABCMeta):
         RemoteError
             If the key couldn't be deleted from the remote.
         """
-    
+
     # Optional requests
     def listconfigs(self):
-        #TODO (v2.0) remove
+        # TODO (v2.0) remove
         return self.configs
 
     def getcost(self):
         """
-        Requests the remote to return a use cost. Higher costs are more expensive. 
-        
+        Requests the remote to return a use cost. Higher costs are more expensive.
+
         cheapRemoteCost = 100
         nearlyCheapRemoteCost = 110
         semiExpensiveRemoteCost = 175
@@ -279,7 +287,7 @@ class SpecialRemote(metaclass=ABCMeta):
 
             In order to provide additional information, a list of dictionaries can be returned.
             The dictionaries can have 3 keys: {'url': str, 'size': int, 'filename': str}. All of them are optional.
-            
+
             If there is only one file to be downloaded, we could return:
             [{'size': 512, 'filename':'example_file.txt'}]
 
@@ -295,10 +303,10 @@ class SpecialRemote(metaclass=ABCMeta):
     def whereis(self, key):
         """
         Asks the remote to provide additional information about ways to access the
-        content of a key stored in it, such as eg, public urls. This will be displayed 
+        content of a key stored in it, such as eg, public urls. This will be displayed
         to the user by eg, git annex whereis.
         Note that users expect git annex whereis to run fast, without eg, network access.
-        
+
         Parameters
         ----------
         key : str
@@ -310,7 +318,7 @@ class SpecialRemote(metaclass=ABCMeta):
 
         """
         raise UnsupportedRequest()
-    
+
     def error(self, error_msg):
         """
         Generic error. Can be sent at any time if things get too messed up to continue.
@@ -351,7 +359,10 @@ class SpecialRemote(metaclass=ABCMeta):
 
     # Setup function to be run before initremote to handle things like authentication interactively
     def setup(self):
-        print("Nothing to do. Just run 'git annex initremote' with your desired parameters")
+        print(
+            "Nothing to do. Just run 'git annex initremote' with your desired parameters"
+        )
+
 
 class ExportRemote(SpecialRemote):
     """
@@ -372,7 +383,7 @@ class ExportRemote(SpecialRemote):
         {'Name': 'Description', ...}
         Note: Name *must not* contain spaces. Description should be reasonably short.
         Example: {'directory': "store data here"}
-        Providing them makes `git annex initremote` work better, because it can check the user's input, 
+        Providing them makes `git annex initremote` work better, because it can check the user's input,
         and can also display a list of settings with descriptions.
         Note that the user is not required to provided all the settings listed here.
     """
@@ -384,8 +395,8 @@ class ExportRemote(SpecialRemote):
     def transferexport_store(self, key, local_file, remote_file):
         """
         Requests the transfer of a file on local disk to the special remote.
-        Note that it's important that, while a file is being stored, 
-        checkpresentexport() not indicate it's present until all the data 
+        Note that it's important that, while a file is being stored,
+        checkpresentexport() not indicate it's present until all the data
         has been transferred.
         While the transfer is running, the remote can send any number of progess(size) messages.
 
@@ -412,8 +423,8 @@ class ExportRemote(SpecialRemote):
     def transferexport_retrieve(self, key, local_file, remote_file):
         """
         Requests the transfer of a file from the special remote to the local disk.
-        Note that it's important that, while a file is being stored, 
-        checkpresentexport() not indicate it's present until all the data 
+        Note that it's important that, while a file is being stored,
+        checkpresentexport() not indicate it's present until all the data
         has been transferred.
         While the transfer is running, the remote can send any number of progess(size) messages.
 
@@ -444,7 +455,7 @@ class ExportRemote(SpecialRemote):
         Parameters
         ----------
         key : str
-            The key of the file to check. 
+            The key of the file to check.
         remote_file : str
             The remote path of the file to check.
 
@@ -468,7 +479,7 @@ class ExportRemote(SpecialRemote):
         Parameters
         ----------
         key : str
-            The key of the file to check. 
+            The key of the file to check.
         remote_file : str
             The remote path of the file to delete.
 
@@ -487,12 +498,12 @@ class ExportRemote(SpecialRemote):
         Parameters
         ----------
         remote_directory : str
-            The remote path to the directory to delete. 
+            The remote path to the directory to delete.
             The directory will be in the form of a relative path,
             and may contain path separators, whitespace, and other special characters.
             Typically the directory will be empty, but it could possibly contain
             files or other directories, and it's ok to remove those,
-            but not required to do so. 
+            but not required to do so.
 
         Raises
         ------
@@ -503,7 +514,7 @@ class ExportRemote(SpecialRemote):
 
     def renameexport(self, key, filename, new_filename):
         """
-        Requests the remote rename a file stored on it from `filename` to `new_filename`. 
+        Requests the remote rename a file stored on it from `filename` to `new_filename`.
         Remotes that support exports but not renaming do not need to implement this.
 
         Parameters
@@ -521,7 +532,8 @@ class ExportRemote(SpecialRemote):
             If the the remote directory couldn't be deleted.
         """
         raise UnsupportedRequest()
-        
+
+
 class Protocol(object):
     """
     Helper class handling the receiving part of the protocol (git-annex to remote)
@@ -536,16 +548,14 @@ class Protocol(object):
         self.version = "VERSION 1"
         self.exporting = False
         self.extensions = list()
-        
+
     def command(self, line):
         line = line.strip()
         parts = line.split(" ", 1)
         if not parts:
             raise ProtocolError("Got empty line")
-            
 
         method = self.lookupMethod(parts[0]) or self.do_UNKNOWN
-
 
         try:
             if len(parts) == 1:
@@ -560,15 +570,15 @@ class Protocol(object):
             return reply
 
     def lookupMethod(self, command):
-        return getattr(self, 'do_' + command.upper(), None)
-        
+        return getattr(self, "do_" + command.upper(), None)
+
     def check_key(self, key):
         if len(key.split()) != 1:
             raise ValueError("Invalid key. Key contains whitespace character")
 
     def do_UNKNOWN(self, *arg):
         raise UnsupportedRequest()
-        
+
     def do_INITREMOTE(self):
         try:
             self.remote.initremote()
@@ -576,11 +586,11 @@ class Protocol(object):
             return "INITREMOTE-FAILURE {e}".format(e=e)
         else:
             return "INITREMOTE-SUCCESS"
-            
+
     def do_EXTENSIONS(self, param):
         self.extensions = param.split(" ")
         return "EXTENSIONS"
-    
+
     def do_PREPARE(self):
         try:
             self.remote.prepare()
@@ -588,24 +598,26 @@ class Protocol(object):
             return "PREPARE-FAILURE {e}".format(e=e)
         else:
             return "PREPARE-SUCCESS"
-    
+
     def do_TRANSFER(self, param):
         try:
             (method, key, file_) = param.split(" ", 2)
         except ValueError:
             raise SyntaxError("Expected Key File")
-        
+
         if not (method == "STORE" or method == "RETRIEVE"):
             return self.do_UNKNOWN()
-        
+
         func = getattr(self.remote, "transfer_{}".format(method.lower()), None)
         try:
             func(key, file_)
         except RemoteError as e:
-            return "TRANSFER-FAILURE {method} {key} {e}".format(method=method, key=key, e=e)
+            return "TRANSFER-FAILURE {method} {key} {e}".format(
+                method=method, key=key, e=e
+            )
         else:
             return "TRANSFER-SUCCESS {method} {key}".format(method=method, key=key)
-    
+
     def do_CHECKPRESENT(self, key):
         self.check_key(key)
         try:
@@ -615,25 +627,27 @@ class Protocol(object):
                 return "CHECKPRESENT-FAILURE {key}".format(key=key)
         except RemoteError as e:
             return "CHECKPRESENT-UNKNOWN {key} {e}".format(key=key, e=e)
-    
+
     def do_REMOVE(self, key):
         self.check_key(key)
-        
+
         try:
             self.remote.remove(key)
         except RemoteError as e:
             return "REMOVE-FAILURE {key} {e}".format(key=key, e=e)
         else:
             return "REMOVE-SUCCESS {key}".format(key=key)
-    
+
     def do_LISTCONFIGS(self):
         reply = []
         for name, description in sorted(self.remote.listconfigs().items()):
             if " " in name:
-                raise ValueError("Name must not contain space characters: {}".format(name))
+                raise ValueError(
+                    "Name must not contain space characters: {}".format(name)
+                )
             reply.append("CONFIG {} {}".format(name, description))
         reply.append("CONFIGEND")
-        return '\n'.join(reply)
+        return "\n".join(reply)
 
     def do_GETCOST(self):
         cost = self.remote.getcost()
@@ -642,7 +656,7 @@ class Protocol(object):
         except ValueError:
             raise ValueError("Cost must be an integer")
         return "COST {cost}".format(cost=cost)
-    
+
     def do_GETAVAILABILITY(self):
         reply = self.remote.getavailability()
         if reply == "global":
@@ -651,13 +665,13 @@ class Protocol(object):
             return "AVAILABILITY LOCAL"
         else:
             raise ValueError("Availability must be either 'global' or 'local'")
-        
+
     def do_CLAIMURL(self, url):
         if self.remote.claimurl(url):
             return "CLAIMURL-SUCCESS"
         else:
             return "CLAIMURL-FAILURE"
-    
+
     def do_CHECKURL(self, url):
         try:
             reply = self.remote.checkurl(url)
@@ -667,33 +681,32 @@ class Protocol(object):
             return "CHECKURL-FAILURE"
         elif reply is True:
             return "CHECKURL-CONTENTS UNKNOWN"
-        
-        if len(reply)==1 and 'url' not in reply[0]:
+
+        if len(reply) == 1 and "url" not in reply[0]:
             entry = reply[0]
             size = entry.get("size", "UNKNOWN")
-                
+
             returnvalue = " ".join(("CHECKURL-CONTENTS", str(size)))
-        
-            if 'filename' in entry and entry['filename']:
-                returnvalue = " ".join((returnvalue, entry['filename']))
+
+            if "filename" in entry and entry["filename"]:
+                returnvalue = " ".join((returnvalue, entry["filename"]))
             return returnvalue
-                
+
         returnvalue = "CHECKURL-MULTI"
         for entry in reply:
-            if 'url' not in entry:
+            if "url" not in entry:
                 raise ValueError("Url must be present when specifying multiple values.")
-            if " " in entry['url']:
+            if " " in entry["url"]:
                 raise ValueError("Url must not contain spaces.")
-                
+
             size = entry.get("size", "UNKNOWN")
-            filename = entry.get("filename", "")    
+            filename = entry.get("filename", "")
             if " " in filename:
                 raise ValueError("Filename must not contain spaces.")
-                
-            returnvalue = " ".join((returnvalue, entry['url'], str(size), filename))
+
+            returnvalue = " ".join((returnvalue, entry["url"], str(size), filename))
         return returnvalue
-        
-    
+
     def do_WHEREIS(self, key):
         self.check_key(key)
         reply = self.remote.whereis(key)
@@ -709,20 +722,20 @@ class Protocol(object):
             reply.append("INFOFIELD {}".format(field))
             reply.append("INFOVALUE {}".format(info[field]))
         reply.append("INFOEND")
-        return '\n'.join(reply)
+        return "\n".join(reply)
 
     def do_ERROR(self, message):
         self.remote.error(message)
-    
+
     def do_EXPORTSUPPORTED(self):
         if self.remote.exportsupported():
             return "EXPORTSUPPORTED-SUCCESS"
         else:
             return "EXPORTSUPPORTED-FAILURE"
-    
+
     def do_EXPORT(self, name):
         self.exporting = name
-    
+
     def do_TRANSFEREXPORT(self, param):
         if not self.exporting:
             raise ProtocolError("Export request without prior EXPORT")
@@ -730,21 +743,23 @@ class Protocol(object):
             (method, key, file_) = param.split(" ", 2)
         except ValueError:
             raise SyntaxError("Expected Key File")
-        
+
         if not (method == "STORE" or method == "RETRIEVE"):
             return self.do_UNKNOWN()
-        
+
         func = getattr(self.remote, "transferexport_{}".format(method.lower()), None)
         try:
             func(key, file_, self.exporting)
         except RemoteError as e:
-            return "TRANSFER-FAILURE {method} {key} {e}".format(method=method, key=key, e=e)
+            return "TRANSFER-FAILURE {method} {key} {e}".format(
+                method=method, key=key, e=e
+            )
         else:
             return "TRANSFER-SUCCESS {method} {key}".format(method=method, key=key)
-    
+
     def do_CHECKPRESENTEXPORT(self, key):
         if not self.exporting:
-            raise ProtocolError("Export request without prior EXPORT")  
+            raise ProtocolError("Export request without prior EXPORT")
         self.check_key(key)
         try:
             if self.remote.checkpresentexport(key, self.exporting):
@@ -753,19 +768,19 @@ class Protocol(object):
                 return "CHECKPRESENT-FAILURE {key}".format(key=key)
         except RemoteError as e:
             return "CHECKPRESENT-UNKNOWN {key} {e}".format(key=key, e=e)
-            
+
     def do_REMOVEEXPORT(self, key):
         if not self.exporting:
-            raise ProtocolError("Export request without prior EXPORT")  
+            raise ProtocolError("Export request without prior EXPORT")
         self.check_key(key)
-        
+
         try:
             self.remote.removeexport(key, self.exporting)
         except RemoteError as e:
             return "REMOVE-FAILURE {key} {e}".format(key=key, e=e)
         else:
             return "REMOVE-SUCCESS {key}".format(key=key)
-                    
+
     def do_REMOVEEXPORTDIRECTORY(self, name):
         try:
             self.remote.removeexportdirectory(name)
@@ -773,21 +788,22 @@ class Protocol(object):
             return "REMOVEEXPORTDIRECTORY-FAILURE"
         else:
             return "REMOVEEXPORTDIRECTORY-SUCCESS"
-    
+
     def do_RENAMEEXPORT(self, param):
         if not self.exporting:
-            raise ProtocolError("Export request without prior EXPORT")  
+            raise ProtocolError("Export request without prior EXPORT")
         try:
             (key, new_name) = param.split(None, 1)
         except ValueError:
             raise SyntaxError("Expected TRANSFER STORE Key File")
-            
+
         try:
             self.remote.renameexport(key, self.exporting, new_name)
         except RemoteError:
             return "RENAMEEXPORT-FAILURE {key}".format(key=key)
         else:
             return "RENAMEEXPORT-SUCCESS {key}".format(key=key)
+
 
 class Master(object):
     """
@@ -858,7 +874,7 @@ class Master(object):
         NotLinkedError
             If there is no remote linked to this master.
         """
-        if not (hasattr(self, 'remote') and hasattr(self, 'protocol')):
+        if not (hasattr(self, "remote") and hasattr(self, "protocol")):
             raise NotLinkedError("Please execute LinkRemote(remote) first.")
 
         self.input = input
@@ -874,7 +890,7 @@ class Master(object):
                 if reply:
                     self._send(reply)
             except UnsupportedRequest:
-                self._send ("UNSUPPORTED-REQUEST")
+                self._send("UNSUPPORTED-REQUEST")
             except Exception as e:
                 for line in traceback.format_exc().splitlines():
                     self.debug(line)
@@ -885,10 +901,14 @@ class Master(object):
         self._send(request)
         line = self.input.readline().rstrip().split(" ", reply_count)
         if line and line[0] == reply_keyword:
-            line.extend([""] * (reply_count+1-len(line)))
+            line.extend([""] * (reply_count + 1 - len(line)))
             return line[1:]
         else:
-            raise UnexpectedMessage("Expected {reply_keyword} and {reply_count} values. Got {line}".format(reply_keyword=reply_keyword, reply_count=reply_count, line=line))
+            raise UnexpectedMessage(
+                "Expected {reply_keyword} and {reply_count} values. Got {line}".format(
+                    reply_keyword=reply_keyword, reply_count=reply_count, line=line
+                )
+            )
 
     def _askvalues(self, request):
         self._send(request)
@@ -899,7 +919,7 @@ class Master(object):
             line = line.rstrip()
             line = line.split(" ", 1)
             if len(line) == 2 and line[0] == "VALUE":
-                 reply.append(line[1])
+                reply.append(line[1])
             elif len(line) == 1 and line[0] == "VALUE":
                 return reply
             else:
@@ -908,13 +928,13 @@ class Master(object):
     def _askvalue(self, request):
         (reply,) = self._ask(request, "VALUE", 1)
         return reply
-    
+
     def getconfig(self, setting):
         """
         Gets one of the special remote's configuration settings,
         which can have been passed by the user when running `git annex initremote`,
         `git annex enableremote` or can have been set by a previous setconfig(). Can be run at any time.
-        It's recommended that special remotes that use this implement listconfigs(). 
+        It's recommended that special remotes that use this implement listconfigs().
 
         Parameters
         ----------
@@ -938,7 +958,7 @@ class Master(object):
         Sets one of the special remote's configuration settings.
         Normally this is sent during initremote(), which allows these settings to be
         stored in the git-annex branch, so will be available if the same special remote
-        is used elsewhere. (If sent after initremote(), the changed configuration will 
+        is used elsewhere. (If sent after initremote(), the changed configuration will
         only be available while the remote is running.)
 
         Parameters
@@ -1000,14 +1020,14 @@ class Master(object):
         """
 
         self._send("DEBUG", *args)
-        
+
     def error(self, *args):
         """
         Generic error. Can be sent at any time if things get too messed up to continue.
         When possible, raise a RemoteError inside the respective functions.
         The special remote program should exit after sending this, as git-annex will
         not talk to it any further.
-        
+
         Parameters
         ----------
         error_msg : str
@@ -1017,7 +1037,7 @@ class Master(object):
 
     def progress(self, progress):
         """
-        Indicates the current progress of the transfer (in bytes). May be repeated 
+        Indicates the current progress of the transfer (in bytes). May be repeated
         any number of times during the transfer process, but it's wasteful to update
         the progress until at least another 1% of the file has been sent.
         This is highly recommended for *_store(). (It is optional but good for *_retrieve().)
@@ -1126,9 +1146,11 @@ class Master(object):
         UnexpectedMessage
             If git-annex does not respond correctly to this request, which is very unlikely.
         """
-        (user, password) = self._ask("GETCREDS {setting}".format(setting=setting), "CREDS", 2)
-        #TODO: (v2.0) use namedtuple instead of dict
-        return {'user': user, 'password': password}
+        (user, password) = self._ask(
+            "GETCREDS {setting}".format(setting=setting), "CREDS", 2
+        )
+        # TODO: (v2.0) use namedtuple instead of dict
+        return {"user": user, "password": password}
 
     def getuuid(self):
         """
@@ -1234,7 +1256,7 @@ class Master(object):
             The URI from which the key can be downloaded
         """
         self._send("SETURIPRESENT", key, uri)
-    
+
     def seturimissing(self, key, uri):
         """
         Records that the key can no longer be downloaded from the specified URI.
@@ -1271,7 +1293,7 @@ class Master(object):
             If git-annex does not respond correctly to this request, which is very unlikely.
         """
         return self._askvalues("GETURLS {key} {prefix}".format(key=key, prefix=prefix))
-        
+
     def info(self, message):
         """
         Tells git-annex to display the message to the user.
@@ -1295,7 +1317,7 @@ class Master(object):
         if "INFO" in self.protocol.extensions:
             self._send("INFO", message)
         else:
-            raise ProtocolError("INFO not available") 
+            raise ProtocolError("INFO not available")
 
     def getgitremotename(self):
         """
@@ -1306,7 +1328,7 @@ class Master(object):
         and this will provide the remote's current name.
 
         Important: This is a protocol extension and may raise a ProtocolError if
-        the particular version of git-annex does not support it. Remotes using 
+        the particular version of git-annex does not support it. Remotes using
         getgetremotename() should always prepare to handle the exception.
 
         Returns
@@ -1322,8 +1344,7 @@ class Master(object):
         if "GETGITREMOTENAME" in self.protocol.extensions:
             return self._askvalue("GETGITREMOTENAME")
         else:
-            raise ProtocolError("GETGITREMOTENAME not available") 
-            
+            raise ProtocolError("GETGITREMOTENAME not available")
 
     def _send(self, *args, **kwargs):
         print(*args, file=self.output, **kwargs)

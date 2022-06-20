@@ -1,0 +1,46 @@
+[project]
+name = "annexremote"
+authors = [
+    {name = "Silvio Ankermann", email = "silvio@booq.org"},
+]
+dynamic = ["version"]
+license = { text = "GPL-3.0-only" }
+description = "git annex special remotes made easy"
+readme = "README.md"
+
+classifiers = [
+    'Development Status :: 5 - Production/Stable',
+
+    'Intended Audience :: Developers',
+    'Topic :: Software Development :: Libraries :: Python Modules',
+    'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+]
+keywords = ["git-annex", "remote"]
+
+[project.urls]
+Documentation = "https://lykos153.github.io/AnnexRemote"
+Source = "https://github.com/Lykos153/AnnexRemote"
+
+[project.optional-dependencies]
+tests = ['coverage', 'nose']
+doc = ["sphinx"]
+
+[build-system]
+requires = [
+    "setuptools>=41",
+    "wheel",
+    "setuptools-git-versioning",
+    "setuptools_scm[toml]>=6.2",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools-git-versioning]
+enabled = true
+
+[tool.setuptools_scm]
+write_to = "annexremote/_version.py"
+fallback_version = "0.0.0"

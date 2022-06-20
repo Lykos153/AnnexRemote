@@ -20,7 +20,7 @@
         annexremote = pkgs.python3Packages.buildPythonPackage rec {
           pname = "annexremote";
           version = self.rev;
-          # format = "setuptools";
+          format = "pyproject";
           src = self;
         };
         default = annexremote;

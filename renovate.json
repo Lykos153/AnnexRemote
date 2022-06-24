@@ -4,5 +4,8 @@
   ],
   "ignorePaths": [
     "docs/**"
-  ]
+  ],
+  "pre-commit": {
+    "enabled": true
+  }
 }

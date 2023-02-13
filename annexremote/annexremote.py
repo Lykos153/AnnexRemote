@@ -398,7 +398,7 @@ class ExportRemote(SpecialRemote):
         Note that it's important that, while a file is being stored,
         checkpresentexport() not indicate it's present until all the data
         has been transferred.
-        While the transfer is running, the remote can send any number of progess(size) messages.
+        While the transfer is running, the remote can send any number of progress(size) messages.
 
 
         Parameters
@@ -426,7 +426,7 @@ class ExportRemote(SpecialRemote):
         Note that it's important that, while a file is being stored,
         checkpresentexport() not indicate it's present until all the data
         has been transferred.
-        While the transfer is running, the remote can send any number of progess(size) messages.
+        While the transfer is running, the remote can send any number of progress(size) messages.
 
 
         Parameters
@@ -826,7 +826,7 @@ class Master(object):
 
     def __init__(self, output=sys.stdout):
         """
-        Initialize the Master with an ouput.
+        Initialize the Master with an output.
 
         Parameters
         ----------

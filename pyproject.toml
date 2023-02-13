@@ -46,3 +46,6 @@ enabled = true
 [tool.setuptools_scm]
 write_to = "annexremote/_version.py"
 fallback_version = "0.0.0"
+
+[tool.setuptools]
+packages = ["annexremote"]

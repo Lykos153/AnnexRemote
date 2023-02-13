@@ -28,7 +28,7 @@ Then use a test discovery like [nose](http://nose.readthedocs.io) to run them.
 
 Import the necessary classes
 
-```
+```python
 from annexremote import Master
 from annexremote import SpecialRemote
 from annexremote import RemoteError
@@ -36,7 +36,7 @@ from annexremote import RemoteError
 
 Now create your special remote class. It must subtype ``SpecialRemote`` and implement at least the 6 basic methods:
 
-```
+```python
 class MyRemote(SpecialRemote):
     def initremote(self):
         # initialize the remote, eg. create the folders
@@ -67,7 +67,7 @@ class MyRemote(SpecialRemote):
 
 In your ``main`` function, link your remote to the master class and initialize the protocol:
 
-```
+```python
 def main():
     master = Master()
     remote = MyRemote(master)
@@ -88,7 +88,7 @@ That's it. Now you've created your special remote.
 #### Export remotes
 Import and subtype `ExportRemote` instead of `SpecialRemote`:
 
-```
+```python
 # ...
 from annexremote import ExportRemote
 
@@ -127,7 +127,7 @@ class MyRemote(ExportRemote):
 #### Logging
 This module includes a StreamHandler to send log records to git annex via the special remote protocol (using DEBUG). You can use it like this:
 
-```
+```python
 ...
 import logging
 ...

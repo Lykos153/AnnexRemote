@@ -460,7 +460,6 @@ class TestSpecialRemoteMessages_Extensions(utils.GitAnnexTestCase):
         annex_reply=None,
         function_result=None,
     ):
-
         self.annex.input = io.StringIO(annex_reply)
         result = function_to_call(*function_parameters)
         self.assertEqual(result, function_result)

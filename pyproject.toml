@@ -18,6 +18,8 @@ classifiers = [
     'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
 ]
 keywords = ["git-annex", "remote"]
 
@@ -44,3 +46,6 @@ enabled = true
 [tool.setuptools_scm]
 write_to = "annexremote/_version.py"
 fallback_version = "0.0.0"
+
+[tool.setuptools]
+packages = ["annexremote"]

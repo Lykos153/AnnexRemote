@@ -382,9 +382,9 @@ class TestGitAnnexRequestMessagesExporttree(utils.GitAnnexTestCase):
     def TestExport_MissingName(self):
         with self.assertRaises(SystemExit):
             self.annex.Listen(io.StringIO("EXPORT"))
-        self.assertEqual(
+        self.assertRegex(
             utils.last_buffer_line(self.output),
-            "ERROR do_EXPORT() missing 1 required positional argument: 'name'",
+            "ERROR (Protocol\.|)do_EXPORT\(\) missing 1 required positional argument: 'name'",
         )
 
     def TestExport_SpaceInName(self):
@@ -560,9 +560,9 @@ class TestGitAnnexRequestMessagesExporttree(utils.GitAnnexTestCase):
     def TestRemoveexportdirectory_MissingDirectory(self):
         with self.assertRaises(SystemExit):
             self.annex.Listen(io.StringIO("REMOVEEXPORTDIRECTORY"))
-        self.assertEqual(
+        self.assertRegex(
             utils.last_buffer_line(self.output),
-            "ERROR do_REMOVEEXPORTDIRECTORY() missing 1 required positional argument: 'name'",
+            "ERROR (Protocol\.|)do_REMOVEEXPORTDIRECTORY\(\) missing 1 required positional argument: 'name'",
         )
 
     def TestRemoveexportdirectory_SpaceInFilename(self):

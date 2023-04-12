@@ -387,6 +387,11 @@ class TestGitAnnexRequestMessagesExporttree(utils.GitAnnexTestCase):
             r"ERROR (Protocol\.|)do_EXPORT\(\) missing 1 required positional argument: 'name'",
         )
 
+    def test_Export_DoubleExport(self):
+        with self.assertRaises(SystemExit):
+            self.annex.Listen(io.StringIO("EXPORT Name1\nEXPORT Name2"))
+        self.assertEqual(utils.last_buffer_line(self.output), "ERROR Unexpected EXPORT")
+
     def test_Export_SpaceInName(self):
         # testing this only with TRANSFEREXPORT
         self.annex.Listen(

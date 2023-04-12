@@ -734,6 +734,8 @@ class Protocol(object):
             return "EXPORTSUPPORTED-FAILURE"
 
     def do_EXPORT(self, name):
+        if self.exporting:
+            raise UnexpectedMessage("Unexpected EXPORT")
         self.exporting = name
 
     def do_TRANSFEREXPORT(self, param):

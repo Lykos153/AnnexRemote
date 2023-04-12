@@ -133,7 +133,6 @@ class DirectoryRemote(ExportRemote):
 
 
 def main():
-
     # Redirect output to stderr to avoid messing up the protocol
     output = sys.stdout
     sys.stdout = sys.stderr

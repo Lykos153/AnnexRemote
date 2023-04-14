@@ -4,7 +4,13 @@ import utils
 ProtocolError = utils.annexremote.ProtocolError
 
 
-class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
+class TestProtocolVersion2(utils.ExportTestCase):
+    def TestVersion(self):
+        self.annex.Listen(self.input)
+        self.assertEqual(self.output.getvalue(), "VERSION 2\n")
+
+
+class TestSpecialRemoteMessages(utils.FullTestCase):
     """
     * Each protocol line starts with a command, which is followed by the command's parameters
     (a fixed number per command), each separated by a single space.
@@ -451,7 +457,7 @@ class TestSpecialRemoteMessages(utils.GitAnnexTestCase):
         self._perform_test(function_to_call, function_parameters, expected_output)
 
 
-class TestSpecialRemoteMessages_Extensions(utils.GitAnnexTestCase):
+class TestSpecialRemoteMessages_Extensions(utils.FullTestCase):
     def _perform_test(
         self,
         function_to_call,

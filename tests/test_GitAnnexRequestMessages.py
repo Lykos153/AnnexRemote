@@ -10,7 +10,7 @@ ProtocolError = utils.annexremote.ProtocolError
 UnsupportedReqeust = utils.annexremote.UnsupportedRequest
 
 
-class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
+class TestGitAnnexRequestMessages(utils.ExportTestCase):
     def TestInitremoteSuccess(self):
         self.annex.Listen(io.StringIO("INITREMOTE"))
         self.remote.initremote.call_count == 1
@@ -363,7 +363,7 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
         self.remote.error.assert_called_once_with("ErrorMsg")
 
 
-class TestGitAnnexRequestMessagesExporttree(utils.GitAnnexTestCase):
+class TestGitAnnexRequestMessagesExporttree(utils.ExportTestCase):
     def TestExportsupportedSuccess(self):
         self.annex.Listen(io.StringIO("EXPORTSUPPORTED"))
         self.remote.exportsupported.call_count == 1
@@ -675,7 +675,7 @@ class LoggingRemote(utils.MinimalRemote):
         self.logger.warning("test\nthis is a new line")
 
 
-class TestLogging(utils.GitAnnexTestCase):
+class TestLogging(utils.ExportTestCase):
     def setUp(self):
         super().setUp()
         self.remote = LoggingRemote(self.annex)

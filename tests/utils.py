@@ -9,19 +9,6 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 import annexremote
 
 
-class GitAnnexTestCase(unittest.TestCase):
-    def setUp(self):
-        super().setUp()
-
-        self.output = io.StringIO()
-        self.input = io.StringIO()
-
-        self.annex = annexremote.Master(self.output)
-        self.remote = mock.MagicMock(wraps=DummyRemote(self.annex))
-
-        self.annex.LinkRemote(self.remote)
-
-
 class MinimalTestCase(unittest.TestCase):
     def setUp(self):
         super().setUp()
@@ -31,6 +18,32 @@ class MinimalTestCase(unittest.TestCase):
 
         self.annex = annexremote.Master(self.output)
         self.remote = MinimalRemote(self.annex)
+
+        self.annex.LinkRemote(self.remote)
+
+
+class FullTestCase(unittest.TestCase):
+    def setUp(self):
+        super().setUp()
+
+        self.output = io.StringIO()
+        self.input = io.StringIO()
+
+        self.annex = annexremote.Master(self.output)
+        self.remote = mock.MagicMock(wraps=FullRemote(self.annex))
+
+        self.annex.LinkRemote(self.remote)
+
+
+class ExportTestCase(unittest.TestCase):
+    def setUp(self):
+        super().setUp()
+
+        self.output = io.StringIO()
+        self.input = io.StringIO()
+
+        self.annex = annexremote.Master(self.output)
+        self.remote = mock.MagicMock(wraps=FullExportRemote(self.annex))
 
         self.annex.LinkRemote(self.remote)
 
@@ -77,7 +90,45 @@ class MinimalRemote(annexremote.SpecialRemote):
         pass
 
 
-class DummyRemote(annexremote.ExportRemote):
+class FullRemote(annexremote.SpecialRemote):
+    def initremote(self):
+        pass
+
+    def prepare(self):
+        pass
+
+    def transfer_store(self, key, file_):
+        pass
+
+    def transfer_retrieve(self, key, file_):
+        pass
+
+    def checkpresent(self, key):
+        pass
+
+    def remove(self, key):
+        pass
+
+    def getcost(self):
+        pass
+
+    def getavailability(self):
+        pass
+
+    def claimurl(self, url):
+        pass
+
+    def checkurl(self, url):
+        pass
+
+    def whereis(self, whereis):
+        pass
+
+    def error(self, msg):
+        pass
+
+
+class FullExportRemote(annexremote.ExportRemote):
     def initremote(self):
         pass
 

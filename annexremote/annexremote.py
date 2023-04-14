@@ -545,9 +545,15 @@ class Protocol(object):
 
     def __init__(self, remote):
         self.remote = remote
-        self.version = "VERSION 1"
         self.exporting = False
         self.extensions = list()
+
+    @property
+    def version(self):
+        if self.remote.exportsupported():
+            return "VERSION 2"
+        else:
+            return "VERSION 1"
 
     def command(self, line):
         line = line.strip()

@@ -7,7 +7,6 @@ Helper module to easily develop special remotes for [git annex](https://git-anne
 AnnexRemote handles all the protocol stuff for you, so you can focus on the remote itself.
 It implements the complete [external special remote protocol](https://git-annex.branchable.com/design/external_special_remote_protocol)
 and fulfils all specifications regarding whitespaces etc. This is ensured by an excessive test suite.
-Extensions to the protocol are normally added within hours after they've been published.
 
 [Documentation](https://lykos153.github.io/AnnexRemote/annexremote/)
 

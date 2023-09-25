@@ -21,7 +21,7 @@ You need python3 installed on your system.
 
 ### Running the tests
 If you want to run the tests, copy the content of the `tests` folder to the same location as `annexremote.py`.
-Then use a test discovery like [nose](http://nose.readthedocs.io) to run them.
+Then use a test discovery like [pytest](https://github.com/pytest-dev/pytest) to run them.
 
 ### Usage
 

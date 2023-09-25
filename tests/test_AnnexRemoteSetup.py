@@ -13,7 +13,7 @@ class SetupTestCase(unittest.TestCase):
         self.output = io.StringIO()
         self.input = io.StringIO()
 
-    def TestListenNotLinked(self):
+    def test_ListenNotLinked(self):
         annex = annexremote.Master(self.output)
         with self.assertRaises(annexremote.NotLinkedError):
             annex.Listen(io.StringIO("INITREMOTE"))

@@ -2,6 +2,6 @@
     "onlyPublishWithReleaseLabel": true,
     "baseBranch": "master",
     "author": "auto <auto@nil>",
-    "noVersionPrefix": true,
+    "noVersionPrefix": false,
     "plugins": ["git-tag", "released"]
 }

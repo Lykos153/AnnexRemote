@@ -28,7 +28,7 @@ Documentation = "https://lykos153.github.io/AnnexRemote"
 Source = "https://github.com/Lykos153/AnnexRemote"
 
 [project.optional-dependencies]
-tests = ['coverage', 'nose']
+tests = ['coverage', 'pytest']
 doc = ["sphinx"]
 
 [build-system]

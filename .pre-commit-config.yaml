@@ -5,9 +5,9 @@ repos:
   - id: black
 - repo: local
   hooks:
-    - id: nosetests
-      name: nosetests
-      entry: nosetests
+    - id: pytest
+      name: pytest
+      entry: pytest -s -v
       language: system
       always_run: true
       pass_filenames: false

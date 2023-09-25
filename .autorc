@@ -3,5 +3,5 @@
     "baseBranch": "master",
     "author": "auto <auto@nil>",
     "noVersionPrefix": true,
-    "plugins": ["git-tag"]
+    "plugins": ["git-tag", "released"]
 }

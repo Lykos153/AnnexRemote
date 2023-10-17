@@ -145,7 +145,7 @@ class SpecialRemote(metaclass=ABCMeta):
         ----------
         key : str
             The Key to be stored in the remote. In most cases, this is going to be the
-            remote file name. It should be at least be unambigiously derived from it.
+            remote file name. It should be at least be unambiguously derived from it.
         local_file: str
             Path to the file to upload.
             Note that in some cases, local_file may contain whitespace.

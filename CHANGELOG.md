@@ -1,3 +1,20 @@
+# v1.6.3 (Fri Oct 27 2023)
+
+#### 🐛 Bug Fix
+
+- Add actual twine upload call to .autorc to fix release to make it appear on PyPI [#91](https://github.com/Lykos153/AnnexRemote/pull/91) ([@yarikoptic](https://github.com/yarikoptic))
+
+#### 🏠 Internal
+
+- Revert "Add "workflow_dispatch:" as a way to trigger workflow" [#92](https://github.com/Lykos153/AnnexRemote/pull/92) ([@yarikoptic](https://github.com/yarikoptic))
+- Add "workflow_dispatch:" as a way to trigger workflow [#92](https://github.com/Lykos153/AnnexRemote/pull/92) ([@yarikoptic](https://github.com/yarikoptic))
+
+#### Authors: 1
+
+- Yaroslav Halchenko ([@yarikoptic](https://github.com/yarikoptic))
+
+---
+
 # v1.6.1 (Thu Oct 26 2023)
 
 #### 🐛 Bug Fix

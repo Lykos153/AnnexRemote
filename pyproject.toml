@@ -35,13 +35,9 @@ doc = ["sphinx"]
 requires = [
     "setuptools>=41",
     "wheel",
-    "setuptools-git-versioning",
     "setuptools_scm[toml]>=6.2",
 ]
 build-backend = "setuptools.build_meta"
-
-[tool.setuptools-git-versioning]
-enabled = true
 
 [tool.setuptools_scm]
 write_to = "annexremote/_version.py"

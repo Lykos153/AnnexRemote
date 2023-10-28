@@ -1,3 +1,15 @@
+# v1.6.4 (Sat Oct 28 2023)
+
+#### 🏠 Internal
+
+- Fix build - remove setuptools-git-versioning from pyproject.toml and also versioneer.py from MANIFEST [#94](https://github.com/Lykos153/AnnexRemote/pull/94) ([@yarikoptic](https://github.com/yarikoptic))
+
+#### Authors: 1
+
+- Yaroslav Halchenko ([@yarikoptic](https://github.com/yarikoptic))
+
+---
+
 # v1.6.3 (Fri Oct 27 2023)
 
 #### 🐛 Bug Fix

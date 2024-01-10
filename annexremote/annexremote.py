@@ -388,6 +388,10 @@ class ExportRemote(SpecialRemote):
         Note that the user is not required to provided all the settings listed here.
     """
 
+    def __init__(self, annex, force_version1=False):
+        self.force_version1 = force_version1
+        super().__init__(annex)
+
     def exportsupported(self):
         return True
 
@@ -550,7 +554,7 @@ class Protocol(object):
 
     @property
     def version(self):
-        if self.remote.exportsupported():
+        if self.remote.exportsupported() and not self.remote.force_version1:
             return "VERSION 2"
         else:
             return "VERSION 1"

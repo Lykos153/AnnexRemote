@@ -39,7 +39,7 @@ jobs:
       run: |
         python -m pytest -s -v --cov=annexremote --cov-report=xml tests
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         # token: ${{ secrets.CODECOV_TOKEN }}
         file: ./coverage.xml

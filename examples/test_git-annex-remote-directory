@@ -1,0 +1,27 @@
+#!/bin/bash
+# Test script to drive the example external remote
+
+set -eu -o pipefail -x
+
+cd $(dirname "$0")
+
+export PATH=$PWD:$PATH
+
+git-annex-remote-directory < /dev/null | grep VERSION
+
+TMP="$(mktemp -d "${TMPDIR:-/tmp}/gar-XXXXXXX")"
+# so there is no global git config side-effects
+export HOME="$TMP"
+
+REMOTE_DIR="$TMP/remote"
+REPO_DIR="$TMP/repo"
+mkdir -p "$REMOTE_DIR"
+mkdir -p "$REPO_DIR"
+
+cd "$REPO_DIR"
+git init
+git config user.email "someuser@gmail.com"
+git config user.name "Some User"
+git annex init
+git annex initremote --verbose --debug directory_remote type=external externaltype=directory encryption=none directory=$REMOTE_DIR
+git annex testremote --verbose --debug directory_remote  2>&1 | tail -n 1000

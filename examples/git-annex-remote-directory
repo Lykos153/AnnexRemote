@@ -23,6 +23,9 @@ class DirectoryRemote(ExportRemote):
             raise RemoteError("You need to set directory=")
         self._mkdir(self.directory)
 
+    def listconfigs(self):
+        return {"directory": "directory where data is stored"}
+
     def prepare(self):
         self.directory = self.annex.getconfig("directory")
         self.info = {"directory": self.directory}

@@ -38,6 +38,13 @@ jobs:
     - name: Test with pytest
       run: |
         python -m pytest -s -v --cov=annexremote --cov-report=xml tests
+    - name: Install git-annex needed for the next step
+      run: |
+        sudo apt update
+        sudo apt install -y git-annex
+    - name: Test example external remote
+      run: |
+        examples/test_git-annex-remote-directory
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:

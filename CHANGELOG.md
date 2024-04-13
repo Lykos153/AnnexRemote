@@ -1,3 +1,24 @@
+# v1.6.5 (Sat Apr 13 2024)
+
+#### 🐛 Bug Fix
+
+- Add listconfigs to examples/git-annex-remote-directory + a test for that [#101](https://github.com/Lykos153/AnnexRemote/pull/101) ([@yarikoptic](https://github.com/yarikoptic))
+- chore(deps): update pre-commit hook psf/black to v24.3.0 [#99](https://github.com/Lykos153/AnnexRemote/pull/99) ([@renovate[bot]](https://github.com/renovate[bot]))
+- chore(deps): update pre-commit hook psf/black to v24 [#98](https://github.com/Lykos153/AnnexRemote/pull/98) ([@renovate[bot]](https://github.com/renovate[bot]))
+- Update pre-commit hook psf/black to v23.12.0 [#95](https://github.com/Lykos153/AnnexRemote/pull/95) ([@renovate[bot]](https://github.com/renovate[bot]))
+- Update actions/setup-python action to v5 [#96](https://github.com/Lykos153/AnnexRemote/pull/96) ([@renovate[bot]](https://github.com/renovate[bot]))
+
+#### 🏠 Internal
+
+- chore(deps): update pre-commit hook psf/black to v24.4.0 [#102](https://github.com/Lykos153/AnnexRemote/pull/102) ([@renovate[bot]](https://github.com/renovate[bot]))
+
+#### Authors: 2
+
+- [@renovate[bot]](https://github.com/renovate[bot])
+- Yaroslav Halchenko ([@yarikoptic](https://github.com/yarikoptic))
+
+---
+
 # v1.6.4 (Sat Oct 28 2023)
 
 #### 🏠 Internal

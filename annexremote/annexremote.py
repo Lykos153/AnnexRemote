@@ -583,6 +583,8 @@ class Protocol(object):
         try:
             self.remote.initremote()
         except RemoteError as e:
+            for line in traceback.format_exc().splitlines():
+                self.remote.annex.debug(line)
             return "INITREMOTE-FAILURE {e}".format(e=e)
         else:
             return "INITREMOTE-SUCCESS"
@@ -595,6 +597,8 @@ class Protocol(object):
         try:
             self.remote.prepare()
         except RemoteError as e:
+            for line in traceback.format_exc().splitlines():
+                self.remote.annex.debug(line)
             return "PREPARE-FAILURE {e}".format(e=e)
         else:
             return "PREPARE-SUCCESS"
@@ -612,6 +616,8 @@ class Protocol(object):
         try:
             func(key, file_)
         except RemoteError as e:
+            for line in traceback.format_exc().splitlines():
+                self.remote.annex.debug(line)
             return "TRANSFER-FAILURE {method} {key} {e}".format(
                 method=method, key=key, e=e
             )
@@ -626,6 +632,8 @@ class Protocol(object):
             else:
                 return "CHECKPRESENT-FAILURE {key}".format(key=key)
         except RemoteError as e:
+            for line in traceback.format_exc().splitlines():
+                self.remote.annex.debug(line)
             return "CHECKPRESENT-UNKNOWN {key} {e}".format(key=key, e=e)
 
     def do_REMOVE(self, key):
@@ -751,6 +759,8 @@ class Protocol(object):
         try:
             func(key, file_, self.exporting)
         except RemoteError as e:
+            for line in traceback.format_exc().splitlines():
+                self.remote.annex.debug(line)
             return "TRANSFER-FAILURE {method} {key} {e}".format(
                 method=method, key=key, e=e
             )
@@ -767,6 +777,8 @@ class Protocol(object):
             else:
                 return "CHECKPRESENT-FAILURE {key}".format(key=key)
         except RemoteError as e:
+            for line in traceback.format_exc().splitlines():
+                self.remote.annex.debug(line)
             return "CHECKPRESENT-UNKNOWN {key} {e}".format(key=key, e=e)
 
     def do_REMOVEEXPORT(self, key):
@@ -777,6 +789,8 @@ class Protocol(object):
         try:
             self.remote.removeexport(key, self.exporting)
         except RemoteError as e:
+            for line in traceback.format_exc().splitlines():
+                self.remote.annex.debug(line)
             return "REMOVE-FAILURE {key} {e}".format(key=key, e=e)
         else:
             return "REMOVE-SUCCESS {key}".format(key=key)
@@ -785,6 +799,8 @@ class Protocol(object):
         try:
             self.remote.removeexportdirectory(name)
         except RemoteError:
+            for line in traceback.format_exc().splitlines():
+                self.remote.annex.debug(line)
             return "REMOVEEXPORTDIRECTORY-FAILURE"
         else:
             return "REMOVEEXPORTDIRECTORY-SUCCESS"
@@ -800,6 +816,8 @@ class Protocol(object):
         try:
             self.remote.renameexport(key, self.exporting, new_name)
         except RemoteError:
+            for line in traceback.format_exc().splitlines():
+                self.remote.annex.debug(line)
             return "RENAMEEXPORT-FAILURE {key}".format(key=key)
         else:
             return "RENAMEEXPORT-SUCCESS {key}".format(key=key)

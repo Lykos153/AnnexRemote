@@ -319,6 +319,14 @@ class TestGitAnnexRequestMessages(utils.GitAnnexTestCase):
         self.remote.checkurl.assert_called_once_with("Url")
         self.assertEqual(utils.second_buffer_line(self.output), "CHECKURL-FAILURE")
 
+    def test_CheckurlFailureErrorMsg(self):
+        self.remote.checkurl.side_effect = RemoteError("ErrorMsg")
+        self.annex.Listen(io.StringIO("CHECKURL Url"))
+        self.remote.checkurl.assert_called_once_with("Url")
+        self.assertEqual(
+            utils.second_buffer_line(self.output), "CHECKURL-FAILURE ErrorMsg"
+        )
+
     def test_CheckurlFailureByException(self):
         self.remote.checkurl.return_value = False
         self.annex.Listen(io.StringIO("CHECKURL Url"))

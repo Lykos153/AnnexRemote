@@ -675,8 +675,8 @@ class Protocol(object):
     def do_CHECKURL(self, url):
         try:
             reply = self.remote.checkurl(url)
-        except RemoteError:
-            return "CHECKURL-FAILURE"
+        except RemoteError as e:
+            return "CHECKURL-FAILURE {e}".format(e=e).rstrip()
         if not reply:
             return "CHECKURL-FAILURE"
         elif reply is True:

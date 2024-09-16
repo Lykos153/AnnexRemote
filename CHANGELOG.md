@@ -1,3 +1,19 @@
+# v1.6.6 (Mon Sep 16 2024)
+
+#### 🐛 Bug Fix
+
+- Allow to communicate ErrorMsg for CHECKURL-FAILURE via RemoteError exception [#106](https://github.com/Lykos153/AnnexRemote/pull/106) ([@yarikoptic](https://github.com/yarikoptic))
+- chore(deps): update pre-commit hook psf/black to v24.8.0 [#105](https://github.com/Lykos153/AnnexRemote/pull/105) ([@renovate[bot]](https://github.com/renovate[bot]))
+- chore(deps): update pre-commit hook psf/black to v24.4.2 [#104](https://github.com/Lykos153/AnnexRemote/pull/104) ([@renovate[bot]](https://github.com/renovate[bot]))
+- chore(deps): update pre-commit hook psf/black to v24.4.1 [#103](https://github.com/Lykos153/AnnexRemote/pull/103) ([@renovate[bot]](https://github.com/renovate[bot]))
+
+#### Authors: 2
+
+- [@renovate[bot]](https://github.com/renovate[bot])
+- Yaroslav Halchenko ([@yarikoptic](https://github.com/yarikoptic))
+
+---
+
 # v1.6.5 (Sat Apr 13 2024)
 
 #### 🐛 Bug Fix

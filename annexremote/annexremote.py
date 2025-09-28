@@ -388,6 +388,10 @@ class ExportRemote(SpecialRemote):
         Note that the user is not required to provided all the settings listed here.
     """
 
+    def __init__(self, annex, force_version1=False):
+        self.force_version1 = force_version1
+        super().__init__(annex)
+
     def exportsupported(self):
         return True
 
@@ -545,9 +549,15 @@ class Protocol(object):
 
     def __init__(self, remote):
         self.remote = remote
-        self.version = "VERSION 1"
         self.exporting = False
         self.extensions = list()
+
+    @property
+    def version(self):
+        if self.remote.exportsupported() and not self.remote.force_version1:
+            return "VERSION 2"
+        else:
+            return "VERSION 1"
 
     def command(self, line):
         line = line.strip()
@@ -734,6 +744,8 @@ class Protocol(object):
             return "EXPORTSUPPORTED-FAILURE"
 
     def do_EXPORT(self, name):
+        if self.exporting:
+            raise UnexpectedMessage("Unexpected EXPORT")
         self.exporting = name
 
     def do_TRANSFEREXPORT(self, param):

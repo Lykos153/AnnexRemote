@@ -12,11 +12,17 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest]
         python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        include:
+          - os: macos-latest
+            python-version: "3.9"
+          - os: windows-latest
+            python-version: "3.9"
+    runs-on: ${{ matrix.os }}
 
     steps:
     - uses: actions/checkout@v6
@@ -40,9 +46,9 @@ jobs:
         python -m pytest -s -v --cov=annexremote --cov-report=xml tests
     - name: Install git-annex needed for the next step
       run: |
-        sudo apt update
-        sudo apt install -y git-annex
+        pip install git-annex
     - name: Test example external remote
+      if: runner.os != 'Windows'
       run: |
         examples/test_git-annex-remote-directory
     - name: Upload coverage to Codecov

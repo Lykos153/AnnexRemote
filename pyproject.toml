@@ -33,6 +33,7 @@ doc = ["sphinx"]
 requests = ["requests", "flask", "git-annex"]
 
 [project.scripts]
+git-annex-remote-directory = "annexremote.remotes.git_annex_remote_directory:main"
 git-annex-remote-requests = "annexremote.remotes.git_annex_remote_requests:main"
 requests-remote-flask-app = "annexremote.remotes.requests_remote_flask_app:main"
 

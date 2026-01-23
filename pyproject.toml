@@ -28,7 +28,11 @@ Documentation = "https://lykos153.github.io/AnnexRemote"
 Source = "https://github.com/Lykos153/AnnexRemote"
 
 [project.optional-dependencies]
-tests = ['coverage', 'pytest']
+tests = [
+    'coverage',
+    "pre-commit>=4.5.1",
+    'pytest',
+]
 doc = ["sphinx"]
 requests = ["requests", "flask", "git-annex"]
 

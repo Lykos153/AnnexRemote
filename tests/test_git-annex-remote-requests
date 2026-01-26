@@ -1,0 +1,32 @@
+#!/bin/bash
+# Test script to drive the example external remote
+
+set -eu -o pipefail -x
+
+externaltype=requests
+FLASK_RUN_PORT=${FLASK_RUN_PORT:-6987}
+url=http://localhost:$FLASK_RUN_PORT/git-annex
+#
+workdir=$(realpath "$(dirname "$0")")
+TMP="$(mktemp -d "${TMPDIR:-/tmp}/gar-XXXXXXX")"
+REMOTE_DIR="$TMP/remote"
+REPO_DIR="$TMP/repo"
+mkdir -p "$REMOTE_DIR"
+mkdir -p "$REPO_DIR"
+
+# so there is no global git config side-effects
+export HOME="$TMP"
+git config user.email "someuser@gmail.com"
+git config user.name "Some User"
+
+git-annex-remote-$externaltype < /dev/null | grep VERSION
+
+FLASK_RUN_PORT=$FLASK_RUN_PORT UPLOAD_FOLDER=$REMOTE_DIR requests-remote-flask-app >"$workdir/requests-remote-flask-app.out" 2>"$workdir/requests-remote-flask-app.err" &
+
+cd "$REPO_DIR"
+git init
+git annex init
+git annex initremote --verbose --debug ${externaltype}_remote type=external externaltype=$externaltype encryption=none url=$url
+git annex testremote --verbose --debug ${externaltype}_remote 2>"$workdir/testremote-$externaltype.err" | tee "$workdir/testremote-$externaltype.out"
+
+kill %1

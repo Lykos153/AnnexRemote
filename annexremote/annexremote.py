@@ -601,7 +601,7 @@ class Protocol(object):
 
     def do_TRANSFER(self, param):
         try:
-            (method, key, file_) = param.split(" ", 2)
+            method, key, file_ = param.split(" ", 2)
         except ValueError:
             raise SyntaxError("Expected Key File")
 
@@ -740,7 +740,7 @@ class Protocol(object):
         if not self.exporting:
             raise ProtocolError("Export request without prior EXPORT")
         try:
-            (method, key, file_) = param.split(" ", 2)
+            method, key, file_ = param.split(" ", 2)
         except ValueError:
             raise SyntaxError("Expected Key File")
 
@@ -793,7 +793,7 @@ class Protocol(object):
         if not self.exporting:
             raise ProtocolError("Export request without prior EXPORT")
         try:
-            (key, new_name) = param.split(None, 1)
+            key, new_name = param.split(None, 1)
         except ValueError:
             raise SyntaxError("Expected TRANSFER STORE Key File")
 
@@ -1146,7 +1146,7 @@ class Master(object):
         UnexpectedMessage
             If git-annex does not respond correctly to this request, which is very unlikely.
         """
-        (user, password) = self._ask(
+        user, password = self._ask(
             "GETCREDS {setting}".format(setting=setting), "CREDS", 2
         )
         # TODO: (v2.0) use namedtuple instead of dict

@@ -47,10 +47,14 @@ jobs:
     - name: Install git-annex needed for the next step
       run: |
         pip install git-annex
-    - name: Test example external remote
+    - name: Test example external remote: directory
       if: runner.os != 'Windows'
       run: |
-        examples/test_git-annex-remote-directory
+        annexremote/remotes/test_git-annex-remote-directory
+    - name: Test example external remote: requests
+      if: runner.os != 'Windows'
+      run: |
+        annexremote/remotes/test_git-annex-remote-requests
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v5
       with:

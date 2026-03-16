@@ -3,8 +3,6 @@
 #
 # This is basically the same as git-annex's built-in directory special remote.
 #
-# Install in PATH as git-annex-remote-directory
-#
 # Copyright 2018 Silvio Ankermann; licenced under the GNU GPL version 3
 
 import sys, os, errno
